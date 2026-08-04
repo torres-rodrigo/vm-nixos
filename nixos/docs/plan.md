@@ -64,6 +64,8 @@ Current note:
   baseline with no custom open ports.
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
   `war`.
+- Added `modules/nixos/nix-maintenance.nix` for weekly garbage collection,
+  14-day generation retention, and weekly store optimisation.
 - Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.
 - Added `modules/nixos/packages.nix` for the minimal shared system package
   baseline. The larger old package list will be reviewed later in capability

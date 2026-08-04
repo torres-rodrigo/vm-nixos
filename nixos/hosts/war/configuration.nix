@@ -8,6 +8,7 @@
     ../../modules/nixos/boot.nix
     ../../modules/nixos/firewall.nix
     ../../modules/nixos/hardware-intel.nix
+    ../../modules/nixos/nix-maintenance.nix
     ../../modules/nixos/networking.nix
     ../../modules/nixos/packages.nix
   ];
