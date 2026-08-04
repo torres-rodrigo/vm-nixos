@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/nixos/audio.nix
     ../../modules/nixos/base.nix
     ../../modules/nixos/boot.nix
     ../../modules/nixos/hardware-intel.nix
@@ -27,19 +28,11 @@
   services.desktopManager.plasma6.enable = true;
   services.printing.enable = true;
 
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
   users.users.r = {
     isNormalUser = true;
     description = "r";
     extraGroups = [
+      "audio"
       "networkmanager"
       "wheel"
     ];
