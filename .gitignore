@@ -1,0 +1,14 @@
+# The previous project remains an independent, read-only Git repository.
+/.nixos/
+
+# Nix build outputs.
+/result
+/result-*
+**/result
+**/result-*
+
+# Local secret material must never be committed.
+*.age.key
+*.password
+*.secret
+secrets.local/
