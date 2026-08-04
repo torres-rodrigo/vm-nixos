@@ -71,7 +71,10 @@ Current note:
   `war`.
 - Added `modules/nixos/nix-maintenance.nix` for weekly garbage collection,
   14-day generation retention, and weekly store optimisation.
-- Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.
+- Added `modules/nixos/networking.nix` for the shared NetworkManager baseline:
+  wired and wireless managed by NetworkManager, Wi-Fi backed by iwd,
+  auto-connect enabled, IPv6 allowed in iwd, and Wi-Fi power saving disabled for
+  workstation reliability.
 - Added `modules/nixos/packages.nix` for the minimal shared system package
   baseline. The larger old package list will be reviewed later in capability
   groups instead of copied wholesale.
