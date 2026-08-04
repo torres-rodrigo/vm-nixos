@@ -70,6 +70,8 @@ Current note:
 - Added `modules/nixos/packages.nix` for the minimal shared system package
   baseline. The larger old package list will be reviewed later in capability
   groups instead of copied wholesale.
+- Added `modules/nixos/storage.nix` for `/tmp` cleanup on boot, weekly TRIM,
+  and monthly Btrfs scrub of `/`.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
   identity plus temporary fallback-parity desktop settings.
 - User modeling is intentionally deferred until the host metadata, shell, group,
