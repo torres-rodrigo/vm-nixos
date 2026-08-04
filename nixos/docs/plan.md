@@ -75,6 +75,10 @@ Current note:
 - Added `modules/nixos/packages.nix` for the minimal shared system package
   baseline. The larger old package list will be reviewed later in capability
   groups instead of copied wholesale.
+- Added `modules/nixos/performance.nix` with the old config's
+  developer-focused sysctl tuning, irqbalance enabled, and systemd-oomd for
+  better behavior under memory pressure on systems without swap. Swap, zram, VM
+  tuning, and broader CPU power policy remain deferred.
 - Added `modules/nixos/storage.nix` for `/tmp` cleanup on boot, weekly TRIM,
   and monthly Btrfs scrub of `/`.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific

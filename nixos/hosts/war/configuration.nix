@@ -13,6 +13,7 @@
     ../../modules/nixos/nix-maintenance.nix
     ../../modules/nixos/networking.nix
     ../../modules/nixos/packages.nix
+    ../../modules/nixos/performance.nix
     ../../modules/nixos/storage.nix
   ];
 
