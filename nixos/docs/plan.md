@@ -35,7 +35,7 @@ Current note:
 
 ## Phase 2: Split Reusable System Modules
 
-Status: Not started
+Status: In progress
 
 - Move host-neutral settings out of the host config into explicit reusable
   modules.
@@ -46,6 +46,14 @@ Status: Not started
   lists.
 - Add comments only for intentional tradeoffs, such as security,
   compatibility, or performance choices.
+
+Current note:
+
+- Added `modules/nixos/base.nix` as the first reusable NixOS module.
+- `base.nix` owns shared locale, timezone, unfree package policy, and Nix flake
+  CLI settings.
+- `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
+  identity plus temporary fallback-parity desktop settings.
 
 ## Phase 3: Home Manager And Dotfile Policy
 
