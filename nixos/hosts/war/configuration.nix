@@ -7,6 +7,7 @@
     ../../modules/nixos/audio.nix
     ../../modules/nixos/base.nix
     ../../modules/nixos/boot.nix
+    ../../modules/nixos/dns.nix
     ../../modules/nixos/firewall.nix
     ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/nix-maintenance.nix

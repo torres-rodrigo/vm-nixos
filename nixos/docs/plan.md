@@ -62,6 +62,9 @@ Current note:
   zero-second timeout, five-generation boot limit, and disabled boot editor
   baseline. The zero-second timeout speeds boot but makes boot menu access less
   visible.
+- Added `modules/nixos/dns.nix` for NetworkManager/systemd-resolved
+  integration, fallback DNS resolvers, opportunistic DNS-over-TLS, and DNSSEC
+  allow-downgrade.
 - Added `modules/nixos/firewall.nix` for the default-deny inbound firewall
   baseline with no custom open ports.
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
