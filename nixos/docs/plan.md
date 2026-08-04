@@ -52,6 +52,8 @@ Current note:
 - Added `modules/nixos/base.nix` as the first reusable NixOS module.
 - `base.nix` owns shared locale, timezone, unfree package policy, and Nix flake
   CLI settings.
+- Added `modules/nixos/boot.nix` for the shared systemd-boot and latest-kernel
+  baseline.
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
   `war`.
 - Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.

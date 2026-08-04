@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nixos/base.nix
+    ../../modules/nixos/boot.nix
     ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/networking.nix
   ];
@@ -11,10 +12,6 @@
   systemd.tmpfiles.rules = [
     "Z /etc/nixos - r users - -"
   ];
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "war";
 
