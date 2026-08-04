@@ -63,6 +63,9 @@ Current note:
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
   `war`.
 - Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.
+- Added `modules/nixos/packages.nix` for the minimal shared system package
+  baseline. The larger old package list will be reviewed later in capability
+  groups instead of copied wholesale.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
   identity plus temporary fallback-parity desktop settings.
 

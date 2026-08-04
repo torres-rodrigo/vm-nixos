@@ -8,6 +8,7 @@
     ../../modules/nixos/boot.nix
     ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/networking.nix
+    ../../modules/nixos/packages.nix
   ];
 
   systemd.tmpfiles.rules = [
@@ -43,14 +44,6 @@
 
   programs.firefox.enable = true;
   programs.ssh.startAgent = true;
-
-  environment.systemPackages = with pkgs; [
-    git
-    lazygit
-    neovim
-    openssh
-    wget
-  ];
 
   system.stateVersion = "26.05";
 }
