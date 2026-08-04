@@ -106,8 +106,13 @@ Current note:
 
 - `war` imports `modules/nixos/hardware-intel.nix` because its generated
   hardware config loads `kvm-intel`.
-- GPU policy remains pending until the active target graphics hardware is
-  inspected.
+- Added inactive `modules/nixos/graphics-nvidia.nix` for the real `war`
+  desktop's NVIDIA GeForce RTX 4060 Ti: proprietary NVIDIA driver selection,
+  hardware graphics, 32-bit graphics support, NVIDIA DRM modesetting, the open
+  NVIDIA kernel module, and `nvidia-settings`.
+- `graphics-nvidia.nix` is intentionally not imported into `war` yet because
+  the current VM test path likely uses virtual graphics and may not have NVIDIA
+  GPU passthrough.
 
 ## Phase 3: Home Manager And Dotfile Policy
 
