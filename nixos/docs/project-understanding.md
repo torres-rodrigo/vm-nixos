@@ -23,7 +23,8 @@ The live fallback in `/home/r/nixos/vm-nixos/configuration.nix` is a direct
 NixOS configuration generated from the standard template and extended for a
 usable VM desktop:
 
-- Hostname is `nixos`.
+- Hostname is `nixos` in the preserved fallback; the staged active host is
+  `war`.
 - `system.stateVersion` is `26.05`.
 - Boot uses systemd-boot and latest kernel packages.
 - Networking uses NetworkManager.
@@ -43,7 +44,9 @@ The staged target in `/home/r/nixos/vm-nixos/nixos` should become the new
 source of truth:
 
 - Flake-based entry point for evaluation and rebuilds.
-- One initial VM host target for user `r` on `x86_64-linux`.
+- One initial VM host target, `war`, for user `r` on `x86_64-linux`.
+- Planned future host directories are `death` for the server, `conquest` for
+  the laptop, and `wrath` for the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable
   modules.
 - Home Manager integrated through the NixOS module system.
@@ -101,7 +104,7 @@ When a Nix-capable environment is available, validate the staged project from
 ```console
 nix flake show --no-write-lock-file
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#nixos
+sudo nixos-rebuild build --flake .#war
 ```
 
 Run activation commands only after a successful build and explicit approval.

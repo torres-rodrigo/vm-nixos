@@ -11,19 +11,27 @@ requested.
 
 ## Phase 1: Minimal Buildable VM
 
-Status: Not started
+Status: In progress
 
 - Expand `flake.nix` into a usable flake that exposes
-  `nixosConfigurations.nixos`.
-- Add a host directory for `nixos` with a host configuration and generated
+  `nixosConfigurations.war`.
+- Add a host directory for `war` with a host configuration and generated
   hardware file copied or adapted from the current VM fallback.
-- Preserve the current essentials: user `r`, hostname `nixos`,
+- Preserve the current essentials: user `r`, hostname `war`,
   `system.stateVersion = "26.05"`, systemd-boot, NetworkManager,
   `America/Montevideo`, `en_US.UTF-8`, PipeWire, OpenSSH client, Git, Neovim,
   wget, lazygit, and Firefox if browser parity is needed for the first build.
 - Enable Nix flakes and `nix-command`.
 - Validate evaluation and build on a Nix-capable NixOS environment before any
   activation.
+
+Current note:
+
+- The staged flake now exposes `nixosConfigurations.war` and imports
+  `hosts/war/configuration.nix`.
+- The active staged host config sets `networking.hostName = "war"`.
+- Full Nix validation is still pending because this environment cannot create
+  or access `/nix/store`.
 
 ## Phase 2: Split Reusable System Modules
 
@@ -88,6 +96,8 @@ Status: Not started
   hardware-specific udev rules only when the target machine requires them.
 - Add package overlays, custom packages, or helper libraries only when there is
   real duplication or a concrete local package to expose.
+- Keep `death`, `conquest`, and `wrath` as planned future hosts until their
+  hardware and role-specific requirements are ready.
 
 ## Validation And Promotion
 

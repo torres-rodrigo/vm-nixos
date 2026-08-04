@@ -3,7 +3,7 @@
 ## Target
 
 Build a replacement NixOS configuration under `/home/r/nixos/vm-nixos/nixos`
-for the current x86_64 VM and user `r`.
+for the current x86_64 VM named `war` and user `r`.
 
 The first milestone is a minimal, buildable VM system that preserves the
 current fallback system's essentials: bootability, networking, locale, user
@@ -66,9 +66,11 @@ Avoid these patterns from the temp example:
 
 ## System Requirements
 
-- Initial host target: `nixos`.
+- Initial host target: `war`.
 - Initial user: `r`.
 - Initial system: `x86_64-linux`.
+- Planned future hosts: `death` for the server, `conquest` for the laptop, and
+  `wrath` for the media/gaming machine.
 - Time zone: `America/Montevideo`.
 - Locale: `en_US.UTF-8`, with Uruguay-specific locale settings where useful.
 - Networking: NetworkManager.
@@ -133,7 +135,7 @@ from `/home/r/nixos/vm-nixos/nixos` with:
 ```console
 nix flake show --no-write-lock-file
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#nixos
+sudo nixos-rebuild build --flake .#war
 ```
 
 Use static checks when available:
