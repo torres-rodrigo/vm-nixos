@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/nixos/app-policy.nix
     ../../modules/nixos/audio.nix
     ../../modules/nixos/base.nix
     ../../modules/nixos/boot.nix

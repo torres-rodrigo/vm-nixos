@@ -52,6 +52,8 @@ Current note:
 - Added `modules/nixos/base.nix` as the first reusable NixOS module.
 - `base.nix` owns shared locale, timezone, unfree package policy, and Nix flake
   CLI settings.
+- Added `modules/nixos/app-policy.nix` for the policy against Flatpak, Snap,
+  and AppImage runtime layers by default.
 - Added `modules/nixos/audio.nix` for the full low-latency PipeWire,
   PulseAudio compatibility, JACK, realtime limits, and audio support tool
   baseline. These settings improve audio responsiveness and JACK support, but
