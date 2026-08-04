@@ -1,0 +1,104 @@
+# Plan
+
+## Summary
+
+Grow `/home/r/nixos/vm-nixos/nixos` from a flake skeleton into the staged NixOS
+source of truth. The plan favors a minimal buildable VM first, then adds the
+Mango/Wayland workstation in small validated slices.
+
+Keep the root-level VM files as the live fallback until promotion is explicitly
+requested.
+
+## Phase 1: Minimal Buildable VM
+
+Status: Not started
+
+- Expand `flake.nix` into a usable flake that exposes
+  `nixosConfigurations.nixos`.
+- Add a host directory for `nixos` with a host configuration and generated
+  hardware file copied or adapted from the current VM fallback.
+- Preserve the current essentials: user `r`, hostname `nixos`,
+  `system.stateVersion = "26.05"`, systemd-boot, NetworkManager,
+  `America/Montevideo`, `en_US.UTF-8`, PipeWire, OpenSSH client, Git, Neovim,
+  wget, lazygit, and Firefox if browser parity is needed for the first build.
+- Enable Nix flakes and `nix-command`.
+- Validate evaluation and build on a Nix-capable NixOS environment before any
+  activation.
+
+## Phase 2: Split Reusable System Modules
+
+Status: Not started
+
+- Move host-neutral settings out of the host config into explicit reusable
+  modules.
+- Start with focused modules for base system settings, boot policy,
+  networking, firewall, audio, users, packages, and Nix maintenance.
+- Keep host-specific hardware, hostname, and VM-only facts in the host layer.
+- Keep packages system-wide by default and avoid large unexplained package
+  lists.
+- Add comments only for intentional tradeoffs, such as security,
+  compatibility, or performance choices.
+
+## Phase 3: Home Manager And Dotfile Policy
+
+Status: Not started
+
+- Add Home Manager as a flake input and integrate it through the NixOS module
+  system.
+- Add a user profile for `r`.
+- Define Home Manager base settings for XDG cleanliness.
+- Add a file-management module that supports store-managed dotfiles by default
+  and opt-in live links for high-churn configs.
+- Migrate stable configuration only after reviewing each old dotfile
+  individually.
+
+## Phase 4: Wayland And Mango Desktop
+
+Status: Not started
+
+- Add the reusable Wayland baseline: graphics, XWayland, portals, XDG desktop
+  integration, toolkit environment variables, and support tools.
+- Add greetd as the minimal login manager.
+- Add Mango through the NixOS `mangowc` support from nixpkgs.
+- Link or manage the Mango config only after reviewing the old config and
+  confirming required helper packages.
+- Add clipboard, screenshot, bar, launcher, notification, wallpaper, media key,
+  and monitor utilities as a coherent desktop slice.
+
+## Phase 5: User Applications And Ergonomics
+
+Status: Not started
+
+- Migrate zsh, Starship, WezTerm, lazygit, and Neovim incrementally.
+- Add browser configuration after deciding the browser target and which
+  settings belong in Nix versus browser-managed profile state.
+- Add PDF, image, password, development-language, project-search, process
+  management, and skim helper workflows as separate feature slices.
+- Prefer small reviewed package additions over copying old package lists.
+- Keep experimental configs live-editable until they stabilize.
+
+## Phase 6: Deferred Workstation Features
+
+Status: Not started
+
+- Add secrets with sops-nix only when a real secret consumer exists.
+- Add Disko, LUKS, installer scripts, and local ISO or `nixos-anywhere`
+  workflows only after the staged running system is stable.
+- Add gaming, Docker, VR, custom audio routing, graphics vendor tuning, and
+  hardware-specific udev rules only when the target machine requires them.
+- Add package overlays, custom packages, or helper libraries only when there is
+  real duplication or a concrete local package to expose.
+
+## Validation And Promotion
+
+Status: Not started
+
+- For each coherent slice, run available static checks and Nix evaluation.
+- Build before temporary activation.
+- Use `nixos-rebuild test` only after a successful build and explicit user
+  approval.
+- Use `nixos-rebuild switch`, reboot, bootloader changes, and promotion only
+  after separate explicit approval.
+- The staged project is promotion-ready only when it evaluates, builds,
+  temporarily activates, persistently activates, survives reboot, rebuilds from
+  its source, and no active path depends on old reference directories.
