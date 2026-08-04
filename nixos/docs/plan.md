@@ -52,6 +52,7 @@ Current note:
 - Added `modules/nixos/base.nix` as the first reusable NixOS module.
 - `base.nix` owns shared locale, timezone, unfree package policy, and Nix flake
   CLI settings.
+- Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
   identity plus temporary fallback-parity desktop settings.
 

@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nixos/base.nix
+    ../../modules/nixos/networking.nix
   ];
 
   systemd.tmpfiles.rules = [
@@ -15,7 +16,6 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   networking.hostName = "war";
-  networking.networkmanager.enable = true;
 
   services.xserver = {
     enable = true;
