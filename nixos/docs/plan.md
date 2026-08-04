@@ -60,6 +60,8 @@ Current note:
   zero-second timeout, five-generation boot limit, and disabled boot editor
   baseline. The zero-second timeout speeds boot but makes boot menu access less
   visible.
+- Added `modules/nixos/firewall.nix` for the default-deny inbound firewall
+  baseline with no custom open ports.
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
   `war`.
 - Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.
@@ -68,6 +70,8 @@ Current note:
   groups instead of copied wholesale.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
   identity plus temporary fallback-parity desktop settings.
+- User modeling is intentionally deferred until the host metadata, shell, group,
+  package ownership, and Home Manager approach are clearer.
 
 ## Phase 2A: CPU And GPU Baseline
 
