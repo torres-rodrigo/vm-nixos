@@ -52,9 +52,31 @@ Current note:
 - Added `modules/nixos/base.nix` as the first reusable NixOS module.
 - `base.nix` owns shared locale, timezone, unfree package policy, and Nix flake
   CLI settings.
+- Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
+  `war`.
 - Added `modules/nixos/networking.nix` for the shared NetworkManager baseline.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
   identity plus temporary fallback-parity desktop settings.
+
+## Phase 2A: CPU And GPU Baseline
+
+Status: In progress
+
+- Prioritize CPU and GPU support earlier than desktop polish because missing
+  hardware support caused gaps in the previous configuration.
+- CPU baseline starts with vendor microcode. Add performance, scheduler, power,
+  thermal, and virtualization tuning only when the target machine needs it.
+- GPU baseline should cover `hardware.graphics`, Mesa, Vulkan, VA-API/video
+  acceleration, and 32-bit graphics where justified.
+- Do not guess vendor-specific GPU policy. Inspect the target hardware before
+  adding Intel, AMD, NVIDIA, hybrid, passthrough, or VM graphics settings.
+
+Current note:
+
+- `war` imports `modules/nixos/hardware-intel.nix` because its generated
+  hardware config loads `kvm-intel`.
+- GPU policy remains pending until the active target graphics hardware is
+  inspected.
 
 ## Phase 3: Home Manager And Dotfile Policy
 

@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nixos/base.nix
+    ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/networking.nix
   ];
 
