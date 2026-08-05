@@ -129,11 +129,14 @@ Current note:
 Status: Not started
 
 - Add Home Manager as a flake input and integrate it through the NixOS module
-  system.
+  system so `nixos-rebuild` activates system and user configuration together.
 - Add a user profile for `r`.
 - Define Home Manager base settings for XDG cleanliness.
-- Add a file-management module that supports store-managed dotfiles by default
-  and opt-in live links for high-churn configs.
+- Add a file-management module that supports store-managed config by default
+  and explicit opt-in live links from `dotfiles/` for high-churn configs.
+- Document the live dotfile lifecycle: Home Manager owns the symlink, the repo
+  owns the `dotfiles/` source, rebuilds are needed for link declaration changes,
+  and stable configs should be promoted to store-managed Home Manager.
 - Migrate stable configuration only after reviewing, adapting, and improving
   each old dotfile individually.
 

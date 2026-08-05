@@ -40,8 +40,13 @@ architecture, and improved where the old design was weak.
 - Prefer NixOS modules for system services and policy, and Home Manager for
   genuinely user-scoped configuration. Avoid duplicating ownership of the same
   setting across both layers.
-- Prefer store-managed configuration. Use out-of-store, live-editable links only
-  when the user deliberately chooses that workflow for a specific application.
+- Home Manager, if enabled, must be integrated through the NixOS module system
+  so `nixos-rebuild` activates system and user configuration together; do not
+  require a separate `home-manager switch` workflow.
+- Prefer store-managed configuration. Reserve `dotfiles/` for explicitly
+  selected live-editable config sources linked with Home Manager
+  `mkOutOfStoreSymlink`; never put secrets, generated state, caches, or
+  unpredictably app-rewritten files there.
 - Keep packages close to the capability that needs them; maintain a small shared
   system package baseline rather than an unexplained package dump.
 - Add abstractions only after a repeated need is visible. Clear, explicit Nix is

@@ -47,11 +47,19 @@ The active target in `/home/r/nixos/vm-nixos` is now the source of truth:
   the laptop, and `wrath` for the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable
   modules.
-- Home Manager integrated through the NixOS module system.
+- Home Manager integrated through the NixOS module system if/when it is
+  adopted, with no separate `home-manager switch` workflow.
 - Mango/Wayland workstation baseline, not a full desktop environment, once the
   minimal flake is buildable.
-- Store-managed config by default, with live-editable dotfile links only for
-  explicitly chosen high-churn files.
+- Store-managed config by default. The reserved `dotfiles/` directory is for
+  explicitly chosen live-editable config sources linked into `$HOME` by Home
+  Manager while iterating.
+
+For live dotfiles, Home Manager owns the symlink and the repository owns the
+source file. A rebuild is needed only when adding, removing, or changing the
+link declaration; edits to an already-linked file apply live as the application
+reloads or rereads it. Do not place secrets, generated state, caches, or files
+an application rewrites unpredictably under `dotfiles/`.
 
 The project guide fixes `system.stateVersion = "26.05"` unless the user
 explicitly chooses otherwise.

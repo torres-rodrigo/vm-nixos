@@ -97,13 +97,18 @@ Avoid these patterns from the temp example:
   desktop slice.
 - Do not keep Plasma/SDDM as the long-term target unless it is needed temporarily
   to preserve a fallback behavior during migration.
-- Integrate Home Manager through the NixOS module system.
-- Do not require separate `home-manager switch` runs.
+- Home Manager is optional until a dedicated implementation slice is approved.
+  If implemented, integrate it through the NixOS module system.
+- Do not require separate `home-manager switch` runs; `sudo nixos-rebuild switch
+  --flake .#war` must activate system and Home Manager changes together.
 - Home Manager should manage user settings, dotfiles, program configuration,
   and user services.
-- Store-managed dotfiles are the default.
-- Use out-of-store live links only for explicitly opted-in high-churn files,
+- Store-managed dotfiles are the default for stable configuration.
+- Use `dotfiles/` only for explicitly opted-in live-editable high-churn files,
   such as Mango, zsh, WezTerm, or lazygit while actively iterating.
+- Home Manager owns live symlinks; the repository owns files under `dotfiles/`.
+  A rebuild is needed to add, remove, or change a link declaration, but edits to
+  an already-linked file are read live by the application.
 - Keep the home directory XDG-clean and avoid creating user-facing top-level
   directories unless requested.
 
@@ -127,6 +132,8 @@ Avoid these patterns from the temp example:
   separate explicit request.
 - Do not commit plaintext passwords, tokens, keys, LUKS passphrases, password
   hashes, or local secret material.
+- Do not store secrets, generated application state, caches, or files rewritten
+  unpredictably by applications under `dotfiles/`.
 - Defer sops-nix scaffolding until a real secret consumer exists.
 - Defer Disko, encryption layout, installer execution, and promotion until the
   running workstation configuration is complete and stable.
