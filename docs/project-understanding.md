@@ -13,9 +13,9 @@ This workspace has two NixOS configuration projects:
   direct `configuration.nix` and `hardware-configuration.nix` files are kept as
   `.bak` fallbacks.
 
-The old project is reference material only. Do not copy it wholesale or treat
-its paths, host identity, hardware assumptions, or unfinished roadmap as
-authoritative for the new VM configuration.
+The old project is a base/example to learn from and improve upon. Do not copy
+it wholesale or treat its paths, host identity, hardware assumptions, or
+unfinished roadmap as authoritative for the new VM configuration.
 
 ## Previous Fallback
 
@@ -72,7 +72,8 @@ The old project already contains good reference implementations for:
   live-versus-store-managed configuration.
 
 Review and adapt individual modules or files only when they fit the new VM
-architecture. Prefer small, buildable imports over bulk migration.
+architecture. Improve old patterns when they were incomplete, too broad, or too
+host-specific. Prefer small, buildable imports over bulk migration.
 
 ## Explicitly Deferred
 

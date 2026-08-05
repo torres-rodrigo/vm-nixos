@@ -6,6 +6,9 @@ Grow `/home/r/nixos/vm-nixos` from a flake skeleton into the NixOS source of
 truth. The plan favors a minimal buildable VM first, then adds the
 Mango/Wayland workstation in small validated slices.
 
+Use `/home/r/nixos/nixos` as a base/example to review, adapt, and improve upon;
+do not copy it wholesale.
+
 The previous root-level `configuration.nix` and `hardware-configuration.nix`
 were preserved as `.bak` files when the flake layout was promoted.
 
@@ -131,8 +134,8 @@ Status: Not started
 - Define Home Manager base settings for XDG cleanliness.
 - Add a file-management module that supports store-managed dotfiles by default
   and opt-in live links for high-churn configs.
-- Migrate stable configuration only after reviewing each old dotfile
-  individually.
+- Migrate stable configuration only after reviewing, adapting, and improving
+  each old dotfile individually.
 
 ## Phase 4: Wayland And Mango Desktop
 
@@ -142,8 +145,8 @@ Status: In progress
   integration, toolkit environment variables, and support tools.
 - Add greetd as the minimal login manager.
 - Add Mango through the NixOS `mangowc` support from nixpkgs.
-- Link or manage the Mango config only after reviewing the old config and
-  confirming required helper packages.
+- Link or manage the Mango config only after reviewing and improving the old
+  config and confirming required helper packages.
 - Add clipboard, screenshot, bar, launcher, notification, wallpaper, media key,
   and monitor utilities as a coherent desktop slice.
 

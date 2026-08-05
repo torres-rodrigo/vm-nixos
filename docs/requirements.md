@@ -17,7 +17,8 @@ root.
 
 ## Source Lessons
 
-The old `/home/r/nixos/nixos` project has the stronger long-term structure:
+The old `/home/r/nixos/nixos` project is a base/example to review, adapt, and
+improve upon. It has the stronger long-term structure:
 
 - Small flake entrypoint with output logic split into focused files.
 - Explicit host records and explicit module imports.
@@ -27,6 +28,10 @@ The old `/home/r/nixos/nixos` project has the stronger long-term structure:
 - A useful live-versus-store-managed dotfile workflow for high-churn configs.
 - Good supporting docs for validation, install planning, config workflow, and
   staged roadmap tracking.
+
+Do not copy the old configuration wholesale. Reused ideas must be intentionally
+adapted to the new `vm-nixos` architecture and improved where the old
+configuration was incomplete, too broad, or too host-specific.
 
 The `/home/r/nixos/nixos/temp/docs/nixos` example is useful mainly as feature
 inventory and a reminder to keep host overlays ergonomic:
@@ -125,7 +130,9 @@ Avoid these patterns from the temp example:
 - Defer sops-nix scaffolding until a real secret consumer exists.
 - Defer Disko, encryption layout, installer execution, and promotion until the
   running workstation configuration is complete and stable.
-- Treat the old project and temp example as read-only references.
+- Treat the old project and temp example as read-only references. The old
+  configuration is a base/example to improve upon, not a source tree to copy
+  directly.
 
 ## Validation Requirements
 

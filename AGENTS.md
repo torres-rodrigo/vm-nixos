@@ -6,9 +6,10 @@ Build the replacement NixOS configuration here. The target is a maintainable,
 flake-based Mango/Wayland workstation for user `r`, initially validated on the
 current x86_64 NixOS VM.
 
-The previous `.nixos/` project expresses useful preferences, but this is a
-selective rebuild rather than a continuation. Every reused module, asset, or
-dotfile must be reviewed against current NixOS options and the staged design.
+The old `/home/r/nixos/nixos` configuration is a base/example to learn from and
+improve upon, not something to copy wholesale. Every reused module, asset, or
+dotfile must be reviewed against current NixOS options, adapted to this
+architecture, and improved where the old design was weak.
 
 ## Fixed Decisions
 
