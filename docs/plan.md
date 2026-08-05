@@ -201,6 +201,9 @@ Current note:
   syntax highlighting to the end of `.zshrc`, live-linked the fzf defaults file,
   and expanded zsh git aliases so they no longer depend on unmanaged global git
   alias definitions.
+- Reduced `.zshenv` to early zsh bootstrap only. Home Manager now owns user
+  session variables, PATH additions, and creation of the declared tool/cache
+  directories and zsh history file.
 
 ## Phase 6: Deferred Workstation Features
 
