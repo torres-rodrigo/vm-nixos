@@ -1,4 +1,5 @@
 # ── Completion ────────────────────────────────────────────────────────────────
+fpath=(/run/current-system/sw/share/zsh/site-functions $fpath)
 autoload -U compinit && compinit -d "${XDG_CACHE_HOME}/zsh/zcompdump"
 
 # ── Plugins ───────────────────────────────────────────────────────────────────
@@ -12,9 +13,6 @@ source_zsh_plugin() {
 source_zsh_plugin \
     /run/current-system/sw/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
     /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source_zsh_plugin \
-    /run/current-system/sw/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
-    /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
 # ── Fzf ───────────────────────────────────────────────────────────────────────
@@ -24,7 +22,7 @@ export FZF_ALT_C_COMMAND='fd --type directory --hidden --follow --exclude .git -
 export FZF_ALT_C_OPTS='--height 69% --preview "eza --tree --color=always --icons=always {}"'
 export FZF_CTRL_R_OPTS='--height 69% --bind ctrl-r:toggle-sort'
 export FZF_COMPLETION_TRIGGER='**'
-export FZF_COMPLETION_DIR_COMMANDS='cd pushd rmdir z'
+export FZF_COMPLETION_DIR_COMMANDS='cd pushd rmdir'
 export FZF_COMPLETION_OPTS='--height 69%'
 
 _fzf_compgen_path() {
@@ -110,7 +108,6 @@ eval "$(starship init zsh)"
 
 # ── Aliases ───────────────────────────────────────────────────────────────────
 alias v='nvim'
-alias z='cd'
 alias ld='cd -'
 alias lg='lazygit'
 alias ls='eza -lha --icons --group-directories-first'
@@ -161,17 +158,17 @@ alias gca='git commit --amend'                                   # git commit am
 alias guc='git reset HEAD~1 --soft'                              # git undo commit but keep changes
 alias guch='git reset HEAD~1 --hard'                             # git undo commit and discard changes
 alias gpu='git push'                                             # git push
-alias gst='git xstatus'                                          # git status
-alias gs='git xstatus -s'                                        # git status short
-alias gl='git xlog'                                              # git log opt -p shows diffs
-alias gb='git xbranch'                                           # git branch opt -d and -D for deleting
-alias gbr='git xbranch -r'                                       # git branch remote
+alias gst='git status -b'                                        # git status
+alias gs='git status -b -s'                                      # git status short
+alias gl='git log --all --graph --decorate'                      # git log opt -p shows diffs
+alias gb='git branch -v'                                         # git branch opt -d and -D for deleting
+alias gbr='git branch -v -r'                                     # git branch remote
 alias gsb='git switch'                                           # git switch branch
 alias gcb='git switch -c'                                        # git create branch
-alias gd='git xdiff'                                             # git diff
-alias gdp='git xdiff --diff-algorithm=patience'                  # git diff patience
-alias gdd='git xdelta'                                           # git delta diff patience
-alias gdds='git xdeltas'                                         # git delta diff side by side patience
+alias gd='git diff --patch-with-stat'                            # git diff
+alias gdp='git diff --patch-with-stat --diff-algorithm=patience' # git diff patience
+alias gdd='git -c core.pager=delta diff --diff-algorithm=patience' # git delta diff patience
+alias gdds='git -c core.pager=delta -c delta.side-by-side=true diff --diff-algorithm=patience' # git delta diff side by side patience
 alias gsl='git stash list'                                       # git stash list
 gsa() { git stash push -u -m ${*:-WIP $(dat)}; }                 # git stash all message ''
 gss() { git stash push --staged -m ${*:-WIP $(dat)}; }           # git stash staged message ''
@@ -180,7 +177,7 @@ gsd() { git stash drop "stash@{${1:-0}}"; }                      # git stash dro
 alias gr='git restore'                                           # git restore
 alias grr='git reset --hard @{u}'                                # git reset to remote
 alias grl='git reset --hard HEAD'                                # git reset local
-alias gbl='git xdblame'                                          # git blame -L <number> or -L <number>,<number>
+alias gbl="git -c core.pager='delta --color-only' blame -w -C -C -C" # git blame -L <number> or -L <number>,<number>
 alias grv='git revert -n'                                        # git revert and stage <commit hashes>
 alias grvc='git revert'                                          # git revert and commit <commit hashes>
 alias gcl='git clone'                                            # git clone
@@ -257,4 +254,9 @@ vz() {
 
     [[ -n "$sel" ]] && v "${sel[@]}"
 }
+
+# zsh-syntax-highlighting should be loaded after widgets, keybindings, and prompt setup.
+source_zsh_plugin \
+    /run/current-system/sw/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+    /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

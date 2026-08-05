@@ -8,6 +8,9 @@ in
   home.file.".config/lazygit/config.yml".source =
     liveConfig "lazygit/config.yml";
 
+  home.file.".config/fzf/fzf".source =
+    liveConfig "fzf/fzf";
+
   home.file.".zshenv".source =
     liveConfig "zsh/.zshenv";
 

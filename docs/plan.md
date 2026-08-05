@@ -197,6 +197,10 @@ Current note:
   live-linked `dotfiles/zsh/.zshenv` and `dotfiles/zsh/.zshrc` through Home
   Manager. The files started from the old config and were kept live-editable,
   with only the minimal startup-path fixes needed for this NixOS layout.
+- Wired the zsh completions package into `fpath` before `compinit`, moved
+  syntax highlighting to the end of `.zshrc`, live-linked the fzf defaults file,
+  and expanded zsh git aliases so they no longer depend on unmanaged global git
+  alias definitions.
 
 ## Phase 6: Deferred Workstation Features
 

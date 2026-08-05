@@ -1,0 +1,99 @@
+# This file is loaded through:
+# export FZF_DEFAULT_OPTS_FILE="$XDG_CONFIG_HOME/fzf/fzf"
+
+# General UI
+--layout=reverse
+--min-height=15
+--border=bold
+--ansi
+--info=inline-right
+--prompt=" 󰶻 "
+--pointer=" "
+--marker="▐"
+--scrollbar="▐"
+--highlight-line
+--cycle
+--color="spinner:226,pointer:71,marker:71,fg+:15,bg+:236"
+
+# Useful UI alternatives:
+# --layout=reverse-list
+# --height=69%
+# --border=rounded
+# --border=double
+# --no-scrollbar
+# --info=inline
+# --info=inline-right
+# --info=hidden
+# --highlight-line
+# --cycle
+# --no-mouse
+
+# Search behavior
+--scheme=path
+--smart-case
+--tiebreak=pathname,begin,end
+
+# Search alternatives:
+# --ignore-case
+# --no-ignore-case
+# --exact
+# --literal
+# --nth=1,2
+# --with-nth=1,2
+# --delimiter=":"
+# --no-sort
+# --tac
+
+# Interaction
+--bind="ctrl-a:toggle-all"
+
+# Useful bind examples:
+# --bind="f1:execute(less -f {})"
+# --bind="ctrl-y:execute-silent(printf '%s' {} | wl-copy)+abort"
+# --bind="ctrl-o:toggle-preview"
+# --bind="ctrl-r:toggle-sort"
+# --bind="ctrl-g:accept"
+# --bind="shift-up:preview-up"
+# --bind="shift-down:preview-down"
+# --bind="change:reload:rg --color=always --line-number --no-heading {q} || true"
+# --bind="load:last"
+
+# Preview defaults
+# Actual preview commands and preview layout should usually stay in functions,
+# because files, dirs, git entries, packages, and rg results need different
+# preview behavior.
+# --preview-window="right:60%:wrap"
+
+# Preview-window alternatives:
+# --preview-window="right:50%"
+# --preview-window="left:50%:wrap"
+# --preview-window="down:40%:wrap"
+# --preview-window="up:30%:hidden"
+# --preview-window="+{2}-/2"
+
+# Output / scripting defaults to use carefully
+# output format.
+# --print-query
+# --print0
+# --read0
+# --select-1
+# --exit-0
+
+# Command examples, kept as comments
+#
+# File picker:
+# fd --hidden --follow --exclude .git --no-ignore | fzf
+#
+# Ripgrep interactive search:
+# fzf --ansi --disabled --bind 'change:reload:rg --color=always --line-number --no-heading {q} || true'
+#
+# Ripgrep picker with preview:
+# rg --line-number --color=always '' |
+#   fzf --delimiter ':' \
+#       --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+#       --preview-window 'right:60%:+{2}-/2'
+#
+# Git tracked files:
+# git ls-files | fzf --preview 'git diff --color=always -- {}'
+#
+
