@@ -8,6 +8,7 @@
     delta # Enhanced diff viewer
     eza # ls replacement
     fd # find replacement
+    fzf # Fuzzy finder
     git # Version control
     gnupg # OpenPGP encryption and signing tools
     jq # JSON processor and pretty-printer
@@ -16,7 +17,6 @@
     neovim # Text editor
     openssh # SSH client
     ripgrep # grep replacement
-    skim # Fuzzy finder
     starship # Shell prompt
     unzip # ZIP archive extraction
     wget # File downloader
