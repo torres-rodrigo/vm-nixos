@@ -62,6 +62,8 @@ Current note:
   zero-second timeout, five-generation boot limit, and disabled boot editor
   baseline. The zero-second timeout speeds boot but makes boot menu access less
   visible.
+- Added `modules/nixos/desktop-plasma.nix` for the temporary active VM desktop
+  fallback: X11, SDDM, Plasma 6, printing, keyboard layout, and Firefox.
 - Added `modules/nixos/dns.nix` for NetworkManager/systemd-resolved
   integration, fallback DNS resolvers, opportunistic DNS-over-TLS, and DNSSEC
   allow-downgrade.
@@ -87,8 +89,8 @@ Current note:
 - Added `modules/nixos/users.nix` for the local `r` user, mutable password
   management, sudo policy, and access groups for networking, audio, graphics,
   seat/session handling, and administration.
-- `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
-  identity plus temporary fallback-parity desktop settings.
+- `hosts/war/configuration.nix` keeps host-specific identity, tmpfiles policy,
+  SSH agent policy, and `system.stateVersion`.
 - Shell, package ownership, additional users, and Home Manager remain deferred.
 
 ## Phase 2A: CPU And GPU Baseline
