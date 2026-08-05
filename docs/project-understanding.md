@@ -9,22 +9,21 @@ This workspace has two NixOS configuration projects:
   Home Manager integration, Mango/Wayland config, application dotfiles, assets,
   installer scripts, Disko layout, and planning documents.
 - `/home/r/nixos/vm-nixos` is the new VM-oriented repository. Its root-level
-  `configuration.nix` and `hardware-configuration.nix` are the current live
-  fallback configuration. New staged implementation work belongs under
-  `/home/r/nixos/vm-nixos/nixos`.
+  flake is now the source of truth for the VM configuration. The previous
+  direct `configuration.nix` and `hardware-configuration.nix` files are kept as
+  `.bak` fallbacks.
 
 The old project is reference material only. Do not copy it wholesale or treat
 its paths, host identity, hardware assumptions, or unfinished roadmap as
 authoritative for the new VM configuration.
 
-## Current Live Fallback
+## Previous Fallback
 
-The live fallback in `/home/r/nixos/vm-nixos/configuration.nix` is a direct
-NixOS configuration generated from the standard template and extended for a
-usable VM desktop:
+The preserved fallback in `/home/r/nixos/vm-nixos/configuration.nix.bak` is a
+direct NixOS configuration generated from the standard template and extended
+for a usable VM desktop:
 
-- Hostname is `nixos` in the preserved fallback; the staged active host is
-  `war`.
+- Hostname is `nixos` in the preserved fallback; the active flake host is `war`.
 - `system.stateVersion` is `26.05`.
 - Boot uses systemd-boot and latest kernel packages.
 - Networking uses NetworkManager.
@@ -35,13 +34,12 @@ usable VM desktop:
 - User `r` is a normal wheel user in the `networkmanager` group.
 - Firefox, Neovim, wget, OpenSSH, Git, and lazygit are installed.
 
-Keep these root-level fallback files intact until the staged flake has been
-built, tested, activated, reboot-tested, and explicitly promoted.
+Keep these `.bak` files intact as rollback/reference material unless the user
+explicitly asks to remove or replace them.
 
-## Staged Target
+## Active Target
 
-The staged target in `/home/r/nixos/vm-nixos/nixos` should become the new
-source of truth:
+The active target in `/home/r/nixos/vm-nixos` is now the source of truth:
 
 - Flake-based entry point for evaluation and rebuilds.
 - One initial VM host target, `war`, for user `r` on `x86_64-linux`.
@@ -55,7 +53,7 @@ source of truth:
 - Store-managed config by default, with live-editable dotfile links only for
   explicitly chosen high-churn files.
 
-The staged guide fixes `system.stateVersion = "26.05"` unless the user
+The project guide fixes `system.stateVersion = "26.05"` unless the user
 explicitly chooses otherwise.
 
 ## Old Project Pieces Worth Reviewing
@@ -85,9 +83,8 @@ Do not implement these without a separate, specific request:
 - Installer execution or destructive install workflows.
 - `nixos-rebuild switch`, persistent activation, reboot, or bootloader changes.
 - Secrets scaffolding until there is a real secret consumer.
-- NVIDIA-specific graphics configuration until the VM or target hardware needs
-  it.
-- Promotion from staged `nixos/` into the repository root.
+- Importing NVIDIA-specific graphics configuration into `war` until testing on
+  real hardware or with GPU passthrough.
 
 ## Validation Notes
 
@@ -98,8 +95,8 @@ cannot create or access `/nix/store` here:
 error: creating directory "/nix/store": Permission denied
 ```
 
-When a Nix-capable environment is available, validate the staged project from
-`/home/r/nixos/vm-nixos/nixos` with:
+When a Nix-capable environment is available, validate the project from
+`/home/r/nixos/vm-nixos` with:
 
 ```console
 nix flake show --no-write-lock-file

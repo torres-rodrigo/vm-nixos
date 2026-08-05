@@ -2,12 +2,12 @@
 
 ## Summary
 
-Grow `/home/r/nixos/vm-nixos/nixos` from a flake skeleton into the staged NixOS
-source of truth. The plan favors a minimal buildable VM first, then adds the
+Grow `/home/r/nixos/vm-nixos` from a flake skeleton into the NixOS source of
+truth. The plan favors a minimal buildable VM first, then adds the
 Mango/Wayland workstation in small validated slices.
 
-Keep the root-level VM files as the live fallback until promotion is explicitly
-requested.
+The previous root-level `configuration.nix` and `hardware-configuration.nix`
+were preserved as `.bak` files when the flake layout was promoted.
 
 ## Phase 1: Minimal Buildable VM
 
@@ -27,9 +27,9 @@ Status: In progress
 
 Current note:
 
-- The staged flake now exposes `nixosConfigurations.war` and imports
+- The root flake now exposes `nixosConfigurations.war` and imports
   `hosts/war/configuration.nix`.
-- The active staged host config sets `networking.hostName = "war"`.
+- The active host config sets `networking.hostName = "war"`.
 - Full Nix validation is still pending because this environment cannot create
   or access `/nix/store`.
 

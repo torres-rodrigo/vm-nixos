@@ -2,8 +2,8 @@
 
 ## Target
 
-Build a replacement NixOS configuration under `/home/r/nixos/vm-nixos/nixos`
-for the current x86_64 VM named `war` and user `r`.
+Build the replacement NixOS configuration under `/home/r/nixos/vm-nixos` for
+the current x86_64 VM named `war` and user `r`.
 
 The first milestone is a minimal, buildable VM system that preserves the
 current fallback system's essentials: bootability, networking, locale, user
@@ -11,9 +11,9 @@ access, audio, Nix flake support, and basic tools. After that baseline is
 validated, grow it into a Mango/Wayland workstation in small, reviewable
 changes.
 
-The root-level `/home/r/nixos/vm-nixos/configuration.nix` and
-`hardware-configuration.nix` remain the live fallback until the staged flake is
-built, tested, activated, reboot-tested, and explicitly promoted.
+The previous root-level `configuration.nix` and `hardware-configuration.nix`
+were renamed to `.bak` files when the flake layout was promoted to the project
+root.
 
 ## Source Lessons
 
@@ -90,7 +90,7 @@ Avoid these patterns from the temp example:
   buildable staged host.
 - After the core builds, add Wayland, portals, greetd, and Mango as a coherent
   desktop slice.
-- Do not keep Plasma/SDDM as the staged target unless it is needed temporarily
+- Do not keep Plasma/SDDM as the long-term target unless it is needed temporarily
   to preserve a fallback behavior during migration.
 - Integrate Home Manager through the NixOS module system.
 - Do not require separate `home-manager switch` runs.
@@ -115,8 +115,8 @@ Avoid these patterns from the temp example:
 
 ## Safety Requirements
 
-- Do not edit the root fallback configuration unless the user explicitly asks
-  for a live-system change.
+- Do not edit the `.bak` fallback files unless the user explicitly asks for a
+  rollback or comparison change.
 - Do not run `nixos-rebuild switch`, persistent activation, reboot, installer
   commands, Disko, partitioning, formatting, or bootloader changes without a
   separate explicit request.
@@ -129,8 +129,8 @@ Avoid these patterns from the temp example:
 
 ## Validation Requirements
 
-When a Nix-capable environment is available, validate staged config changes
-from `/home/r/nixos/vm-nixos/nixos` with:
+When a Nix-capable environment is available, validate config changes from
+`/home/r/nixos/vm-nixos` with:
 
 ```console
 nix flake show --no-write-lock-file
