@@ -204,6 +204,9 @@ Current note:
 - Reduced `.zshenv` to early zsh bootstrap only. Home Manager now owns user
   session variables, PATH additions, and creation of the declared tool/cache
   directories and zsh history file.
+- Added store-managed Git configuration through Home Manager, including the
+  requested Git defaults, delta settings, `gh:` URL shortcut, and a managed
+  global ignore file.
 
 ## Phase 6: Deferred Workstation Features
 
