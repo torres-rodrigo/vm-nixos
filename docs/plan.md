@@ -147,6 +147,9 @@ Current note:
   `modules/nixos/home-manager.nix`, and `users/r/home.nix` defines the minimal
   home profile for user `r`. Dotfiles, live links, program modules, packages,
   and shell changes remain deferred.
+- Added `modules/home-manager/base.nix` and imported it from `users/r/home.nix`
+  to enable Home Manager's XDG base directory support for cache, config, data,
+  and state paths.
 
 ## Phase 4: Wayland And Mango Desktop
 

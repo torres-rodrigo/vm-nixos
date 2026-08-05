@@ -1,6 +1,10 @@
 { ... }:
 
 {
+  imports = [
+    ../../modules/home-manager/base.nix
+  ];
+
   home = {
     username = "r";
     homeDirectory = "/home/r";
