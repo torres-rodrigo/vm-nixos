@@ -154,6 +154,9 @@ Current note:
   Manager, `modules/home-manager/files.nix` defines the future `dotfiles/`
   live-link helper, and `dotfiles/README.md` documents the workflow. No live
   links or real dotfiles have been added yet.
+- Added the first real Home Manager configs: Starship is store-managed through
+  `modules/home-manager/starship.nix`, and Lazygit is live-linked from
+  `dotfiles/lazygit/config.yml`.
 
 ## Phase 4: Wayland And Mango Desktop
 
