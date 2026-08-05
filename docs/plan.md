@@ -150,6 +150,10 @@ Current note:
 - Added `modules/home-manager/base.nix` and imported it from `users/r/home.nix`
   to enable Home Manager's XDG base directory support for cache, config, data,
   and state paths.
+- Added the Home Manager file workflow scaffold: `repoPath` is passed to Home
+  Manager, `modules/home-manager/files.nix` defines the future `dotfiles/`
+  live-link helper, and `dotfiles/README.md` documents the workflow. No live
+  links or real dotfiles have been added yet.
 
 ## Phase 4: Wayland And Mango Desktop
 
