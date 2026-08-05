@@ -84,10 +84,12 @@ Current note:
   tuning, and broader CPU power policy remain deferred.
 - Added `modules/nixos/storage.nix` for `/tmp` cleanup on boot, weekly TRIM,
   and monthly Btrfs scrub of `/`.
+- Added `modules/nixos/users.nix` for the local `r` user, mutable password
+  management, sudo policy, and access groups for networking, audio, graphics,
+  seat/session handling, and administration.
 - `hosts/war/configuration.nix` imports `base.nix` and keeps host-specific
   identity plus temporary fallback-parity desktop settings.
-- User modeling is intentionally deferred until the host metadata, shell, group,
-  package ownership, and Home Manager approach are clearer.
+- Shell, package ownership, additional users, and Home Manager remain deferred.
 
 ## Phase 2A: CPU And GPU Baseline
 

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   imports = [
@@ -15,6 +15,7 @@
     ../../modules/nixos/packages.nix
     ../../modules/nixos/performance.nix
     ../../modules/nixos/storage.nix
+    ../../modules/nixos/users.nix
   ];
 
   systemd.tmpfiles.rules = [
@@ -34,19 +35,6 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
   services.printing.enable = true;
-
-  users.users.r = {
-    isNormalUser = true;
-    description = "r";
-    extraGroups = [
-      "audio"
-      "networkmanager"
-      "wheel"
-    ];
-    packages = with pkgs; [
-      kdePackages.kate
-    ];
-  };
 
   programs.firefox.enable = true;
   programs.ssh.startAgent = true;
