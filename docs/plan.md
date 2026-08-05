@@ -131,7 +131,7 @@ Status: Not started
 
 ## Phase 4: Wayland And Mango Desktop
 
-Status: Not started
+Status: In progress
 
 - Add the reusable Wayland baseline: graphics, XWayland, portals, XDG desktop
   integration, toolkit environment variables, and support tools.
@@ -141,6 +141,13 @@ Status: Not started
   confirming required helper packages.
 - Add clipboard, screenshot, bar, launcher, notification, wallpaper, media key,
   and monitor utilities as a coherent desktop slice.
+
+Current note:
+
+- Added inactive `modules/nixos/wayland.nix` for XWayland, seatd, XDG desktop
+  integration, portals, Wayland toolkit environment variables, and helper
+  packages. It is intentionally not imported into `war` yet so the current
+  SDDM/Plasma VM fallback remains unchanged.
 
 ## Phase 5: User Applications And Ergonomics
 
