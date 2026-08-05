@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   users.mutableUsers = true;
@@ -8,6 +8,7 @@
     uid = 1000;
     description = "r";
     home = "/home/r";
+    shell = pkgs.zsh;
     extraGroups = [
       "audio"
       "networkmanager"
@@ -16,6 +17,11 @@
       "video"
       "wheel"
     ];
+  };
+
+  programs.zsh = {
+    enable = true;
+    enableGlobalCompInit = false;
   };
 
   security.sudo = {

@@ -20,5 +20,8 @@
     starship # Shell prompt
     unzip # ZIP archive extraction
     wget # File downloader
+    zsh-autosuggestions # Fish-like autosuggestions for zsh
+    zsh-completions # Extra completion definitions for zsh
+    zsh-syntax-highlighting # Syntax highlighting for zsh
   ];
 }

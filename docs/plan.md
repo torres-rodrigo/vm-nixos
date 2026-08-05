@@ -180,7 +180,7 @@ Current note:
 
 ## Phase 5: User Applications And Ergonomics
 
-Status: Not started
+Status: In progress
 
 - Migrate zsh, Starship, WezTerm, lazygit, and Neovim incrementally.
 - Add browser configuration after deciding the browser target and which
@@ -189,6 +189,14 @@ Status: Not started
   management, and skim helper workflows as separate feature slices.
 - Prefer small reviewed package additions over copying old package lists.
 - Keep experimental configs live-editable until they stabilize.
+
+Current note:
+
+- Added zsh as user `r`'s login shell, enabled system zsh support, added the
+  zsh autosuggestions, completions, and syntax-highlighting packages, and
+  live-linked `dotfiles/zsh/.zshenv` and `dotfiles/zsh/.zshrc` through Home
+  Manager. The files started from the old config and were kept live-editable,
+  with only the minimal startup-path fixes needed for this NixOS layout.
 
 ## Phase 6: Deferred Workstation Features
 
