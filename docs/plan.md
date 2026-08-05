@@ -84,13 +84,16 @@ Current note:
   developer-focused sysctl tuning, irqbalance enabled, and systemd-oomd for
   better behavior under memory pressure on systems without swap. Swap, zram, VM
   tuning, and broader CPU power policy remain deferred.
+- Added `modules/nixos/ssh.nix` for SSH client agent startup. OpenSSH server,
+  key management, GnuPG agent integration, and Home Manager SSH config remain
+  deferred.
 - Added `modules/nixos/storage.nix` for `/tmp` cleanup on boot, weekly TRIM,
   and monthly Btrfs scrub of `/`.
 - Added `modules/nixos/users.nix` for the local `r` user, mutable password
   management, sudo policy, and access groups for networking, audio, graphics,
   seat/session handling, and administration.
 - `hosts/war/configuration.nix` keeps host-specific identity, tmpfiles policy,
-  SSH agent policy, and `system.stateVersion`.
+  and `system.stateVersion`.
 - Shell, package ownership, additional users, and Home Manager remain deferred.
 
 ## Phase 2A: CPU And GPU Baseline

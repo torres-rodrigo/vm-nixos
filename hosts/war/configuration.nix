@@ -15,6 +15,7 @@
     ../../modules/nixos/networking.nix
     ../../modules/nixos/packages.nix
     ../../modules/nixos/performance.nix
+    ../../modules/nixos/ssh.nix
     ../../modules/nixos/storage.nix
     ../../modules/nixos/users.nix
   ];
@@ -24,8 +25,6 @@
   ];
 
   networking.hostName = "war";
-
-  programs.ssh.startAgent = true;
 
   system.stateVersion = "26.05";
 }
