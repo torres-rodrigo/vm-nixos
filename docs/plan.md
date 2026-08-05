@@ -126,7 +126,7 @@ Current note:
 
 ## Phase 3: Home Manager And Dotfile Policy
 
-Status: Not started
+Status: In progress
 
 - Add Home Manager as a flake input and integrate it through the NixOS module
   system so `nixos-rebuild` activates system and user configuration together.
@@ -139,6 +139,14 @@ Status: Not started
   and stable configs should be promoted to store-managed Home Manager.
 - Migrate stable configuration only after reviewing, adapting, and improving
   each old dotfile individually.
+
+Current note:
+
+- Added baseline Home Manager integration through the NixOS module system. The
+  root flake includes the Home Manager input, `war` imports
+  `modules/nixos/home-manager.nix`, and `users/r/home.nix` defines the minimal
+  home profile for user `r`. Dotfiles, live links, program modules, packages,
+  and shell changes remain deferred.
 
 ## Phase 4: Wayland And Mango Desktop
 
