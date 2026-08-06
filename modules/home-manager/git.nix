@@ -66,5 +66,8 @@
     };
   };
 
-  xdg.configFile."git/ignore".text = "";
+  xdg.configFile."git/ignore" = {
+    text = "";
+    force = true;
+  };
 }

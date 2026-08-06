@@ -210,6 +210,8 @@ Current note:
 - Added store-managed Git configuration through Home Manager, including the
   requested Git defaults, delta settings, `gh:` URL shortcut, and a managed
   global ignore file.
+- Explicitly managed Home Manager files now use `force = true` so migration
+  from unmanaged VM config replaces target files instead of failing activation.
 
 ## Phase 6: Deferred Workstation Features
 
