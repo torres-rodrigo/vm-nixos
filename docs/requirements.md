@@ -118,10 +118,6 @@ Avoid these patterns from the temp example:
 - Repository-owned assets may live under `assets/` when an explicit NixOS or
   Home Manager module packages or links them. Do not reference assets from the
   old project path.
-- Font feature toggles such as `liga`, `calt`, and `dlig` should be expressed
-  in the NixOS font module first. Applications that ignore fontconfig feature
-  preferences may need app-specific overrides when those applications are
-  configured.
 
 ## Application Policy
 
