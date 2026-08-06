@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
   customFonts = pkgs.stdenvNoCC.mkDerivation {
@@ -18,6 +18,59 @@ let
       runHook postInstall
     '';
   };
+
+  featureNames = [
+    "liga"
+    "calt"
+    "dlig"
+  ];
+
+  fontFeatureProfiles = {
+    iosevka = {
+      families = [
+        "Iosevka"
+      ];
+
+      features = {
+        liga = false;
+        calt = false;
+        dlig = false;
+      };
+    };
+
+    caskaydiaCove = {
+      families = [
+        "CaskaydiaCove Nerd Font"
+        "CaskaydiaCove NF"
+      ];
+
+      features = {
+        liga = true;
+        calt = true;
+        dlig = true;
+      };
+    };
+  };
+
+  fontFeatureValue = features: name:
+    "            <string>${name} ${if features.${name} then "on" else "off"}</string>";
+
+  fontFeatureMatch = profile: family: ''
+        <match target="font">
+          <test name="family" compare="eq">
+            <string>${family}</string>
+          </test>
+          <edit name="fontfeatures" mode="assign_replace">
+${lib.concatMapStringsSep "\n" (fontFeatureValue profile.features) featureNames}
+          </edit>
+        </match>
+  '';
+
+  fontFeatureConf =
+    lib.concatMapStringsSep "\n" (
+      profile:
+      lib.concatMapStringsSep "\n" (fontFeatureMatch profile) profile.families
+    ) (lib.attrValues fontFeatureProfiles);
 in
 {
   fonts = {
@@ -61,37 +114,7 @@ in
         ];
       };
 
-      localConf = ''
-        <match target="font">
-          <test name="family" compare="eq">
-            <string>Iosevka</string>
-          </test>
-          <edit name="fontfeatures" mode="append">
-            <string>liga off</string>
-          </edit>
-          <edit name="fontfeatures" mode="append">
-            <string>calt off</string>
-          </edit>
-          <edit name="fontfeatures" mode="append">
-            <string>dlig off</string>
-          </edit>
-        </match>
-
-        <match target="font">
-          <test name="family" compare="eq">
-            <string>CaskaydiaCove Nerd Font</string>
-          </test>
-          <edit name="fontfeatures" mode="append">
-            <string>liga on</string>
-          </edit>
-          <edit name="fontfeatures" mode="append">
-            <string>calt on</string>
-          </edit>
-          <edit name="fontfeatures" mode="append">
-            <string>dlig on</string>
-          </edit>
-        </match>
-      '';
+      localConf = fontFeatureConf;
     };
   };
 }
