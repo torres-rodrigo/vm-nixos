@@ -54,6 +54,9 @@ The active target in `/home/r/nixos/vm-nixos` is now the source of truth:
 - Store-managed config by default. The reserved `dotfiles/` directory is for
   explicitly chosen live-editable config sources linked into `$HOME` by Home
   Manager while iterating.
+- Project-owned static assets live under `assets/` and should be consumed only
+  through explicit NixOS or Home Manager modules. Current font assets live under
+  `assets/fonts/`.
 
 For live dotfiles, Home Manager owns the symlink and the repository owns the
 source file. A rebuild is needed only when adding, removing, or changing the

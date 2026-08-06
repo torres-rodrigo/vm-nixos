@@ -72,6 +72,9 @@ Current note:
   allow-downgrade.
 - Added `modules/nixos/firewall.nix` for the default-deny inbound firewall
   baseline with no custom open ports.
+- Added `modules/nixos/fonts.nix` to install Noto, Caskaydia Cove Nerd Font,
+  Iosevka with ligatures disabled through fontconfig, project-owned fonts
+  packaged from `assets/fonts/`, and fontconfig defaults.
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
   `war`.
 - Added `modules/nixos/nix-maintenance.nix` for weekly garbage collection,

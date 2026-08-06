@@ -10,6 +10,7 @@
     ../../modules/nixos/desktop-plasma.nix
     ../../modules/nixos/dns.nix
     ../../modules/nixos/firewall.nix
+    ../../modules/nixos/fonts.nix
     ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/home-manager.nix
     ../../modules/nixos/nix-maintenance.nix

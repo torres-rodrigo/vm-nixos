@@ -111,6 +111,9 @@ Avoid these patterns from the temp example:
   an already-linked file are read live by the application.
 - Keep the home directory XDG-clean and avoid creating user-facing top-level
   directories unless requested.
+- Repository-owned assets may live under `assets/` when an explicit NixOS or
+  Home Manager module packages or links them. Do not reference assets from the
+  old project path.
 
 ## Application Policy
 
