@@ -24,7 +24,7 @@ in
     packages = with pkgs; [
       customFonts
       nerd-fonts.caskaydia-cove
-      ioskeley-mono.normal-NL
+      iosevka
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
@@ -52,7 +52,7 @@ in
 
         monospace = [
           "CaskaydiaCove Nerd Font"
-          "Ioskeley Mono NL"
+          "Iosevka"
           "CaskaydiaCove NF"
         ];
 
