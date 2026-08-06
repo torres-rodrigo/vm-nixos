@@ -33,8 +33,8 @@ Current note:
 - The root flake now exposes `nixosConfigurations.war` and imports
   `hosts/war/configuration.nix`.
 - The active host config sets `networking.hostName = "war"`.
-- Full Nix validation is still pending because this environment cannot create
-  or access `/nix/store`.
+- The configuration has been promoted to the project root and validated through
+  VM rebuild/reboot testing.
 
 ## Phase 2: Split Reusable System Modules
 
@@ -100,7 +100,9 @@ Current note:
   seat/session handling, and administration.
 - `hosts/war/configuration.nix` keeps host-specific identity, tmpfiles policy,
   and `system.stateVersion`.
-- Shell, package ownership, additional users, and Home Manager remain deferred.
+- Shell, Home Manager, and package ownership have started moving into focused
+  modules. Additional users remain deferred until there is a concrete second
+  account to model.
 
 ## Phase 2A: CPU And GPU Baseline
 
@@ -147,19 +149,19 @@ Current note:
 
 - Added baseline Home Manager integration through the NixOS module system. The
   root flake includes the Home Manager input, `war` imports
-  `modules/nixos/home-manager.nix`, and `users/r/home.nix` defines the minimal
-  home profile for user `r`. Dotfiles, live links, program modules, packages,
-  and shell changes remain deferred.
+  `modules/nixos/home-manager.nix`, and `users/r/home.nix` defines the home
+  profile for user `r`.
 - Added `modules/home-manager/base.nix` and imported it from `users/r/home.nix`
   to enable Home Manager's XDG base directory support for cache, config, data,
-  and state paths.
-- Added the Home Manager file workflow scaffold: `repoPath` is passed to Home
-  Manager, `modules/home-manager/files.nix` defines the future `dotfiles/`
-  live-link helper, and `dotfiles/README.md` documents the workflow. No live
-  links or real dotfiles have been added yet.
-- Added the first real Home Manager configs: Starship is store-managed through
-  `modules/home-manager/starship.nix`, and Lazygit is live-linked from
-  `dotfiles/lazygit/config.yml`.
+  and state paths, user session variables, PATH additions, and declared
+  tool/cache directories.
+- Added the Home Manager file workflow: live-editable files are linked from
+  `/etc/nixos/dotfiles` through `modules/home-manager/files.nix`, while stable
+  configs stay store-managed in Home Manager modules.
+- Added real Home Manager configs: Starship and Git are store-managed, while
+  Lazygit, fzf, `.zshenv`, and `.zshrc` are live-linked from `dotfiles/`.
+- Explicitly managed Home Manager files use `force = true` so migration from
+  unmanaged VM config replaces target files instead of failing activation.
 
 ## Phase 4: Wayland And Mango Desktop
 
@@ -210,11 +212,9 @@ Current note:
 - Added store-managed Git configuration through Home Manager, including the
   requested Git defaults, delta settings, `gh:` URL shortcut, and a managed
   global ignore file.
-- Explicitly managed Home Manager files now use `force = true` so migration
-  from unmanaged VM config replaces target files instead of failing activation.
 - Moved the managed user `.zshenv` link into `~/.config/zsh`; NixOS zsh
-  initialization now sets `ZDOTDIR`, and `.zshenv` directly sources Home
-  Manager session variables from the NixOS per-user profile.
+  initialization now sets `ZDOTDIR`, and `.zshenv` directly exports the
+  Starship and fzf config paths needed during early shell startup.
 
 ## Phase 6: Deferred Workstation Features
 

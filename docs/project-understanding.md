@@ -8,10 +8,10 @@ This workspace has two NixOS configuration projects:
   repository with a flake-based workstation configuration, reusable modules,
   Home Manager integration, Mango/Wayland config, application dotfiles, assets,
   installer scripts, Disko layout, and planning documents.
-- `/home/r/nixos/vm-nixos` is the new VM-oriented repository. Its root-level
-  flake is now the source of truth for the VM configuration. The previous
-  direct `configuration.nix` and `hardware-configuration.nix` files are kept as
-  `.bak` fallbacks.
+- `/home/r/nixos/vm-nixos` is the new VM-oriented repository used for
+  development from this workspace. Its root-level flake is now the source of
+  truth for the VM configuration. The previous direct `configuration.nix` and
+  `hardware-configuration.nix` files are kept as `.bak` fallbacks.
 
 The old project is a base/example to learn from and improve upon. Do not copy
 it wholesale or treat its paths, host identity, hardware assumptions, or
@@ -39,7 +39,8 @@ explicitly asks to remove or replace them.
 
 ## Active Target
 
-The active target in `/home/r/nixos/vm-nixos` is now the source of truth:
+The active target in `/home/r/nixos/vm-nixos` is now the development source of
+truth:
 
 - Flake-based entry point for evaluation and rebuilds.
 - One initial VM host target, `war`, for user `r` on `x86_64-linux`.
@@ -47,8 +48,8 @@ The active target in `/home/r/nixos/vm-nixos` is now the source of truth:
   the laptop, and `wrath` for the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable
   modules.
-- Home Manager integrated through the NixOS module system if/when it is
-  adopted, with no separate `home-manager switch` workflow.
+- Home Manager integrated through the NixOS module system, with no separate
+  `home-manager switch` workflow.
 - Mango/Wayland workstation baseline, not a full desktop environment, once the
   minimal flake is buildable.
 - Store-managed config by default. The reserved `dotfiles/` directory is for
@@ -63,6 +64,15 @@ source file. A rebuild is needed only when adding, removing, or changing the
 link declaration; edits to an already-linked file apply live as the application
 reloads or rereads it. Do not place secrets, generated state, caches, or files
 an application rewrites unpredictably under `dotfiles/`.
+
+On the VM, the rebuild checkout is expected to live at `/etc/nixos`. Current
+live dotfile links point to `/etc/nixos/dotfiles`, so changes made from the
+Arch-side development checkout only affect the VM after they are pushed/pulled
+or otherwise copied into `/etc/nixos`.
+
+The zsh setup keeps both `.zshenv` and `.zshrc` under `~/.config/zsh`. NixOS
+sets `ZDOTDIR` through global zsh initialization, while `.zshenv` exports the
+early Starship and fzf config paths directly.
 
 The project guide fixes `system.stateVersion = "26.05"` unless the user
 explicitly chooses otherwise.
@@ -100,15 +110,7 @@ Do not implement these without a separate, specific request:
 
 ## Validation Notes
 
-Nix evaluation could not be completed in the current environment because Nix
-cannot create or access `/nix/store` here:
-
-```console
-error: creating directory "/nix/store": Permission denied
-```
-
-When a Nix-capable environment is available, validate the project from
-`/home/r/nixos/vm-nixos` with:
+Validate development changes from `/home/r/nixos/vm-nixos` when possible with:
 
 ```console
 nix flake show --no-write-lock-file
@@ -116,4 +118,6 @@ nix flake check --no-build
 sudo nixos-rebuild build --flake .#war
 ```
 
-Run activation commands only after a successful build and explicit approval.
+Run real build, test, switch, reboot, installer, and bootloader commands inside
+the VM or target NixOS system only. Activation commands should follow a
+successful build and explicit approval.

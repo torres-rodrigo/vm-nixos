@@ -97,8 +97,7 @@ Avoid these patterns from the temp example:
   desktop slice.
 - Do not keep Plasma/SDDM as the long-term target unless it is needed temporarily
   to preserve a fallback behavior during migration.
-- Home Manager is optional until a dedicated implementation slice is approved.
-  If implemented, integrate it through the NixOS module system.
+- Home Manager is integrated through the NixOS module system.
 - Do not require separate `home-manager switch` runs; `sudo nixos-rebuild switch
   --flake .#war` must activate system and Home Manager changes together.
 - Home Manager should manage user settings, dotfiles, program configuration,
@@ -109,6 +108,11 @@ Avoid these patterns from the temp example:
 - Home Manager owns live symlinks; the repository owns files under `dotfiles/`.
   A rebuild is needed to add, remove, or change a link declaration, but edits to
   an already-linked file are read live by the application.
+- On the VM, live dotfile links intentionally point at `/etc/nixos/dotfiles`.
+  Keep the checkout used for rebuilds at `/etc/nixos` or adjust the link helper
+  before changing that workflow.
+- Explicit Home Manager file targets may use `force = true` during migration so
+  unmanaged files in `$HOME` are replaced by the repository-owned version.
 - Keep the home directory XDG-clean and avoid creating user-facing top-level
   directories unless requested.
 - Repository-owned assets may live under `assets/` when an explicit NixOS or
@@ -163,11 +167,6 @@ statix check .
 deadnix .
 ```
 
-Current limitation: this environment cannot create or access `/nix/store`, so
-Nix evaluation may fail with:
-
-```console
-error: creating directory "/nix/store": Permission denied
-```
-
-Report skipped validation clearly instead of silently treating it as passed.
+On non-NixOS development machines, prefer static review and flake evaluation
+where available. Run real `nixos-rebuild build`, `test`, or `switch` commands
+inside the VM or target NixOS machine.
