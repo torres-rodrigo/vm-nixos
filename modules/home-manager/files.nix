@@ -1,8 +1,8 @@
-{ config, repoPath, ... }:
+{ config, ... }:
 
 let
   liveConfig = path:
-    config.lib.file.mkOutOfStoreSymlink "${repoPath}/dotfiles/${path}";
+    config.lib.file.mkOutOfStoreSymlink "/etc/nixos/dotfiles/${path}";
 in
 {
   home.file.".config/lazygit/config.yml" = {
