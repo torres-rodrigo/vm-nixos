@@ -15,7 +15,7 @@ in
     force = true;
   };
 
-  home.file.".zshenv" = {
+  home.file.".config/zsh/.zshenv" = {
     source = liveConfig "zsh/.zshenv";
     force = true;
   };

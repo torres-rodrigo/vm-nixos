@@ -22,6 +22,9 @@
   programs.zsh = {
     enable = true;
     enableGlobalCompInit = false;
+    shellInit = ''
+      export ZDOTDIR="''${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+    '';
   };
 
   security.sudo = {

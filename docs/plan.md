@@ -212,6 +212,9 @@ Current note:
   global ignore file.
 - Explicitly managed Home Manager files now use `force = true` so migration
   from unmanaged VM config replaces target files instead of failing activation.
+- Moved the managed user `.zshenv` link into `~/.config/zsh`; NixOS zsh
+  initialization now sets `ZDOTDIR`, and `.zshenv` directly sources Home
+  Manager session variables from the NixOS per-user profile.
 
 ## Phase 6: Deferred Workstation Features
 
