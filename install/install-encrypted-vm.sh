@@ -306,7 +306,7 @@ Dry run complete. The installer would run:
   generate explicit encrypted hardware config at "$repo_root/hosts/war/hardware-configuration.nix"
   rsync -a --delete "$repo_root/" /mnt/etc/nixos/
   build temporary install wrapper using repo input path:/mnt/etc/nixos
-  nixos-install --flake "$work_dir#war" --no-root-passwd
+  nixos-install --no-write-lock-file --flake "$work_dir#war" --no-root-passwd
 COMMANDS
 }
 
@@ -416,7 +416,7 @@ main() {
   chmod 755 /mnt
   write_hardware_config "$repo_root" "$resolved_disk"
   copy_repo_to_target "$repo_root"
-  nixos-install --flake "$work_dir#war" --no-root-passwd
+  nixos-install --no-write-lock-file --flake "$work_dir#war" --no-root-passwd
 
   info ""
   info "Install complete. Reboot, unlock LUKS with the shared password, then log in as user r."

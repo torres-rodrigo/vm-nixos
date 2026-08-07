@@ -32,6 +32,8 @@ the repo again inside the installed VM.
 The temporary install wrapper builds from `/mnt/etc/nixos` after the copy is
 complete. This keeps the Nix flake input stable while `nixos-install` runs and
 avoids stale `path:` input hashes from the live ISO checkout.
+The installer also passes `--no-write-lock-file` to `nixos-install` so the
+temporary wrapper flake is not modified while Nix is hashing and building it.
 
 ## Install Steps
 
