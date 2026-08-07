@@ -12,7 +12,8 @@ let
 
       fontDir="$out/share/fonts/truetype/custom"
       install -dm755 "$fontDir"
-      install -m0644 ${../../assets/fonts/DOOMNerdFont-SemiBold.ttf} "$fontDir/DOOMNerdFont-SemiBold.ttf"
+      install -m0644 ${../../assets/fonts/Autism.ttf} "$fontDir/Autism.ttf"
+      install -m0644 ${../../assets/fonts/Aspergers.ttf} "$fontDir/Aspergers.ttf"
       install -m0644 ${../../assets/fonts/Excalifont-Regular.ttf} "$fontDir/Excalifont-Regular.ttf"
 
       runHook postInstall
@@ -24,7 +25,6 @@ in
     packages = with pkgs; [
       customFonts
       nerd-fonts.caskaydia-cove
-      iosevka
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
@@ -52,7 +52,6 @@ in
 
         monospace = [
           "CaskaydiaCove Nerd Font"
-          "Iosevka"
           "CaskaydiaCove NF"
         ];
 
