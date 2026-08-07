@@ -8,6 +8,8 @@
 
   programs.xwayland.enable = true;
 
+  security.polkit.enable = true;
+
   services.seatd.enable = true;
 
   xdg = {
@@ -51,7 +53,12 @@
     systemPackages = with pkgs; [
       cliphist
       kdePackages.qtwayland
+      libnotify
+      mako
       qt5.qtwayland
+      rofi
+      soteria
+      swaybg
       wev
       wayland-utils
       wl-clip-persist

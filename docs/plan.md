@@ -190,6 +190,14 @@ Current note:
   remain imported as the fallback login path. A minimal VM-safe Mango config is
   live-linked from `dotfiles/mango/config.conf`; greetd autologin remains
   deferred until the Mango session is manually validated from SDDM.
+- After first VM testing, the UWSM Mango session returned to SDDM and the
+  plain Mango session showed a black screen. Added a second bring-up slice with
+  visible startup helpers: `swaybg`, `mako`, `soteria`, `rofi`, `libnotify`,
+  polkit, and an autostarted WezTerm. For the next test, select the UWSM Mango
+  session from SDDM and expect a solid background plus an open WezTerm window.
+  If it fails, collect `journalctl -b -u display-manager --no-pager`,
+  `journalctl --user -b --no-pager`, and
+  `journalctl -b | rg -i "mango|uwsm|sddm|wayland|seat|drm|wlroots"`.
 
 ## Phase 5: User Applications And Ergonomics
 
