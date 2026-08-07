@@ -47,6 +47,10 @@ architecture, and improved where the old design was weak.
   selected live-editable config sources linked with Home Manager
   `mkOutOfStoreSymlink`; never put secrets, generated state, caches, or
   unpredictably app-rewritten files there.
+- Project-owned assets must be copied under `assets/` and consumed through
+  explicit NixOS or Home Manager modules. Font originals can be developed
+  outside the repository, but active Nix font configuration must reference only
+  copied files under `assets/fonts/`.
 - Keep packages close to the capability that needs them; maintain a small shared
   system package baseline rather than an unexplained package dump.
 - Add abstractions only after a repeated need is visible. Clear, explicit Nix is

@@ -58,6 +58,11 @@ truth:
 - Project-owned static assets live under `assets/` and should be consumed only
   through explicit NixOS or Home Manager modules. Current font assets live under
   `assets/fonts/`.
+- Custom font originals may be worked on outside the repository, such as under
+  `~/fonts/originals`, but active Nix configuration must reference only copied
+  repository assets under `assets/fonts/`. The current custom font assets are
+  `Autism.ttf`, `Aspergers.ttf`, and `Excalifont-Regular.ttf`, packaged by
+  `modules/nixos/fonts.nix`.
 
 For live dotfiles, Home Manager owns the symlink and the repository owns the
 source file. A rebuild is needed only when adding, removing, or changing the

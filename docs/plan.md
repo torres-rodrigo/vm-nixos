@@ -73,8 +73,10 @@ Current note:
 - Added `modules/nixos/firewall.nix` for the default-deny inbound firewall
   baseline with no custom open ports.
 - Added `modules/nixos/fonts.nix` to install Noto, Caskaydia Cove Nerd Font,
-  Ioskeley Mono NL as the no-ligature Iosevka-derived monospace option,
   project-owned fonts packaged from `assets/fonts/`, and fontconfig defaults.
+  The active custom font assets are `Autism.ttf`, `Aspergers.ttf`, and
+  `Excalifont-Regular.ttf`. Iosevka and the custom DOOM Nerd Font asset were
+  removed from the active VM font configuration.
 - Added `modules/nixos/hardware-intel.nix` for Intel CPU microcode updates on
   `war`.
 - Added `modules/nixos/nix-maintenance.nix` for weekly garbage collection,
