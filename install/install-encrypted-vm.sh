@@ -274,7 +274,7 @@ INSTALL_DISKO
   description = "Temporary encrypted VM installer wrapper";
 
   inputs = {
-    repo.url = "path:${repo_root}";
+    repo.url = "path:/mnt/etc/nixos";
     nixpkgs.follows = "repo/nixpkgs";
     home-manager.follows = "repo/home-manager";
   };
@@ -305,6 +305,7 @@ Dry run complete. The installer would run:
   chmod 755 /mnt
   generate explicit encrypted hardware config at "$repo_root/hosts/war/hardware-configuration.nix"
   rsync -a --delete "$repo_root/" /mnt/etc/nixos/
+  build temporary install wrapper using repo input path:/mnt/etc/nixos
   nixos-install --flake "$work_dir#war" --no-root-passwd
 COMMANDS
 }
@@ -360,7 +361,7 @@ main() {
   local secret
   local secret_repeat
   local final_confirm
-  local work_dir
+  local work_dir=""
 
   disk=$(select_disk)
   resolved_disk=$(validate_disk "$disk")
@@ -388,7 +389,9 @@ main() {
   chmod 0700 "$work_dir"
 
   cleanup() {
-    rm -rf "$work_dir"
+    if [[ -n "$work_dir" ]]; then
+      rm -rf "$work_dir"
+    fi
     rm -f /run/war-disko-luks-password 2>/dev/null || true
   }
   trap cleanup EXIT
