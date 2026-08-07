@@ -28,10 +28,6 @@
         common.default = [
           "gtk"
         ];
-        mango.default = [
-          "wlr"
-          "gtk"
-        ];
       };
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
