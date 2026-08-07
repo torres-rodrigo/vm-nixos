@@ -29,7 +29,7 @@ for a usable VM desktop:
 - Networking uses NetworkManager.
 - Locale is `en_US.UTF-8` with Uruguay-specific extra locale settings.
 - Time zone is `America/Montevideo`.
-- Desktop is Plasma 6 through SDDM.
+- The preserved fallback desktop was Plasma 6 through SDDM.
 - Audio uses PipeWire with PulseAudio compatibility.
 - User `r` is a normal wheel user in the `networkmanager` group.
 - Firefox, Neovim, wget, OpenSSH, Git, and lazygit are installed.
@@ -50,11 +50,11 @@ truth:
   modules.
 - Home Manager integrated through the NixOS module system, with no separate
   `home-manager switch` workflow.
-- Mango/Wayland workstation baseline, not a full desktop environment, once the
-  minimal flake is buildable.
-- The first Mango transition keeps Plasma/SDDM available as a fallback. Mango
-  is added as a selectable UWSM-managed Wayland session first; replacing SDDM
-  with greetd autologin is deferred until the Mango session is validated.
+- Mango/Wayland workstation baseline, not a full desktop environment.
+- The active VM target now uses Plymouth for graphical boot/LUKS handoff and
+  greetd to launch Mango through UWSM for user `r`. Plasma and SDDM have been
+  removed from the active module graph; the `.bak` files remain as historical
+  fallback/reference material only.
 - Store-managed config by default. The reserved `dotfiles/` directory is for
   explicitly chosen live-editable config sources linked into `$HOME` by Home
   Manager while iterating.

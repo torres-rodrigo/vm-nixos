@@ -52,9 +52,9 @@
 
     systemPackages = with pkgs; [
       cliphist
-      kdePackages.qtwayland
       libnotify
       mako
+      qt6.qtwayland
       qt5.qtwayland
       rofi
       soteria

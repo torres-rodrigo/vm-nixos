@@ -65,8 +65,9 @@ Current note:
   zero-second timeout, five-generation boot limit, and disabled boot editor
   baseline. The zero-second timeout speeds boot but makes boot menu access less
   visible.
-- Added `modules/nixos/desktop-plasma.nix` for the temporary active VM desktop
-  fallback: X11, SDDM, Plasma 6, printing, keyboard layout, and Firefox.
+- The temporary Plasma/SDDM fallback has been retired from the active VM module
+  graph. Firefox and printing remain available through focused standalone
+  modules.
 - Added `modules/nixos/dns.nix` for NetworkManager/systemd-resolved
   integration, fallback DNS resolvers, opportunistic DNS-over-TLS, and DNSSEC
   allow-downgrade.
@@ -180,24 +181,33 @@ Status: In progress
 
 Current note:
 
-- Added inactive `modules/nixos/wayland.nix` for XWayland, seatd, XDG desktop
+- Added `modules/nixos/wayland.nix` for XWayland, seatd, XDG desktop
   integration, portals, Wayland toolkit environment variables, and helper
-  packages. It is intentionally not imported into `war` yet so the current
-  SDDM/Plasma VM fallback remains unchanged.
+  packages.
 - Started the safe Mango transition slice: `wayland.nix` is imported into
   `war`, `modules/nixos/mango.nix` enables Mango through current nixpkgs
-  `programs.mango` and registers a UWSM-managed Mango session, and Plasma/SDDM
-  remain imported as the fallback login path. A minimal VM-safe Mango config is
-  live-linked from `dotfiles/mango/config.conf`; greetd autologin remains
-  deferred until the Mango session is manually validated from SDDM.
-- After first VM testing, the UWSM Mango session returned to SDDM and the
-  plain Mango session showed a black screen. Added a second bring-up slice with
-  visible startup helpers: `swaybg`, `mako`, `soteria`, `rofi`, `libnotify`,
-  polkit, and an autostarted WezTerm. For the next test, select the UWSM Mango
-  session from SDDM and expect a solid background plus an open WezTerm window.
+  `programs.mango` and registers a UWSM-managed Mango session. A minimal
+  VM-safe Mango config is live-linked from `dotfiles/mango/config.conf`.
+- After SDDM-based testing exposed display-manager and graphics noise, the VM
+  pivoted to the intended login stack: Plymouth for graphical boot/LUKS handoff
+  and greetd autologin into Mango through UWSM. Added visible Mango startup
+  helpers: `swaybg`, `mako`, `soteria`, `rofi`, `libnotify`, polkit, and an
+  autostarted WezTerm. Plasma and SDDM are no longer active.
   If it fails, collect `journalctl -b -u display-manager --no-pager`,
   `journalctl --user -b --no-pager`, and
-  `journalctl -b | rg -i "mango|uwsm|sddm|wayland|seat|drm|wlroots"`.
+  `journalctl -b | rg -i "greetd|mango|uwsm|plymouth|wayland|seat|drm|wlroots"`.
+
+## Phase 4A: Greetd And Plymouth Boot Flow
+
+Status: In progress
+
+- Added `modules/nixos/greetd.nix` to start Mango through UWSM as user `r`
+  after boot, with `tuigreet` as the manual fallback session.
+- Added `modules/nixos/plymouth.nix` and repo-local Plymouth assets under
+  `assets/plymouth/` for the graphical boot and LUKS unlock path.
+- Removed the active `desktop-plasma.nix` module and moved Firefox and printing
+  into standalone modules so the Mango config keeps its browser binding without
+  retaining Plasma/SDDM.
 
 ## Phase 5: User Applications And Ergonomics
 

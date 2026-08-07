@@ -7,10 +7,11 @@
     ../../modules/nixos/audio.nix
     ../../modules/nixos/base.nix
     ../../modules/nixos/boot.nix
-    ../../modules/nixos/desktop-plasma.nix
+    ../../modules/nixos/browser.nix
     ../../modules/nixos/dns.nix
     ../../modules/nixos/firewall.nix
     ../../modules/nixos/fonts.nix
+    ../../modules/nixos/greetd.nix
     ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/home-manager.nix
     ../../modules/nixos/mango.nix
@@ -18,6 +19,8 @@
     ../../modules/nixos/networking.nix
     ../../modules/nixos/packages.nix
     ../../modules/nixos/performance.nix
+    ../../modules/nixos/plymouth.nix
+    ../../modules/nixos/printing.nix
     ../../modules/nixos/ssh.nix
     ../../modules/nixos/storage.nix
     ../../modules/nixos/users.nix
