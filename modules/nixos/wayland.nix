@@ -55,7 +55,7 @@
     systemPackages = with pkgs; [
       cliphist
       kdePackages.qtwayland
-      libsForQt5.qt5.qtwayland
+      qt5.qtwayland
       wev
       wayland-utils
       wl-clip-persist
