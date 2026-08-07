@@ -13,6 +13,7 @@
     ../../modules/nixos/fonts.nix
     ../../modules/nixos/hardware-intel.nix
     ../../modules/nixos/home-manager.nix
+    ../../modules/nixos/mango.nix
     ../../modules/nixos/nix-maintenance.nix
     ../../modules/nixos/networking.nix
     ../../modules/nixos/packages.nix
@@ -20,6 +21,7 @@
     ../../modules/nixos/ssh.nix
     ../../modules/nixos/storage.nix
     ../../modules/nixos/users.nix
+    ../../modules/nixos/wayland.nix
   ];
 
   systemd.tmpfiles.rules = [

@@ -1,6 +1,11 @@
 { pkgs, ... }:
 
 {
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
   programs.xwayland.enable = true;
 
   services.seatd.enable = true;
@@ -19,10 +24,15 @@
 
     portal = {
       enable = true;
-      config.common.default = [
-        "wlr"
-        "gtk"
-      ];
+      config = {
+        common.default = [
+          "gtk"
+        ];
+        mango.default = [
+          "wlr"
+          "gtk"
+        ];
+      };
       extraPortals = with pkgs; [
         xdg-desktop-portal-gtk
       ];
@@ -43,6 +53,7 @@
     };
 
     systemPackages = with pkgs; [
+      cliphist
       kdePackages.qtwayland
       libsForQt5.qt5.qtwayland
       wev

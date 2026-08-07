@@ -172,7 +172,7 @@ Status: In progress
 - Add the reusable Wayland baseline: graphics, XWayland, portals, XDG desktop
   integration, toolkit environment variables, and support tools.
 - Add greetd as the minimal login manager.
-- Add Mango through the NixOS `mangowc` support from nixpkgs.
+- Add Mango through the NixOS `programs.mango` support from nixpkgs.
 - Link or manage the Mango config only after reviewing and improving the old
   config and confirming required helper packages.
 - Add clipboard, screenshot, bar, launcher, notification, wallpaper, media key,
@@ -184,6 +184,12 @@ Current note:
   integration, portals, Wayland toolkit environment variables, and helper
   packages. It is intentionally not imported into `war` yet so the current
   SDDM/Plasma VM fallback remains unchanged.
+- Started the safe Mango transition slice: `wayland.nix` is imported into
+  `war`, `modules/nixos/mango.nix` enables Mango through current nixpkgs
+  `programs.mango` and registers a UWSM-managed Mango session, and Plasma/SDDM
+  remain imported as the fallback login path. A minimal VM-safe Mango config is
+  live-linked from `dotfiles/mango/config.conf`; greetd autologin remains
+  deferred until the Mango session is manually validated from SDDM.
 
 ## Phase 5: User Applications And Ergonomics
 

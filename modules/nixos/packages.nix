@@ -19,6 +19,7 @@
     ripgrep # grep replacement
     starship # Shell prompt
     unzip # ZIP archive extraction
+    wezterm # GPU-accelerated terminal emulator
     wget # File downloader
     zsh-autosuggestions # Fish-like autosuggestions for zsh
     zsh-completions # Extra completion definitions for zsh

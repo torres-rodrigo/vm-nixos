@@ -52,6 +52,9 @@ truth:
   `home-manager switch` workflow.
 - Mango/Wayland workstation baseline, not a full desktop environment, once the
   minimal flake is buildable.
+- The first Mango transition keeps Plasma/SDDM available as a fallback. Mango
+  is added as a selectable UWSM-managed Wayland session first; replacing SDDM
+  with greetd autologin is deferred until the Mango session is validated.
 - Store-managed config by default. The reserved `dotfiles/` directory is for
   explicitly chosen live-editable config sources linked into `$HOME` by Home
   Manager while iterating.

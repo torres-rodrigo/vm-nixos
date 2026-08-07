@@ -10,6 +10,11 @@ in
     force = true;
   };
 
+  home.file.".config/mango/config.conf" = {
+    source = liveConfig "mango/config.conf";
+    force = true;
+  };
+
   home.file.".config/fzf/fzf" = {
     source = liveConfig "fzf/fzf";
     force = true;
