@@ -38,11 +38,5 @@ in
       ];
     };
 
-    kernelParams = [
-      "quiet"
-      "splash"
-      "udev.log_level=3"
-      "rd.udev.log_level=3"
-    ];
   };
 }

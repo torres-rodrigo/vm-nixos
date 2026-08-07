@@ -2,7 +2,6 @@
   host,
   lib,
   pkgs,
-  username,
   ...
 }:
 
@@ -29,15 +28,9 @@ in
 {
   services.greetd = {
     enable = true;
-    restart = false;
     useTextGreeter = true;
 
     settings = {
-      initial_session = {
-        command = mangoCommand;
-        user = username;
-      };
-
       default_session = {
         command = tuigreetCommand;
         user = "greeter";

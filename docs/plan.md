@@ -208,6 +208,11 @@ Status: In progress
 - Removed the active `desktop-plasma.nix` module and moved Firefox and printing
   into standalone modules so the Mango config keeps its browser binding without
   retaining Plasma/SDDM.
+- After the first encrypted VM test hung behind Plymouth, the installer was
+  changed to write the encrypted hardware configuration explicitly instead of
+  relying on `nixos-generate-config` to infer LUKS and Btrfs subvolumes. greetd
+  now uses `tuigreet` first for validation; Mango autologin remains deferred
+  until encrypted boot and Mango startup are both proven.
 
 ## Phase 5: User Applications And Ergonomics
 

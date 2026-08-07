@@ -61,7 +61,7 @@ the repo again inside the installed VM.
 
 8. Confirm the destructive install by typing the exact selected disk path.
 
-9. Wait for Disko, hardware configuration generation, repo copy, and
+9. Wait for Disko, encrypted hardware configuration generation, repo copy, and
    `nixos-install` to complete.
 
 10. Reboot and remove the ISO.
@@ -113,5 +113,14 @@ git status
 sudo nixos-rebuild build --flake .#war
 ```
 
+The installer writes the encrypted hardware configuration explicitly after
+Disko finishes. Do not replace it with plain `nixos-generate-config` output:
+the file must contain `boot.initrd.luks.devices.cryptroot` and Btrfs subvolume
+mounts for `/`, `/home`, `/nix`, `/var`, and `/var/log`.
+
 The expected result is an unlocked `cryptroot` device with the Btrfs subvolumes
 mounted, a working user `r`, and a full Git checkout at `/etc/nixos`.
+
+For the current validation pass, greetd opens `tuigreet` first. Log in as user
+`r`; the configured command starts Mango through UWSM. Mango autologin can be
+restored after encrypted boot and the compositor path are both reliable.

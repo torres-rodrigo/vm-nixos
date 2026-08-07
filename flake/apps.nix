@@ -17,6 +17,7 @@ let
       nix
       nixos-install-tools
       rsync
+      systemd
       util-linux
     ];
 
