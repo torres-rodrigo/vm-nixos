@@ -218,6 +218,23 @@ Current note:
   live-linked `dotfiles/zsh/.zshenv` and `dotfiles/zsh/.zshrc` through Home
   Manager. The files started from the old config and were kept live-editable,
   with only the minimal startup-path fixes needed for this NixOS layout.
+
+## Phase 6: Encrypted VM Installer
+
+Status: In progress
+
+- Added the first encrypted local-ISO install workflow for `war`.
+- Added `install/disko-config.nix` for a UEFI, LUKS2, Btrfs subvolume layout.
+- Added a flake app, `install-encrypted-vm`, that lists available whole disks,
+  prompts for one shared LUKS/root/user `r` password, runs Disko, generates the
+  target hardware configuration, copies the complete Git checkout to
+  `/mnt/etc/nixos`, and installs `.#war` with temporary password hashes.
+- Added `docs/encrypted-vm-install.md` with the clone, dry-run, install,
+  reboot, and post-install Git workflow. The installed system keeps
+  `/etc/nixos/.git`, so it can continue pulling and rebuilding from
+  `/etc/nixos`.
+- This installer is destructive and should only be run from a NixOS ISO against
+  a disposable VM disk or intended target disk.
 - Wired the zsh completions package into `fpath` before `compinit`, moved
   syntax highlighting to the end of `.zshrc`, live-linked the fzf defaults file,
   and expanded zsh git aliases so they no longer depend on unmanaged global git

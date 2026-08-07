@@ -10,13 +10,18 @@
     };
   };
 
-  outputs = { home-manager, nixpkgs, ... }: {
-    nixosConfigurations.war = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        home-manager.nixosModules.home-manager
-        ./hosts/war/configuration.nix
-      ];
+  outputs = { home-manager, nixpkgs, ... }:
+    let
+      defaultSystem = "x86_64-linux";
+    in
+    {
+      nixosConfigurations = import ./flake/nixos-configurations.nix {
+        inherit home-manager nixpkgs;
+      };
+
+      apps = import ./flake/apps.nix {
+        inherit nixpkgs;
+        system = defaultSystem;
+      };
     };
-  };
 }
