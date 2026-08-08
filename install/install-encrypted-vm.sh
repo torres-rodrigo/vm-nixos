@@ -1,5 +1,7 @@
 set -euo pipefail
 
+WORK_DIR=""
+
 usage() {
   cat <<'USAGE'
 Usage: install-encrypted-vm [--dry-run] [--repo-root PATH]
@@ -20,6 +22,13 @@ die() {
 
 info() {
   printf '%s\n' "$*"
+}
+
+cleanup() {
+  if [[ -n "${WORK_DIR:-}" ]]; then
+    rm -rf "$WORK_DIR"
+  fi
+  rm -f /run/war-disko-luks-password 2>/dev/null || true
 }
 
 nix_string() {
@@ -48,6 +57,35 @@ validate_repo_root() {
   [[ -f "$value/install/disko-config.nix" ]] || die "repo root does not contain install/disko-config.nix: $value"
   [[ -f "$value/flake/nixos-configurations.nix" ]] || die "repo root does not contain flake/nixos-configurations.nix: $value"
   [[ "$value" != *[[:space:]]* ]] || die "repo root paths containing whitespace are not supported by this installer"
+}
+
+preflight_flake_inputs() {
+  local repo_root=$1
+
+  info "Checking flake inputs before destructive install..."
+
+  if ! (
+    cd "$repo_root"
+    nix --extra-experimental-features nix-command \
+      --extra-experimental-features flakes \
+      flake check --no-build --no-write-lock-file
+  ); then
+    cat >&2 <<'PREFLIGHT_ERROR'
+
+error: flake preflight failed before disk formatting.
+
+The live ISO must be able to resolve and fetch missing flake inputs before the
+installer can safely continue. Check DNS/networking, then rerun the installer:
+
+  ping -c 3 github.com
+  ping -c 3 cache.nixos.org
+  resolvectl status
+
+If this machine is intentionally offline, prefetch the flake inputs into the
+live ISO Nix store first. Offline installs are not automated by this installer.
+PREFLIGHT_ERROR
+    exit 1
+  fi
 }
 
 validate_disk() {
@@ -356,12 +394,15 @@ main() {
     die "run as root from the NixOS ISO, or use --dry-run"
   fi
 
+  if [[ $dry_run -eq 0 ]]; then
+    preflight_flake_inputs "$repo_root"
+  fi
+
   local disk
   local resolved_disk
   local secret
   local secret_repeat
   local final_confirm
-  local work_dir=""
 
   disk=$(select_disk)
   resolved_disk=$(validate_disk "$disk")
@@ -385,38 +426,32 @@ main() {
   IFS= read -r final_confirm
   [[ "$final_confirm" == "$resolved_disk" ]] || die "disk confirmation did not match; aborted"
 
-  work_dir=$(mktemp -d -t war-encrypted-install.XXXXXX)
-  chmod 0700 "$work_dir"
+  WORK_DIR=$(mktemp -d -t war-encrypted-install.XXXXXX)
+  chmod 0700 "$WORK_DIR"
 
-  cleanup() {
-    if [[ -n "$work_dir" ]]; then
-      rm -rf "$work_dir"
-    fi
-    rm -f /run/war-disko-luks-password 2>/dev/null || true
-  }
   trap cleanup EXIT
   trap 'cleanup; exit 130' INT TERM
 
   umask 077
-  printf '%s\n' "$secret" > "$work_dir/luks-passphrase"
-  printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$work_dir/root-password-hash"
-  printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$work_dir/user-password-hash"
+  printf '%s\n' "$secret" > "$WORK_DIR/luks-passphrase"
+  printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$WORK_DIR/root-password-hash"
+  printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$WORK_DIR/user-password-hash"
   secret=
-  chmod 0600 "$work_dir/luks-passphrase" "$work_dir/root-password-hash" "$work_dir/user-password-hash"
+  chmod 0600 "$WORK_DIR/luks-passphrase" "$WORK_DIR/root-password-hash" "$WORK_DIR/user-password-hash"
 
-  write_install_files "$work_dir" "$repo_root" "$resolved_disk"
+  write_install_files "$WORK_DIR" "$repo_root" "$resolved_disk"
 
   if [[ $dry_run -eq 1 ]]; then
-    dry_run_commands "$work_dir" "$repo_root"
+    dry_run_commands "$WORK_DIR" "$repo_root"
     exit 0
   fi
 
-  install -m 0600 "$work_dir/luks-passphrase" /run/war-disko-luks-password
-  disko --mode destroy,format,mount "$work_dir/install-disko.nix"
+  install -m 0600 "$WORK_DIR/luks-passphrase" /run/war-disko-luks-password
+  disko --mode destroy,format,mount "$WORK_DIR/install-disko.nix"
   chmod 755 /mnt
   write_hardware_config "$repo_root" "$resolved_disk"
   copy_repo_to_target "$repo_root"
-  nixos-install --no-write-lock-file --flake "$work_dir#war" --no-root-passwd
+  nixos-install --no-write-lock-file --flake "$WORK_DIR#war" --no-root-passwd
 
   info ""
   info "Install complete. Reboot, unlock LUKS with the shared password, then log in as user r."

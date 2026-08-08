@@ -48,35 +48,46 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
    cd /tmp/nixos/vm-nixos
    ```
 
-4. Optionally run a dry run first. This validates the repo shape, disk menu, and
+4. Confirm DNS and network access before starting the destructive install. The
+   committed `flake.lock` pins exact inputs, but a fresh ISO still needs to
+   fetch anything that is not already in its Nix store:
+
+   ```console
+   ping -c 3 github.com
+   ping -c 3 cache.nixos.org
+   nix --extra-experimental-features "nix-command flakes" flake check --no-build --no-write-lock-file
+   ```
+
+   If DNS fails, fix networking in the ISO first and rerun the checks. The
+   installer runs this flake preflight before disk formatting and stops if
+   required inputs cannot be fetched.
+
+5. Optionally run a dry run first. This validates the repo shape, disk menu, and
    generated installer files without formatting or installing:
 
    ```console
    nix run .#install-encrypted-vm -- --dry-run
    ```
 
-5. Run the real installer:
+6. Run the real installer:
 
    ```console
    sudo nix run .#install-encrypted-vm
    sudo nix --extra-experimental-features "nix-command flakes" run .#install-encrypted-vm
    ```
 
-6. Select the target disk from the numbered list.
+7. Select the target disk from the numbered list.
 
-7. Enter the shared LUKS, `root`, and user `r` password twice.
+8. Enter the shared LUKS, `root`, and user `r` password twice.
 
-8. Confirm the destructive install by typing the exact selected disk path.
+9. Confirm the destructive install by typing the exact selected disk path.
 
-9. Wait for Disko, encrypted hardware configuration generation, repo copy, and
+10. Wait for Disko, encrypted hardware configuration generation, repo copy, and
    `nixos-install` to complete.
-```console
-   sudo chmod 755 /mnt
-   sudo nixos-install --flake /mnt/etc/nixos#war
-```
-10. Reboot and remove the ISO.
 
-11. Unlock the disk with the shared password and log in as user `r` with the
+11. Reboot and remove the ISO.
+
+12. Unlock the disk with the shared password and log in as user `r` with the
     same password.
 
 ## After Reboot
