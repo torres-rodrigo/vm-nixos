@@ -218,6 +218,10 @@ Status: In progress
   The current GNOME Boxes VM has reported QXL graphics in the guest journal;
   switch the host-side video device to Virtio with 3D/OpenGL before treating a
   compositor DRM failure as a NixOS configuration issue.
+- After the wrapper showed `uwsm start` returning status `0` while greetd
+  returned to `tuigreet`, the wrapper was changed to use UWSM's bound-session
+  flow: generate runtime units, bind the session to the wrapper PID, and wait
+  on `wayland-wm@mango.service`.
 
 ## Phase 5: User Applications And Ergonomics
 

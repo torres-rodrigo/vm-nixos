@@ -152,7 +152,10 @@ After LUKS unlock, greetd starts Mango through UWSM as user `r` with an
 automatic `initial_session`. The `tuigreet` session remains configured as the
 manual fallback if Mango exits or the initial session is not used. Both paths
 use the `war-mango-session` wrapper so Mango startup failures are written to
-the journal and `/home/r/.local/state/war/mango-session.log`.
+the journal and `/home/r/.local/state/war/mango-session.log`. The wrapper
+generates the UWSM units, binds the UWSM session to the greetd-owned wrapper
+process, then waits on `wayland-wm@mango.service` so greetd does not return to
+the greeter while Mango is still managed by user systemd.
 
 ## First Boot Debugging
 
@@ -169,9 +172,12 @@ shell is available on another TTY, switch with `Ctrl+Alt+F2` and inspect:
 ```console
 journalctl -b -t war-mango-session --no-pager
 journalctl -b -u greetd --no-pager
+journalctl --user -b -u 'wayland-wm@mango.service' --no-pager
+journalctl --user -b -u 'wayland-session-envelope@mango.target' --no-pager
 journalctl -b -u plymouth-quit -u plymouth-quit-wait --no-pager
 journalctl -b -u dbus --no-pager
 systemctl status greetd plymouth-quit plymouth-quit-wait dbus
+systemctl --user status wayland-wm@mango.service wayland-session-envelope@mango.target
 cat /home/r/.local/state/war/mango-session.log
 ```
 
