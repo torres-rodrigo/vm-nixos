@@ -12,5 +12,5 @@
 
   services.irqbalance.enable = true;
 
-  systemd.oomd.enable = true;
+  systemd.oomd.enable = false;
 }

@@ -134,3 +134,25 @@ mounted, a working user `r`, and a full Git checkout at `/etc/nixos`.
 For the current validation pass, greetd opens `tuigreet` first. Log in as user
 `r`; the configured command starts Mango through UWSM. Mango autologin can be
 restored after encrypted boot and the compositor path are both reliable.
+
+## First Boot Debugging
+
+The expected boot handoff is:
+
+1. Plymouth shows the LUKS unlock prompt.
+2. After the password is accepted, Plymouth exits.
+3. `tuigreet` appears on VT1.
+4. Logging in as user `r` starts Mango through UWSM.
+
+If Plymouth stays on a full progress bar, press `Esc` to show the boot log. If a
+shell is available on another TTY, switch with `Ctrl+Alt+F2` and inspect:
+
+```console
+journalctl -b -u greetd --no-pager
+journalctl -b -u plymouth-quit -u plymouth-quit-wait --no-pager
+journalctl -b -u dbus --no-pager
+systemctl status greetd plymouth-quit plymouth-quit-wait dbus
+```
+
+During this validation pass, `systemd-oomd` is disabled so its failed unit does
+not hide the login-manager and Plymouth handoff errors.
