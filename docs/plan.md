@@ -193,9 +193,9 @@ Current note:
   and greetd autologin into Mango through UWSM. Added visible Mango startup
   helpers: `swaybg`, `mako`, `soteria`, `rofi`, `libnotify`, polkit, and an
   autostarted WezTerm. Plasma and SDDM are no longer active.
-  If it fails, collect `journalctl -b -u display-manager --no-pager`,
-  `journalctl --user -b --no-pager`, and
-  `journalctl -b | rg -i "greetd|mango|uwsm|plymouth|wayland|seat|drm|wlroots"`.
+  If it fails, collect `journalctl -b -t war-mango-session --no-pager`,
+  `journalctl -b -u greetd --no-pager`, `journalctl --user -b --no-pager`,
+  and `/home/r/.local/state/war/mango-session.log`.
 
 ## Phase 4A: Greetd And Plymouth Boot Flow
 
@@ -213,6 +213,11 @@ Status: In progress
   relying on `nixos-generate-config` to infer LUKS and Btrfs subvolumes.
   greetd now uses an automatic `initial_session` for user `r` to start Mango
   through UWSM, with `tuigreet` retained as the manual fallback session.
+- After autologin and every manual Mango session bounced back to greetd, greetd
+  was changed to launch Mango through a `war-mango-session` logging wrapper.
+  The current GNOME Boxes VM has reported QXL graphics in the guest journal;
+  switch the host-side video device to Virtio with 3D/OpenGL before treating a
+  compositor DRM failure as a NixOS configuration issue.
 
 ## Phase 5: User Applications And Ergonomics
 

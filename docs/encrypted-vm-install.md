@@ -150,7 +150,9 @@ installed Nix store.
 
 After LUKS unlock, greetd starts Mango through UWSM as user `r` with an
 automatic `initial_session`. The `tuigreet` session remains configured as the
-manual fallback if Mango exits or the initial session is not used.
+manual fallback if Mango exits or the initial session is not used. Both paths
+use the `war-mango-session` wrapper so Mango startup failures are written to
+the journal and `/home/r/.local/state/war/mango-session.log`.
 
 ## First Boot Debugging
 
@@ -165,11 +167,19 @@ If Plymouth stays on a full progress bar, press `Esc` to show the boot log. If a
 shell is available on another TTY, switch with `Ctrl+Alt+F2` and inspect:
 
 ```console
+journalctl -b -t war-mango-session --no-pager
 journalctl -b -u greetd --no-pager
 journalctl -b -u plymouth-quit -u plymouth-quit-wait --no-pager
 journalctl -b -u dbus --no-pager
 systemctl status greetd plymouth-quit plymouth-quit-wait dbus
+cat /home/r/.local/state/war/mango-session.log
 ```
+
+For GNOME Boxes testing, verify the VM is not still using QXL graphics. The
+current logs have shown `Initialized qxl`, which is a weak target for
+Mango/wlroots. Use `virt-manager` or the libvirt XML for the Boxes VM to change
+the video model from QXL to Virtio, enable 3D/OpenGL acceleration if available,
+then reboot and confirm the guest journal no longer reports QXL.
 
 The original boot loop was caused by the installer applying `umask 077` while
 Disko created the Btrfs subvolumes. This left `/nix` with mode `0700` even
