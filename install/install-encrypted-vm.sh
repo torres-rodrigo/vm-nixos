@@ -345,6 +345,7 @@ Dry run complete. The installer would run:
   rsync -a --delete "$repo_root/" /mnt/etc/nixos/
   build temporary install wrapper using repo input path:/mnt/etc/nixos
   nixos-install --no-write-lock-file --flake "$work_dir#war" --no-root-passwd
+  initialize and validate /mnt/etc/machine-id
 COMMANDS
 }
 
@@ -360,6 +361,23 @@ copy_repo_to_target() {
     --exclude '/.cache' \
     --exclude '/tmp' \
     "$repo_root/" "$target/"
+}
+
+initialize_machine_id() {
+  local target_root=$1
+  local machine_id
+
+  info "Initializing target machine ID..."
+
+  mkdir -p "$target_root/etc"
+  rm -f "$target_root/etc/machine-id"
+  systemd-machine-id-setup --root="$target_root"
+
+  [[ -f "$target_root/etc/machine-id" ]] || die "target machine ID was not created"
+  machine_id=$(tr -d '\n' < "$target_root/etc/machine-id")
+
+  [[ "$machine_id" =~ ^[0-9a-f]{32}$ ]] || die "target machine ID is not a valid 32-character hexadecimal ID"
+  [[ "$machine_id" != "00000000000000000000000000000000" ]] || die "target machine ID must not be all zeroes"
 }
 
 main() {
@@ -452,6 +470,7 @@ main() {
   write_hardware_config "$repo_root" "$resolved_disk"
   copy_repo_to_target "$repo_root"
   nixos-install --no-write-lock-file --flake "$WORK_DIR#war" --no-root-passwd
+  initialize_machine_id /mnt
 
   info ""
   info "Install complete. Reboot, unlock LUKS with the shared password, then log in as user r."

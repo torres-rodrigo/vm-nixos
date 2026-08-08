@@ -142,6 +142,12 @@ mounts for `/`, `/home`, `/nix`, `/var`, and `/var/log`.
 The expected result is an unlocked `cryptroot` device with the Btrfs subvolumes
 mounted, a working user `r`, and a full Git checkout at `/etc/nixos`.
 
+Before reporting success, the installer also creates and validates a unique
+`/mnt/etc/machine-id`. This is required by the system D-Bus broker during the
+first userspace boot. A missing, empty, malformed, or all-zero machine ID can
+cause D-Bus to exit and be socket-activated repeatedly before greetd or a TTY
+login is reached.
+
 For the current validation pass, greetd opens `tuigreet` first. Log in as user
 `r`; the configured command starts Mango through UWSM. Mango autologin can be
 restored after encrypted boot and the compositor path are both reliable.
@@ -167,3 +173,27 @@ systemctl status greetd plymouth-quit plymouth-quit-wait dbus
 
 During this validation pass, `systemd-oomd` is disabled so its failed unit does
 not hide the login-manager and Plymouth handoff errors.
+
+The systemd-boot menu remains visible for five seconds. Select
+`NixOS (boot-debug)` to boot without Plymouth or greetd and stop
+at a normal console login under `multi-user.target`. This entry is intended for
+diagnostics; the default entry still uses the graphical boot and Mango login
+path.
+
+To repair a VM installed before machine-ID initialization was added, boot the
+NixOS ISO, unlock and mount its root subvolume, then initialize the ID. Adjust
+the encrypted partition path if the VM disk is not `/dev/vda`:
+
+```console
+sudo cryptsetup open /dev/vda2 cryptroot
+sudo mount -o subvol=root /dev/mapper/cryptroot /mnt
+sudo rm -f /mnt/etc/machine-id
+sudo systemd-machine-id-setup --root=/mnt
+sudo cat /mnt/etc/machine-id
+sudo umount /mnt
+sudo cryptsetup close cryptroot
+sudo reboot
+```
+
+The printed ID must contain exactly 32 lowercase hexadecimal characters and
+must not be all zeroes.
