@@ -59,6 +59,7 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
 
    ```console
    sudo nix run .#install-encrypted-vm
+   sudo nix --extra-experimental-features "nix-command flakes" run .#install-encrypted-vm
    ```
 
 6. Select the target disk from the numbered list.
@@ -69,7 +70,10 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
 
 9. Wait for Disko, encrypted hardware configuration generation, repo copy, and
    `nixos-install` to complete.
-
+```console
+   sudo chmod 755 /mnt
+   sudo nixos-install --flake /mnt/etc/nixos#war
+```
 10. Reboot and remove the ISO.
 
 11. Unlock the disk with the shared password and log in as user `r` with the
