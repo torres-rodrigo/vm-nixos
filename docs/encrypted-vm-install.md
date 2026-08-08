@@ -144,9 +144,9 @@ mounted, a working user `r`, and a full Git checkout at `/etc/nixos`.
 
 Before reporting success, the installer also creates and validates a unique
 `/mnt/etc/machine-id`. This is required by the system D-Bus broker during the
-first userspace boot. A missing, empty, malformed, or all-zero machine ID can
-cause D-Bus to exit and be socket-activated repeatedly before greetd or a TTY
-login is reached.
+first userspace boot. It also normalizes the Btrfs subvolume root permissions
+and verifies that an unprivileged target user can execute a program from the
+installed Nix store.
 
 For the current validation pass, greetd opens `tuigreet` first. Log in as user
 `r`; the configured command starts Mango through UWSM. Mango autologin can be
@@ -171,8 +171,14 @@ journalctl -b -u dbus --no-pager
 systemctl status greetd plymouth-quit plymouth-quit-wait dbus
 ```
 
-During this validation pass, `systemd-oomd` is disabled so its failed unit does
-not hide the login-manager and Plymouth handoff errors.
+The original boot loop was caused by the installer applying `umask 077` while
+Disko created the Btrfs subvolumes. This left `/nix` with mode `0700` even
+though files below `/nix/store` had executable permissions. Unprivileged
+services could not traverse `/nix`, so systemd reported `status=203/EXEC` and
+`Permission denied` for `systemd-timesyncd`, `systemd-resolved`, and the D-Bus
+broker child. The network services restarted repeatedly and socket-activated
+D-Bus each time, preventing `basic.target`, TTY logins, greetd, and Mango from
+being reached.
 
 The systemd-boot menu remains visible for five seconds. Select
 `NixOS (boot-debug)` to boot without Plymouth or greetd and stop
@@ -180,20 +186,27 @@ at a normal console login under `multi-user.target`. This entry is intended for
 diagnostics; the default entry still uses the graphical boot and Mango login
 path.
 
-To repair a VM installed before machine-ID initialization was added, boot the
-NixOS ISO, unlock and mount its root subvolume, then initialize the ID. Adjust
-the encrypted partition path if the VM disk is not `/dev/vda`:
+To repair a VM installed before the subvolume permission fix, boot the NixOS
+ISO, unlock the encrypted partition, and mount every subvolume except `/boot`.
+Adjust the encrypted partition path if the VM disk is not `/dev/sda`:
 
 ```console
-sudo cryptsetup open /dev/vda2 cryptroot
+sudo cryptsetup open /dev/sda2 cryptroot
 sudo mount -o subvol=root /dev/mapper/cryptroot /mnt
-sudo rm -f /mnt/etc/machine-id
-sudo systemd-machine-id-setup --root=/mnt
-sudo cat /mnt/etc/machine-id
-sudo umount /mnt
+sudo mkdir -p /mnt/home /mnt/nix /mnt/var
+sudo mount -o subvol=home /dev/mapper/cryptroot /mnt/home
+sudo mount -o subvol=nix /dev/mapper/cryptroot /mnt/nix
+sudo mount -o subvol=var /dev/mapper/cryptroot /mnt/var
+sudo mkdir -p /mnt/var/log
+sudo mount -o subvol=log /dev/mapper/cryptroot /mnt/var/log
+
+sudo chmod 0755 /mnt /mnt/home /mnt/nix /mnt/var /mnt/var/log
+sudo -u nobody test -x /mnt/nix/store
+
+sudo umount /mnt/var/log /mnt/var /mnt/nix /mnt/home /mnt
 sudo cryptsetup close cryptroot
 sudo reboot
 ```
 
-The printed ID must contain exactly 32 lowercase hexadecimal characters and
-must not be all zeroes.
+The `test` command must return without output and with exit status zero. Do not
+change `/boot`; its restrictive FAT mount permissions are intentional.

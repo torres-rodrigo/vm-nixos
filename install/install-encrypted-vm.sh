@@ -339,13 +339,14 @@ dry_run_commands() {
 Dry run complete. The installer would run:
 
   install -m 0600 "$work_dir/luks-passphrase" /run/war-disko-luks-password
-  disko --mode destroy,format,mount "$work_dir/install-disko.nix"
-  chmod 755 /mnt
+  disko --mode destroy,format,mount --yes-wipe-all-disks "$work_dir/install-disko.nix"
+  normalize target subvolume permissions under /mnt
   generate explicit encrypted hardware config at "$repo_root/hosts/war/hardware-configuration.nix"
   rsync -a --delete "$repo_root/" /mnt/etc/nixos/
   build temporary install wrapper using repo input path:/mnt/etc/nixos
   nixos-install --no-write-lock-file --flake "$work_dir#war" --no-root-passwd
   initialize and validate /mnt/etc/machine-id
+  verify an unprivileged target user can execute a program from /nix/store
 COMMANDS
 }
 
@@ -378,6 +379,34 @@ initialize_machine_id() {
 
   [[ "$machine_id" =~ ^[0-9a-f]{32}$ ]] || die "target machine ID is not a valid 32-character hexadecimal ID"
   [[ "$machine_id" != "00000000000000000000000000000000" ]] || die "target machine ID must not be all zeroes"
+}
+
+normalize_target_permissions() {
+  local target_root=$1
+  local path
+
+  info "Normalizing target subvolume permissions..."
+
+  for path in \
+    "$target_root" \
+    "$target_root/home" \
+    "$target_root/nix" \
+    "$target_root/var" \
+    "$target_root/var/log"; do
+    [[ -d "$path" ]] || die "expected mounted target directory is missing: $path"
+    chmod 0755 "$path"
+  done
+}
+
+validate_target_execution() {
+  local target_root=$1
+  local target_executable=/nix/var/nix/profiles/system/sw/bin/true
+
+  info "Checking unprivileged access to the target Nix store..."
+
+  if ! chroot --userspec=65534:65534 "$target_root" "$target_executable"; then
+    die "an unprivileged target user cannot execute $target_executable; check /nix permissions and mount options"
+  fi
 }
 
 main() {
@@ -450,12 +479,14 @@ main() {
   trap cleanup EXIT
   trap 'cleanup; exit 130' INT TERM
 
-  umask 077
-  printf '%s\n' "$secret" > "$WORK_DIR/luks-passphrase"
-  printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$WORK_DIR/root-password-hash"
-  printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$WORK_DIR/user-password-hash"
+  (
+    umask 077
+    printf '%s\n' "$secret" > "$WORK_DIR/luks-passphrase"
+    printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$WORK_DIR/root-password-hash"
+    printf '%s\n' "$secret" | mkpasswd --method=yescrypt --stdin > "$WORK_DIR/user-password-hash"
+    chmod 0600 "$WORK_DIR/luks-passphrase" "$WORK_DIR/root-password-hash" "$WORK_DIR/user-password-hash"
+  )
   secret=
-  chmod 0600 "$WORK_DIR/luks-passphrase" "$WORK_DIR/root-password-hash" "$WORK_DIR/user-password-hash"
 
   write_install_files "$WORK_DIR" "$repo_root" "$resolved_disk"
 
@@ -465,12 +496,14 @@ main() {
   fi
 
   install -m 0600 "$WORK_DIR/luks-passphrase" /run/war-disko-luks-password
-  disko --mode destroy,format,mount "$WORK_DIR/install-disko.nix"
-  chmod 755 /mnt
+  umask 022
+  disko --mode destroy,format,mount --yes-wipe-all-disks "$WORK_DIR/install-disko.nix"
+  normalize_target_permissions /mnt
   write_hardware_config "$repo_root" "$resolved_disk"
   copy_repo_to_target "$repo_root"
   nixos-install --no-write-lock-file --flake "$WORK_DIR#war" --no-root-passwd
   initialize_machine_id /mnt
+  validate_target_execution /mnt
 
   info ""
   info "Install complete. Reboot, unlock LUKS with the shared password, then log in as user r."
