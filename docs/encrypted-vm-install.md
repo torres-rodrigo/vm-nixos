@@ -148,9 +148,9 @@ first userspace boot. It also normalizes the Btrfs subvolume root permissions
 and verifies that an unprivileged target user can execute a program from the
 installed Nix store.
 
-For the current validation pass, greetd opens `tuigreet` first. Log in as user
-`r`; the configured command starts Mango through UWSM. Mango autologin can be
-restored after encrypted boot and the compositor path are both reliable.
+After LUKS unlock, greetd starts Mango through UWSM as user `r` with an
+automatic `initial_session`. The `tuigreet` session remains configured as the
+manual fallback if Mango exits or the initial session is not used.
 
 ## First Boot Debugging
 
@@ -158,8 +158,8 @@ The expected boot handoff is:
 
 1. Plymouth shows the LUKS unlock prompt.
 2. After the password is accepted, Plymouth exits.
-3. `tuigreet` appears on VT1.
-4. Logging in as user `r` starts Mango through UWSM.
+3. greetd starts user `r` automatically.
+4. Mango starts through UWSM using `/home/r/.config/mango/config.conf`.
 
 If Plymouth stays on a full progress bar, press `Esc` to show the boot log. If a
 shell is available on another TTY, switch with `Ctrl+Alt+F2` and inspect:

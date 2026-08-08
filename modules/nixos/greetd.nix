@@ -38,6 +38,11 @@ in
     useTextGreeter = true;
 
     settings = {
+      initial_session = {
+        command = mangoCommand;
+        user = "r";
+      };
+
       default_session = {
         command = "${tuigreetCommand}";
         user = "greeter";

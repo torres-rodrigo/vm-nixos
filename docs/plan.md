@@ -210,9 +210,9 @@ Status: In progress
   retaining Plasma/SDDM.
 - After the first encrypted VM test hung behind Plymouth, the installer was
   changed to write the encrypted hardware configuration explicitly instead of
-  relying on `nixos-generate-config` to infer LUKS and Btrfs subvolumes. greetd
-  now uses `tuigreet` first for validation; Mango autologin remains deferred
-  until encrypted boot and Mango startup are both proven.
+  relying on `nixos-generate-config` to infer LUKS and Btrfs subvolumes.
+  greetd now uses an automatic `initial_session` for user `r` to start Mango
+  through UWSM, with `tuigreet` retained as the manual fallback session.
 
 ## Phase 5: User Applications And Ergonomics
 
