@@ -226,6 +226,11 @@ Status: In progress
   node under GNOME Boxes/QXL, the wrapper was changed to apply VM-safe wlroots
   fallbacks: `WLR_RENDERER=pixman`, `WLR_NO_HARDWARE_CURSORS=1`, and
   `WLR_DRM_NO_ATOMIC=1`.
+- After the fallback variables still did not change behavior, UWSM was bypassed
+  for VM bring-up because `uwsm start -o` does not preserve arbitrary `WLR_*`
+  variables in the compositor service environment. greetd now starts Mango
+  directly through the logging wrapper so Mango receives the debug environment
+  and emits compositor errors to the wrapper log.
 
 ## Phase 5: User Applications And Ergonomics
 

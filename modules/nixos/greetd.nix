@@ -45,55 +45,27 @@ let
 
     if [[ -d /dev/dri ]]; then
       ${pkgs.coreutils}/bin/ls -la /dev/dri
+      if ${pkgs.coreutils}/bin/ls /dev/dri/renderD* >/dev/null 2>&1; then
+        printf 'render node detected\n'
+      else
+        printf 'no renderD node detected\n'
+      fi
     else
       printf '/dev/dri is missing\n'
-    fi
-
-    if [[ -z "''${XDG_RUNTIME_DIR:-}" ]]; then
-      printf 'XDG_RUNTIME_DIR is not set; cannot start UWSM session\n'
       exit 1
     fi
 
-    stop_mango() {
-      trap - TERM HUP INT
-      printf 'stopping wayland-wm@mango.service\n'
-      ${pkgs.systemd}/bin/systemctl --user stop --wait wayland-wm@mango.service || true
-      if [[ -n "''${session_pid:-}" ]]; then
-        wait "$session_pid" || true
-      fi
-      exit 0
-    }
+    if [[ -z "''${XDG_RUNTIME_DIR:-}" ]]; then
+      printf 'XDG_RUNTIME_DIR is not set; cannot start Mango session\n'
+      exit 1
+    fi
 
-    printf 'generating UWSM runtime units for Mango\n'
-    ${lib.escapeShellArgs [
-      "${pkgs.uwsm}/bin/uwsm"
-      "start"
-      "-o"
-      "-F"
-      "--"
-      "/run/current-system/sw/bin/mango"
-      "-c"
-      mangoConfig
-    ]}
+    export XDG_SESSION_TYPE="wayland"
 
-    mkdir -p "$XDG_RUNTIME_DIR/uwsm"
-    ${pkgs.coreutils}/bin/env -0 > "$XDG_RUNTIME_DIR/uwsm/env_login"
-
-    printf 'binding UWSM session to wrapper PID %s\n' "$$"
-    ${pkgs.systemd}/bin/systemctl --user start "wayland-session-bindpid@$$.service"
-
-    trap stop_mango TERM HUP INT
-
-    printf 'starting and waiting for wayland-wm@mango.service\n'
-    {
-      trap "" TERM HUP INT
-      exec ${pkgs.systemd}/bin/systemctl --user start --wait wayland-wm@mango.service
-    } &
-    session_pid=$!
-
-    wait "$session_pid"
+    printf 'starting Mango directly\n'
+    /run/current-system/sw/bin/mango -c ${lib.escapeShellArg mangoConfig}
     status=$?
-    printf 'war Mango systemd session exited with status %s\n' "$status"
+    printf 'war Mango direct session exited with status %s\n' "$status"
     exit "$status"
   '';
 

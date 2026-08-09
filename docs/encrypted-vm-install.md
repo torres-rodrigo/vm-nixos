@@ -148,15 +148,14 @@ first userspace boot. It also normalizes the Btrfs subvolume root permissions
 and verifies that an unprivileged target user can execute a program from the
 installed Nix store.
 
-After LUKS unlock, greetd starts Mango through UWSM as user `r` with an
+After LUKS unlock, greetd starts Mango directly as user `r` with an
 automatic `initial_session`. The `tuigreet` session remains configured as the
 manual fallback if Mango exits or the initial session is not used. Both paths
 use the `war-mango-session` wrapper so Mango startup failures are written to
-the journal and `/home/r/.local/state/war/mango-session.log`. The wrapper
-generates the UWSM units, binds the UWSM session to the greetd-owned wrapper
-process, then waits on `wayland-wm@mango.service` so greetd does not return to
-the greeter while Mango is still managed by user systemd. For the GNOME Boxes
-VM path, the wrapper also applies conservative wlroots fallbacks:
+the journal and `/home/r/.local/state/war/mango-session.log`. UWSM remains
+installed, but the VM bring-up path bypasses it so Mango receives the exact
+debug environment from the wrapper. For the GNOME Boxes VM path, the wrapper
+also applies conservative wlroots fallbacks:
 `WLR_RENDERER=pixman`, `WLR_NO_HARDWARE_CURSORS=1`, and
 `WLR_DRM_NO_ATOMIC=1`.
 
@@ -167,7 +166,7 @@ The expected boot handoff is:
 1. Plymouth shows the LUKS unlock prompt.
 2. After the password is accepted, Plymouth exits.
 3. greetd starts user `r` automatically.
-4. Mango starts through UWSM using `/home/r/.config/mango/config.conf`.
+4. Mango starts directly using `/home/r/.config/mango/config.conf`.
 
 If Plymouth stays on a full progress bar, press `Esc` to show the boot log. If a
 shell is available on another TTY, switch with `Ctrl+Alt+F2` and inspect:
@@ -175,13 +174,11 @@ shell is available on another TTY, switch with `Ctrl+Alt+F2` and inspect:
 ```console
 journalctl -b -t war-mango-session --no-pager
 journalctl -b -u greetd --no-pager
-journalctl --user -b -u 'wayland-wm@mango.service' --no-pager
-journalctl --user -b -u 'wayland-session-envelope@mango.target' --no-pager
-journalctl -b | rg -i "qxl|virtio_gpu|drm|renderD|mango|wlroots"
+journalctl -b | rg -i "qxl|virtio_gpu|drm|renderD|mango|wlroots|libseat|seatd"
 journalctl -b -u plymouth-quit -u plymouth-quit-wait --no-pager
 journalctl -b -u dbus --no-pager
 systemctl status greetd plymouth-quit plymouth-quit-wait dbus
-systemctl --user status wayland-wm@mango.service wayland-session-envelope@mango.target
+ls -la /dev/dri
 cat /home/r/.local/state/war/mango-session.log
 ```
 
