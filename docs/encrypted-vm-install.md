@@ -155,7 +155,10 @@ use the `war-mango-session` wrapper so Mango startup failures are written to
 the journal and `/home/r/.local/state/war/mango-session.log`. The wrapper
 generates the UWSM units, binds the UWSM session to the greetd-owned wrapper
 process, then waits on `wayland-wm@mango.service` so greetd does not return to
-the greeter while Mango is still managed by user systemd.
+the greeter while Mango is still managed by user systemd. For the GNOME Boxes
+VM path, the wrapper also applies conservative wlroots fallbacks:
+`WLR_RENDERER=pixman`, `WLR_NO_HARDWARE_CURSORS=1`, and
+`WLR_DRM_NO_ATOMIC=1`.
 
 ## First Boot Debugging
 
@@ -174,6 +177,7 @@ journalctl -b -t war-mango-session --no-pager
 journalctl -b -u greetd --no-pager
 journalctl --user -b -u 'wayland-wm@mango.service' --no-pager
 journalctl --user -b -u 'wayland-session-envelope@mango.target' --no-pager
+journalctl -b | rg -i "qxl|virtio_gpu|drm|renderD|mango|wlroots"
 journalctl -b -u plymouth-quit -u plymouth-quit-wait --no-pager
 journalctl -b -u dbus --no-pager
 systemctl status greetd plymouth-quit plymouth-quit-wait dbus
@@ -183,8 +187,10 @@ cat /home/r/.local/state/war/mango-session.log
 
 For GNOME Boxes testing, verify the VM is not still using QXL graphics. The
 current logs have shown `Initialized qxl`, which is a weak target for
-Mango/wlroots. Use `virt-manager` or the libvirt XML for the Boxes VM to change
-the video model from QXL to Virtio, enable 3D/OpenGL acceleration if available,
+Mango/wlroots, especially when `/dev/dri` has no `renderD*` node. The pixman
+fallback is intended to keep the VM usable for bring-up. For better long-term
+testing, use `virt-manager` or the libvirt XML for the Boxes VM to change the
+video model from QXL to Virtio, enable 3D/OpenGL acceleration if available,
 then reboot and confirm the guest journal no longer reports QXL.
 
 The original boot loop was caused by the installer applying `umask 077` while

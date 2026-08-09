@@ -29,6 +29,14 @@ let
     printf 'WAYLAND_DISPLAY=%s\n' "''${WAYLAND_DISPLAY:-}"
     printf 'mango_config=${mangoConfig}\n'
 
+    export WLR_RENDERER="''${WLR_RENDERER:-pixman}"
+    export WLR_NO_HARDWARE_CURSORS="''${WLR_NO_HARDWARE_CURSORS:-1}"
+    export WLR_DRM_NO_ATOMIC="''${WLR_DRM_NO_ATOMIC:-1}"
+
+    printf 'WLR_RENDERER=%s\n' "$WLR_RENDERER"
+    printf 'WLR_NO_HARDWARE_CURSORS=%s\n' "$WLR_NO_HARDWARE_CURSORS"
+    printf 'WLR_DRM_NO_ATOMIC=%s\n' "$WLR_DRM_NO_ATOMIC"
+
     if [[ -e ${lib.escapeShellArg mangoConfig} ]]; then
       ${pkgs.coreutils}/bin/ls -l ${lib.escapeShellArg mangoConfig}
     else

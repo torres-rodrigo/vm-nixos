@@ -222,6 +222,10 @@ Status: In progress
   returned to `tuigreet`, the wrapper was changed to use UWSM's bound-session
   flow: generate runtime units, bind the session to the wrapper PID, and wait
   on `wayland-wm@mango.service`.
+- After the plain Mango session also bounced and `/dev/dri` showed only a card
+  node under GNOME Boxes/QXL, the wrapper was changed to apply VM-safe wlroots
+  fallbacks: `WLR_RENDERER=pixman`, `WLR_NO_HARDWARE_CURSORS=1`, and
+  `WLR_DRM_NO_ATOMIC=1`.
 
 ## Phase 5: User Applications And Ergonomics
 
