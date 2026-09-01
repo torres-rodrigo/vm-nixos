@@ -8,6 +8,7 @@
     ../../modules/nixos/base.nix
     ../../modules/nixos/boot.nix
     ../../modules/nixos/browser.nix
+    ../../modules/nixos/config-checkout.nix
     ../../modules/nixos/dns.nix
     ../../modules/nixos/firewall.nix
     ../../modules/nixos/fonts.nix

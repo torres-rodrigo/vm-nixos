@@ -79,10 +79,11 @@ link declaration; edits to an already-linked file apply live as the application
 reloads or rereads it. Do not place secrets, generated state, caches, or files
 an application rewrites unpredictably under `dotfiles/`.
 
-On the VM, the rebuild checkout is expected to live at `/etc/nixos`. Current
+On active hosts, the rebuild checkout is expected to live at `/etc/nixos` and
+is owned by the host user through `modules/nixos/config-checkout.nix`. Current
 live dotfile links point to `/etc/nixos/dotfiles`, so changes made from the
-Arch-side development checkout only affect the VM after they are pushed/pulled
-or otherwise copied into `/etc/nixos`.
+Arch-side development checkout only affect a target system after they are
+pushed/pulled or otherwise copied into `/etc/nixos`.
 
 The zsh setup keeps both `.zshenv` and `.zshrc` under `~/.config/zsh`. NixOS
 sets `ZDOTDIR` through global zsh initialization, while `.zshenv` exports the

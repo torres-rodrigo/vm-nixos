@@ -8,6 +8,7 @@
     ../../modules/nixos/base.nix
     ../../modules/nixos/boot.nix
     ../../modules/nixos/browser.nix
+    ../../modules/nixos/config-checkout.nix
     ../../modules/nixos/dns.nix
     ../../modules/nixos/firewall.nix
     ../../modules/nixos/fonts.nix
@@ -25,10 +26,6 @@
     ../../modules/nixos/storage.nix
     ../../modules/nixos/users.nix
     ../../modules/nixos/wayland.nix
-  ];
-
-  systemd.tmpfiles.rules = [
-    "Z /etc/nixos - r users - -"
   ];
 
   networking.hostName = "war";

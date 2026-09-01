@@ -114,9 +114,10 @@ Avoid these patterns from the temp example:
 - Home Manager owns live symlinks; the repository owns files under `dotfiles/`.
   A rebuild is needed to add, remove, or change a link declaration, but edits to
   an already-linked file are read live by the application.
-- On the VM, live dotfile links intentionally point at `/etc/nixos/dotfiles`.
-  Keep the checkout used for rebuilds at `/etc/nixos` or adjust the link helper
-  before changing that workflow.
+- On active hosts, live dotfile links intentionally point at
+  `/etc/nixos/dotfiles`. Keep the checkout used for rebuilds at `/etc/nixos`
+  and owned by the host user, or adjust the link helper before changing that
+  workflow.
 - Explicit Home Manager file targets may use `force = true` during migration so
   unmanaged files in `$HOME` are replaced by the repository-owned version.
 - Keep the home directory XDG-clean and avoid creating user-facing top-level

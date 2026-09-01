@@ -189,6 +189,8 @@ Current note:
 - Added the Home Manager file workflow: live-editable files are linked from
   `/etc/nixos/dotfiles` through `modules/home-manager/files.nix`, while stable
   configs stay store-managed in Home Manager modules.
+- Added `modules/nixos/config-checkout.nix` so active hosts keep `/etc/nixos`
+  owned by the host user for rebuilds, Git workflows, and live dotfile links.
 - Added real Home Manager configs: Starship and Git are store-managed, while
   Lazygit, fzf, `.zshenv`, and `.zshrc` are live-linked from `dotfiles/`.
 - Explicitly managed Home Manager files use `force = true` so migration from
