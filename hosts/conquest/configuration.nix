@@ -1,0 +1,34 @@
+{ hostname, stateVersion, ... }:
+
+{
+  imports = [
+    ./hardware-configuration.nix
+    ../../modules/nixos/app-policy.nix
+    ../../modules/nixos/audio.nix
+    ../../modules/nixos/base.nix
+    ../../modules/nixos/boot.nix
+    ../../modules/nixos/browser.nix
+    ../../modules/nixos/dns.nix
+    ../../modules/nixos/firewall.nix
+    ../../modules/nixos/fonts.nix
+    ../../modules/nixos/greetd.nix
+    ../../modules/nixos/graphics-nvidia-hybrid.nix
+    ../../modules/nixos/hardware-intel.nix
+    ../../modules/nixos/home-manager.nix
+    ../../modules/nixos/mango.nix
+    ../../modules/nixos/nix-maintenance.nix
+    ../../modules/nixos/networking.nix
+    ../../modules/nixos/packages.nix
+    ../../modules/nixos/performance.nix
+    ../../modules/nixos/plymouth.nix
+    ../../modules/nixos/printing.nix
+    ../../modules/nixos/ssh.nix
+    ../../modules/nixos/storage.nix
+    ../../modules/nixos/users.nix
+    ../../modules/nixos/wayland.nix
+  ];
+
+  networking.hostName = hostname;
+
+  system.stateVersion = stateVersion;
+}

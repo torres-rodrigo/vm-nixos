@@ -4,7 +4,7 @@
 
 Build the replacement NixOS configuration here. The target is a maintainable,
 flake-based Mango/Wayland workstation for user `r`, initially validated on the
-current x86_64 NixOS VM.
+current x86_64 NixOS VM and now extended to the `conquest` laptop.
 
 The old `/home/r/nixos/nixos` configuration is a base/example to learn from and
 improve upon, not something to copy wholesale. Every reused module, asset, or
@@ -17,8 +17,8 @@ architecture, and improved where the old design was weak.
   different compatibility baseline. Never bump it merely because nixpkgs moves.
 - Use flakes as the single entry point for evaluation, rebuilds, and integrated
   Home Manager activation.
-- Start with one host for this VM while keeping host-specific hardware and
-  identity separate from reusable modules.
+- Keep host-specific hardware and identity separate from reusable modules.
+  `war` is the VM validation host; `conquest` is the active laptop target.
 - Build toward Mango with Wayland, greetd, PipeWire, and XDG integration. Do not
   pull in a complete desktop environment unless a reviewed requirement needs it.
 - Integrate Home Manager through the NixOS module system; do not require a
@@ -89,6 +89,7 @@ deadnix .
 nix flake show --no-write-lock-file
 nix flake check --no-build
 sudo nixos-rebuild build --flake .#war
+sudo nixos-rebuild build --flake .#conquest
 ```
 
 If a tool is not yet declared or a check is not applicable to the current

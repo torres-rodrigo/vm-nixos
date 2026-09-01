@@ -44,17 +44,23 @@ truth:
 
 - Flake-based entry point for evaluation and rebuilds.
 - One initial VM host target, `war`, for user `r` on `x86_64-linux`.
-- Planned future host directories are `death` for the server, `conquest` for
-  the laptop, and `wrath` for the media/gaming machine.
+- The `conquest` laptop is now an active real-hardware target. It shares the
+  workstation baseline with `war`, uses its checked-in generated laptop
+  hardware file, and is wired for NVIDIA hybrid graphics with PRIME offload
+  pending confirmed GPU PCI bus IDs.
+- Planned future host directories are `death` for the server and `wrath` for
+  the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable
   modules.
 - Home Manager integrated through the NixOS module system, with no separate
   `home-manager switch` workflow.
 - Mango/Wayland workstation baseline, not a full desktop environment.
 - The active VM target now uses Plymouth for graphical boot/LUKS handoff and
-  greetd to launch Mango through UWSM for user `r`. Plasma and SDDM have been
-  removed from the active module graph; the `.bak` files remain as historical
-  fallback/reference material only.
+  greetd to launch Mango for user `r`. `war` keeps a direct Mango debug wrapper
+  for VM bring-up, while `conquest` uses the intended clean UWSM-managed Mango
+  path on real hardware. Plasma and SDDM have been removed from the active
+  module graph; the `.bak` files remain as historical fallback/reference
+  material only.
 - Store-managed config by default. The reserved `dotfiles/` directory is for
   explicitly chosen live-editable config sources linked into `$HOME` by Home
   Manager while iterating.
@@ -116,6 +122,8 @@ Do not implement these without a separate, specific request:
 - Secrets scaffolding until there is a real secret consumer.
 - Importing NVIDIA-specific graphics configuration into `war` until testing on
   real hardware or with GPU passthrough.
+- Finalizing `conquest` PRIME offload bus IDs until `lspci` output has been
+  collected on the laptop.
 
 ## Validation Notes
 
@@ -125,6 +133,7 @@ Validate development changes from `/home/r/nixos/vm-nixos` when possible with:
 nix flake show --no-write-lock-file
 nix flake check --no-build
 sudo nixos-rebuild build --flake .#war
+sudo nixos-rebuild build --flake .#conquest
 ```
 
 Run real build, test, switch, reboot, installer, and bootloader commands inside

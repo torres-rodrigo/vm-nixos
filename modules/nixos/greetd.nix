@@ -7,6 +7,7 @@
 
 let
   mangoConfig = "${host.userHome}/.config/mango/config.conf";
+  isWarVm = host.hostname == "war";
 
   mangoSession = pkgs.writeShellScript "war-mango-session" ''
     set -u
@@ -69,9 +70,26 @@ let
     exit "$status"
   '';
 
-  mangoCommand = "${mangoSession}";
+  mangoCommand =
+    if isWarVm then
+      "${mangoSession}"
+    else
+      lib.escapeShellArgs [
+        "${pkgs.uwsm}/bin/uwsm"
+        "start"
+        "-N"
+        "Mango WM"
+        "-D"
+        "mango"
+        "-C"
+        "Mango compositor managed by UWSM"
+        "--"
+        "/run/current-system/sw/bin/mango"
+        "-c"
+        mangoConfig
+      ];
 
-  tuigreetCommand = pkgs.writeShellScript "war-tuigreet" ''
+  tuigreetCommand = pkgs.writeShellScript "${host.hostname}-tuigreet" ''
     if ${pkgs.plymouth}/bin/plymouth --ping; then
       ${pkgs.plymouth}/bin/plymouth quit || true
     fi

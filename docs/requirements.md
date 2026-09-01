@@ -3,7 +3,7 @@
 ## Target
 
 Build the replacement NixOS configuration under `/home/r/nixos/vm-nixos` for
-the current x86_64 VM named `war` and user `r`.
+the current x86_64 VM named `war`, the `conquest` laptop, and user `r`.
 
 The first milestone is a minimal, buildable VM system that preserves the
 current fallback system's essentials: bootability, networking, locale, user
@@ -71,17 +71,23 @@ Avoid these patterns from the temp example:
 
 ## System Requirements
 
-- Initial host target: `war`.
+- Initial VM host target: `war`.
+- Active laptop host target: `conquest`.
 - Initial user: `r`.
 - Initial system: `x86_64-linux`.
-- Planned future hosts: `death` for the server, `conquest` for the laptop, and
-  `wrath` for the media/gaming machine.
+- Planned future hosts: `death` for the server and `wrath` for the
+  media/gaming machine.
 - Time zone: `America/Montevideo`.
 - Locale: `en_US.UTF-8`, with Uruguay-specific locale settings where useful.
 - Networking: NetworkManager.
 - Audio: PipeWire with PulseAudio compatibility; JACK support may be added with
   the reusable audio baseline.
 - Boot: systemd-boot for the VM baseline.
+- `conquest` should mirror the shared `war` workstation baseline while using
+  its own generated laptop hardware configuration.
+- `conquest` targets NVIDIA hybrid graphics with Intel as the primary display
+  GPU and NVIDIA PRIME offload for high-performance applications. PRIME bus IDs
+  must come from the laptop's real `lspci` output, not guesses.
 - Packages: install keeper packages system-wide through NixOS unless a package
   has a concrete user-scoped reason.
 - Firewall: default-deny inbound workstation firewall unless a specific service
@@ -99,7 +105,7 @@ Avoid these patterns from the temp example:
   to preserve a fallback behavior during migration.
 - Home Manager is integrated through the NixOS module system.
 - Do not require separate `home-manager switch` runs; `sudo nixos-rebuild switch
-  --flake .#war` must activate system and Home Manager changes together.
+  --flake .#<host>` must activate system and Home Manager changes together.
 - Home Manager should manage user settings, dotfiles, program configuration,
   and user services.
 - Store-managed dotfiles are the default for stable configuration.
@@ -144,6 +150,9 @@ Avoid these patterns from the temp example:
 - Defer sops-nix scaffolding until a real secret consumer exists.
 - Defer Disko, encryption layout, installer execution, and promotion until the
   running workstation configuration is complete and stable.
+- Defer additional laptop services such as Bluetooth, fingerprint,
+  Thunderbolt tooling, aggressive battery tuning, and thermal policy until the
+  minimal `conquest` hardware build is validated.
 - Treat the old project and temp example as read-only references. The old
   configuration is a base/example to improve upon, not a source tree to copy
   directly.
@@ -157,6 +166,7 @@ When a Nix-capable environment is available, validate config changes from
 nix flake show --no-write-lock-file
 nix flake check --no-build
 sudo nixos-rebuild build --flake .#war
+sudo nixos-rebuild build --flake .#conquest
 ```
 
 Use static checks when available:

@@ -16,8 +16,8 @@ were preserved as `.bak` files when the flake layout was promoted.
 
 Status: In progress
 
-- Expand `flake.nix` into a usable flake that exposes
-  `nixosConfigurations.war`.
+- Expand `flake.nix` into a usable flake that exposes active host
+  configurations.
 - Add a host directory for `war` with a host configuration and generated
   hardware file copied or adapted from the current VM fallback.
 - Preserve the current essentials: user `r`, hostname `war`,
@@ -30,8 +30,10 @@ Status: In progress
 
 Current note:
 
-- The root flake now exposes `nixosConfigurations.war` and imports
-  `hosts/war/configuration.nix`.
+- The root flake now exposes `nixosConfigurations.war` and
+  `nixosConfigurations.conquest`.
+- `war` imports `hosts/war/configuration.nix`; `conquest` imports
+  `hosts/conquest/configuration.nix`.
 - The active host config sets `networking.hostName = "war"`.
 - The configuration has been promoted to the project root and validated through
   VM rebuild/reboot testing.
@@ -131,6 +133,32 @@ Current note:
 - `graphics-nvidia.nix` is intentionally not imported into `war` yet because
   the current VM test path likely uses virtual graphics and may not have NVIDIA
   GPU passthrough.
+- Added `modules/nixos/graphics-nvidia-hybrid.nix` for the `conquest` laptop.
+  It enables the NVIDIA driver, DRM modesetting, power management,
+  `nvidia-settings`, and hardware graphics. PRIME offload is gated on confirmed
+  Intel and NVIDIA bus IDs from the real laptop, so the first implementation
+  does not guess PCI IDs.
+
+## Phase 2B: Conquest Laptop Host
+
+Status: In progress
+
+- Promoted `conquest` from a placeholder host directory to an active flake host
+  target for the real laptop.
+- `conquest` imports the same shared workstation baseline as `war`, but uses
+  `hosts/conquest/hardware-configuration.nix` as its generated hardware source
+  of truth.
+- `conquest` is intentionally minimal for the first real-hardware pass:
+  Bluetooth, fingerprint, Thunderbolt user tooling, aggressive battery tuning,
+  and extra laptop services remain deferred until the base build and session
+  are validated.
+- `conquest` uses the clean greetd-to-UWSM Mango path instead of the `war` VM
+  debug wrapper and VM wlroots fallbacks.
+- Before final PRIME offload validation on `conquest`, collect GPU bus IDs:
+
+  ```console
+  lspci | rg -i "vga|3d|display|nvidia|intel"
+  ```
 
 ## Phase 3: Home Manager And Dotfile Policy
 
@@ -293,8 +321,8 @@ Status: Not started
   hardware-specific udev rules only when the target machine requires them.
 - Add package overlays, custom packages, or helper libraries only when there is
   real duplication or a concrete local package to expose.
-- Keep `death`, `conquest`, and `wrath` as planned future hosts until their
-  hardware and role-specific requirements are ready.
+- Keep `death` and `wrath` as planned future hosts until their hardware and
+  role-specific requirements are ready.
 
 ## Validation And Promotion
 
