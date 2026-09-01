@@ -1,4 +1,4 @@
-{ diskDevice }:
+{ diskDevice, passwordFile }:
 
 {
   disko.devices.disk.main = {
@@ -23,7 +23,7 @@
           content = {
             type = "luks";
             name = "cryptroot";
-            passwordFile = "/run/war-disko-luks-password";
+            inherit passwordFile;
             extraFormatArgs = [
               "--type"
               "luks2"

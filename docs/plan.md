@@ -280,18 +280,19 @@ Current note:
   Manager. The files started from the old config and were kept live-editable,
   with only the minimal startup-path fixes needed for this NixOS layout.
 
-## Phase 6: Encrypted VM Installer
+## Phase 6: Encrypted NixOS Installer
 
 Status: In progress
 
-- Added the first encrypted local-ISO install workflow for `war`.
+- Added the first encrypted local-ISO install workflow for selected hosts.
 - Added `install/disko-config.nix` for a UEFI, LUKS2, Btrfs subvolume layout.
-- Added a flake app, `install-encrypted-vm`, that lists available whole disks,
-  prompts for one shared LUKS/root/user `r` password, runs Disko, generates the
-  target hardware configuration, copies the complete Git checkout to
-  `/mnt/etc/nixos`, and installs `.#war` with temporary password hashes.
-- Added `docs/encrypted-vm-install.md` with the clone, dry-run, install,
-  reboot, and post-install Git workflow. The installed system keeps
+- Added a flake app, `install-encrypted-nixos`, that prompts for an active host,
+  lists available whole disks, prompts for one shared LUKS/root/user `r`
+  password, runs Disko, generates the selected host hardware configuration,
+  copies the complete Git checkout to `/mnt/etc/nixos`, and installs the
+  selected flake host with temporary password hashes.
+- Added `docs/encrypted-install.md` with the clone, dry-run, install, reboot,
+  and post-install Git workflow. The installed system keeps
   `/etc/nixos/.git`, so it can continue pulling and rebuilding from
   `/etc/nixos`.
 - This installer is destructive and should only be run from a NixOS ISO against

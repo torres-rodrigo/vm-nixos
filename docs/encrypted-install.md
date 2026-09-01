@@ -1,8 +1,9 @@
-# Encrypted VM Install
+# Encrypted NixOS Install
 
-This workflow performs a fresh encrypted install of the `war` VM from a NixOS
-ISO. It is destructive: the selected target disk is repartitioned, encrypted,
-formatted, and installed from scratch.
+This workflow performs a fresh encrypted install of a selected NixOS host from
+a NixOS ISO. It currently supports `war` for VM validation and `conquest` for
+the laptop. It is destructive: the selected target disk is repartitioned,
+encrypted, formatted, and installed from scratch.
 
 The installer uses one bootstrap password for all three initial credentials:
 
@@ -27,7 +28,7 @@ The Disko layout is defined in `install/disko-config.nix`:
 During install, the checked-out repository is copied to `/mnt/etc/nixos` with
 `.git` included. After reboot, the full Git checkout is available at
 `/etc/nixos`, including history, branches, and remotes. You do not need to clone
-the repo again inside the installed VM.
+the repo again inside the installed system.
 
 The temporary install wrapper builds from `/mnt/etc/nixos` after the copy is
 complete. This keeps the Nix flake input stable while `nixos-install` runs and
@@ -37,7 +38,7 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
 
 ## Install Steps
 
-1. Boot the VM from a current NixOS ISO in UEFI mode.
+1. Boot the target machine from a current NixOS ISO in UEFI mode.
 
 2. Connect networking in the live ISO environment.
 
@@ -62,32 +63,34 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
    installer runs this flake preflight before disk formatting and stops if
    required inputs cannot be fetched.
 
-5. Optionally run a dry run first. This validates the repo shape, disk menu, and
-   generated installer files without formatting or installing:
+5. Optionally run a dry run first. This validates the repo shape, host menu,
+   disk menu, and generated installer files without formatting or installing:
 
    ```console
-   nix run .#install-encrypted-vm -- --dry-run
+   nix run .#install-encrypted-nixos -- --dry-run
    ```
 
 6. Run the real installer:
 
    ```console
-   sudo nix run .#install-encrypted-vm
-   sudo nix --extra-experimental-features "nix-command flakes" run .#install-encrypted-vm
+   sudo nix run .#install-encrypted-nixos
+   sudo nix --extra-experimental-features "nix-command flakes" run .#install-encrypted-nixos
    ```
 
-7. Select the target disk from the numbered list.
+7. Select `war` or `conquest` from the numbered host list.
 
-8. Enter the shared LUKS, `root`, and user `r` password twice.
+8. Select the target disk from the numbered disk list.
 
-9. Confirm the destructive install by typing the exact selected disk path.
+9. Enter the shared LUKS, `root`, and user `r` password twice.
 
-10. Wait for Disko, encrypted hardware configuration generation, repo copy, and
+10. Confirm the destructive install by typing the exact selected disk path.
+
+11. Wait for Disko, encrypted hardware configuration generation, repo copy, and
    `nixos-install` to complete.
 
-11. Reboot and remove the ISO.
+12. Reboot and remove the ISO.
 
-12. Unlock the disk with the shared password and log in as user `r` with the
+13. Unlock the disk with the shared password and log in as user `r` with the
     same password.
 
 ## After Reboot
@@ -97,7 +100,7 @@ The installed checkout is already in place:
 ```console
 cd /etc/nixos
 git status
-sudo nixos-rebuild switch --flake .#war
+sudo nixos-rebuild switch --flake .#<host>
 ```
 
 To bring in later changes:
@@ -105,7 +108,7 @@ To bring in later changes:
 ```console
 cd /etc/nixos
 git pull
-sudo nixos-rebuild switch --flake .#war
+sudo nixos-rebuild switch --flake .#<host>
 ```
 
 Because `/etc/nixos/.git` is preserved, normal Git workflows continue from the
@@ -131,13 +134,17 @@ findmnt /var
 findmnt /var/log
 cd /etc/nixos
 git status
-sudo nixos-rebuild build --flake .#war
+sudo nixos-rebuild build --flake .#<host>
 ```
 
 The installer writes the encrypted hardware configuration explicitly after
 Disko finishes. Do not replace it with plain `nixos-generate-config` output:
 the file must contain `boot.initrd.luks.devices.cryptroot` and Btrfs subvolume
 mounts for `/`, `/home`, `/nix`, `/var`, and `/var/log`.
+
+The generated hardware file is written to `hosts/<host>/hardware-configuration.nix`.
+For `conquest`, this overwrites the checked-in laptop hardware file with the
+encrypted storage layout for the selected disk.
 
 The expected result is an unlocked `cryptroot` device with the Btrfs subvolumes
 mounted, a working user `r`, and a full Git checkout at `/etc/nixos`.

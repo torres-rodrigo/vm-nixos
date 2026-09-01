@@ -5,8 +5,8 @@ let
     inherit system;
   };
 
-  installEncryptedVm = pkgs.writeShellApplication {
-    name = "install-encrypted-vm";
+  installEncryptedNixos = pkgs.writeShellApplication {
+    name = "install-encrypted-nixos";
 
     runtimeInputs = with pkgs; [
       coreutils
@@ -21,15 +21,15 @@ let
       util-linux
     ];
 
-    text = builtins.readFile ../install/install-encrypted-vm.sh;
+    text = builtins.readFile ../install/install-encrypted-nixos.sh;
   };
 in
 {
   ${system} = {
-    install-encrypted-vm = {
+    install-encrypted-nixos = {
       type = "app";
-      program = "${installEncryptedVm}/bin/install-encrypted-vm";
-      meta.description = "Install the war VM with Disko-managed LUKS2 encryption";
+      program = "${installEncryptedNixos}/bin/install-encrypted-nixos";
+      meta.description = "Install a selected NixOS host with Disko-managed LUKS2 encryption";
     };
   };
 }

@@ -115,7 +115,7 @@ host-specific. Prefer small, buildable imports over bulk migration.
 Do not implement these without a separate, specific request:
 
 - Installer execution, destructive formatting, or real disk installation from
-  this development workspace. The repository now contains an encrypted VM
+  this development workspace. The repository now contains an encrypted NixOS
   installer and Disko layout, but running it belongs inside a disposable VM or
   target NixOS ISO session.
 - `nixos-rebuild switch`, persistent activation, reboot, or bootloader changes.
