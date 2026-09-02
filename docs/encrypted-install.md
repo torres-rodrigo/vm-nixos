@@ -206,10 +206,8 @@ broker child. The network services restarted repeatedly and socket-activated
 D-Bus each time, preventing `basic.target`, TTY logins, greetd, and Mango from
 being reached.
 
-The systemd-boot menu remains visible for five seconds. Select
-`NixOS (boot-debug)` to boot without Plymouth or greetd and stop
-at a normal console login under `multi-user.target`. This entry is intended for
-diagnostics; the default entry still uses the graphical boot and Mango login
+The systemd-boot menu remains visible for five seconds and keeps the last five
+normal generations. The default entry uses the graphical boot and Mango login
 path.
 
 To repair a VM installed before the subvolume permission fix, boot the NixOS
