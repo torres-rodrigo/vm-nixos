@@ -25,6 +25,7 @@
     ../../modules/nixos/printing.nix
     ../../modules/nixos/ssh.nix
     ../../modules/nixos/storage.nix
+    ../../modules/nixos/thunderbolt.nix
     ../../modules/nixos/users.nix
     ../../modules/nixos/wayland.nix
   ];
