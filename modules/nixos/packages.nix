@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     age # Modern file encryption tool
     bat # cat replacement
+    btop # resources
     curl # HTTP/HTTPS/FTP transfer tool
     delta # Enhanced diff viewer
     eza # ls replacement
@@ -11,6 +12,7 @@
     fzf # Fuzzy finder
     git # Version control
     gnupg # OpenPGP encryption and signing tools
+    htop # resources
     jq # JSON processor and pretty-printer
     lazygit # TUI for Git
     less # Pager
