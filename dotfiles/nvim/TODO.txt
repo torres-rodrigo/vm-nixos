@@ -1,0 +1,550 @@
+TEST
+functionality:
+- mango fully configured
+- screenshot/screenrecording util
+- Neovim setup
+- pdf reader and editor
+- obsidian setup
+- usefull scripts and actual ergonomic way to call them
+- programming languages setup
+- gopass setup
+- image viewer
+- zen browser config with profiles, hardened, extensions, bookmarks
+- firewall
+- minimal bar
+- volumen and brightness toggles
+- clipboard history
+- monitors setup
+-- modern file patching tool
+
+Research packages:
+  gopass research
+  ledger/hledger finances
+  sioyek
+  recent projects script, fzf , templates?
+  typst
+  emacs
+  podman
+  nvidia drivers
+  dusky "fun/useful packages" parakeet VTT, Kokori TTS, tesseract text extractor
+  linux image viewer nsxiv, nomacs
+  actiona automator software
+  handy transcription sw free open source local
+
+make tab completion on zsh work like **<Tab> fzf
+
+systemd startup delay
+/boot/loader/loader.conf
+
+TODO
+  make rg functions and config
+  vz function should write to the terminal the selected items
+  Finish up fastfetch config Image
+  wezterm copy command shortcut && delete entire line command, integrate multiplexer, and cool commands that i am missing for searches
+  make all necessary dir mkdir -p "$XDG_STATE_HOME/zsh" also the ones to for zshenv script for creating all dirs
+  put librewolf config on zen
+  learn to use zen shortcuts
+  setup bookmarks and extensions
+  setup workspaces
+  zen plugin/extension
+  extension
+  z mark elements of page(f functionality in vimium, includes links and elements), shift z open link in new tab, alt z open link in preview,  ctrl shift z open multiple links in new tabs, alt shift z multiple links on private tab
+  alt hjkl for scrolling
+  y z yank link
+  marks m + lower case letter local mark, m + upper case letter or number global mark
+  ` plus mark letter / number to go there
+  add aliases to common places
+  add contrl functionality to terminal ctrl + e open file browser
+  kill process function
+  apperance apps for consistency, themes and icons
+  curl "wttr.in"
+  functionality where I can execute the contents of a vim file as a command line command
+  have a script that shows all aliases with a description of what it does, have them categorized by program with option to enter that command in the terminal
+  Info repos and scripts searcher / executer / navi prim video "I made the greatest tool ever! ..." cht.sh
+  add functionality to fzf scripts so that with a keybind we can go to dir or open file, add keybind that prints in a formated way the selected items
+  tsoadings boomer zoom app now written in JAI
+
+wezterm
+{ key = 'phys:Space', mods = 'SHIFT|CTRL', action = act.QuickSelect },
+{ key = 'f', mods = 'SHIFT|CTRL', action = act.Search 'CurrentSelectionOrEmptyString' },
+{ key = 'U', mods = 'CTRL', action = act.CharSelect{ copy_on_select = true, copy_to =  'ClipboardAndPrimarySelection' } },
+{ key = 'U', mods = 'SHIFT|CTRL', action = act.CharSelect{ copy_on_select = true, copy_to =  'ClipboardAndPrimarySelection' } },
+
+keymaps keybinds clean up
+buffers picker if only a buffer number is typed it should take you to the buffer with that matching number
+
+ADD a scratch pad for nvim?
+add nix lsp for Neovim
+//skim find git repos
+fd -H --no-ignore-vcs -t d '^\.git$' |
+fzf --ansi \
+  --preview 'git -C "$(dirname {})" -c color.ui=always log --all --graph --decorate --oneline | head -200'
+//aliases
+alias | fzf --prompt="Alias> "
+
+-------------------
+make one for trash files, recover, del. clear trash
+[metadata]
+name = "trash"
+description = "Browse and restore trashed files"
+requirements = ["trash-list", "trash-restore"]
+[source]
+command = "trash-list 2>/dev/null"
+no_sort = true
+frecency = false
+[preview]
+command = "echo '{}'"
+[ui]
+layout = "portrait"
+preview_panel = { size = 30 }
+[actions.restore]
+description = "Restore the selected trashed file"
+command = "echo '{split: :1..}' | trash-restore"
+mode = "execute"
+[actions.empty]
+description = "Empty the entire trash"
+command = "trash-empty"
+mode = "execute"
+-------------------
+-------------------
+make one for podman
+[metadata]
+name = "podman-containers"
+description = "List and manage Podman containers"
+requirements = ["podman", "jq"]
+[source]
+command = [
+  { name = "Running", run = "podman ps --format '{{.Names}}\t{{.Image}}\t{{.Status}}'" },
+  { name = "All",     run = "podman ps -a --format '{{.Names}}\t{{.Image}}\t{{.Status}}'" },
+]
+display = "{split:\t:0} ({split:\t:2})"
+output = "{split:\t:0}"
+[preview]
+command = "podman inspect '{split:\t:0}' | jq -C '.[0] | {Name, State, Config: {Image: .Config.Image, Cmd: .Config.Cmd}, NetworkSettings: {IPAddress: .NetworkSettings.IPAddress}}'"
+[ui]
+layout = "portrait"
+[keybindings]
+ctrl-s = "actions:start"
+f2 = "actions:stop"
+ctrl-r = "actions:restart"
+ctrl-l = "actions:logs"
+ctrl-e = "actions:exec"
+ctrl-d = "actions:remove"
+[actions.start]
+description = "Start the selected container"
+command = "podman start '{split:\t:0}'"
+mode = "fork"
+[actions.stop]
+description = "Stop the selected container"
+command = "podman stop '{split:\t:0}'"
+mode = "fork"
+[actions.restart]
+description = "Restart the selected container"
+command = "podman restart '{split:\t:0}'"
+mode = "fork"
+[actions.logs]
+description = "Follow logs of the selected container"
+command = "podman logs -f '{split:\t:0}'"
+mode = "execute"
+[actions.exec]
+description = "Execute shell in the selected container"
+command = "podman exec -it '{split:\t:0}' /bin/sh"
+mode = "execute"
+[actions.remove]
+description = "Remove the selected container"
+command = "podman rm '{split:\t:0}'"
+mode = "execute"
+-------------------
+rip kill proces interactive personal project to do in odin
+
+knowledge nvim
+substitue
+:s substitutes only on the current line.
+:s/foo/bar/g
+Replaces foo with bar on the line where your cursor is.
+
+:%s substitutes across the whole current buffer.
+:%s/foo/bar/g
+Replaces foo with bar on every line in the file.
+:'<,'>s/foo/bar/g -> substitute only inside the visual selection lines
+
+without g replaces first match in the line
+with g replaces all matches per line
+I case sensitive
+e no errores if no matches
+c confirm
+
+:g/^o/s/foo/bar/g
+  Meaning:
+  - :g/^o/ -> only lines that start with o
+  - s/foo/bar/g -> run this substitution on those lines
+
+Opposite condition:
+:v/^o/s/foo/bar/g
+:v means “lines that do not match.”
+
+Common :global conditions:
+:g/foo/
+Lines containing foo.
+
+:v/foo/
+Lines not containing foo.
+
+:g/^foo/
+Lines starting with foo.
+
+:g/foo$/
+Lines ending with foo.
+
+:g/^\s*$/
+Blank or whitespace-only lines.
+
+:g/^\s*#/
+Comment lines, for many shell/Python-style files.
+
+:g/TODO\|FIXME/
+Lines containing TODO or FIXME.
+
+:g/\vfoo|bar|baz/
+Same idea using very-magic regex, easier alternation syntax.
+
+:g/\d/
+Lines containing a digit.
+
+:g/^\s\+/
+Indented lines.
+
+:g/^\S/
+Non-indented lines.
+
+:g/foo.*bar/
+Lines where foo appears before bar.
+
+:g/foo/.,+3s/a/b/g
+For each line containing foo, apply substitution to that line and the next 3 lines.
+
+:g/foo/+1s/a/b/g
+For each line containing foo, apply substitution to the line after it.
+
+:g/foo/normal @q
+Run macro q on every line containing foo.
+
+:v/keep/d
+Delete every line that does not contain keep.
+
+The main pattern is:
+:g/{condition}/{command}
+:v/{condition}/{command}
+====================================================================================================================================================================
+
+knowledge
+  update aur: paru -S paru
+  # -------------------------------------------
+  # 5. Suffix Aliases - Open Files by Extension
+  # -------------------------------------------
+  # Just type the filename to open it with the associated program
+  alias -s json=jless
+  alias -s md=bat
+  alias -s go='$EDITOR'
+  alias -s rs='$EDITOR'
+  alias -s txt=bat
+  alias -s log=bat
+  alias -s py='$EDITOR'
+  alias -s js='$EDITOR'
+  alias -s ts='$EDITOR'
+  alias -s html=open  # macOS: open in default browser
+
+  # -------------------------------------------
+  # 6. Global Aliases - Use Anywhere in Commands
+  # -------------------------------------------
+  # Redirect stderr to /dev/null
+  alias -g NE='2>/dev/null'
+
+  # Redirect stdout to /dev/null
+  alias -g NO='>/dev/null'
+
+  # Redirect both stdout and stderr to /dev/null
+  alias -g NUL='>/dev/null 2>&1'
+
+# Pipe to jq
+alias -g J='| jq'
+
+# Copy output to clipboard (macOS)
+alias -g C='| pbcopy'
+
+web apps 90%
+tuis 90%
+
+zsh /etc/zsh/zshenv --> export ZDOTDIR="$HOME/.config/zsh" DONE
+# Copy output to clipboard (macOS)
+alias -g C='| pbcopy'
+
+# Copy output to clipboard (Linux with xclip)
+# alias -g C='| xclip -selection clipboard'
+# Copy current command buffer to clipboard (macOS)
+function copy-buffer-to-clipboard() {
+  echo -n "$BUFFER" | pbcopy
+  zle -M "Copied to clipboard"
+}
+zle -N copy-buffer-to-clipboard
+bindkey '^Xc' copy-buffer-to-clipboard
+
+# For Linux with wl-copy:
+# function copy-buffer-to-clipboard() {
+#   echo -n "$BUFFER" | wl-copy
+#   zle -M "Copied to clipboard"
+# }
+
+
+You pick a branch and a file → this is the “base file”
+You pick another branch and a file → this is the “comparison file”
+Both files are opened in Neovim (or your editor) as a diff, so you can see differences and edit either file on the fly
+Temporary files are used so your working directory is safe
+Perfect — we can do that with nvim -d (diff mode) or vimdiff and git show to extract the files.
+
+gdiffedit() {
+    local branch1 branch2 file1 file2 tmp1 tmp2 editor
+
+    # Choose first branch
+    echo "Select the first branch:"
+    select branch1 in $(git branch --all | sed 's/^[* ]*//'); do
+        [ -n "$branch1" ] && break
+    done
+
+    # Choose file from first branch
+    echo "Select a file from $branch1:"
+    select file1 in $(git ls-tree -r --name-only "$branch1"); do
+        [ -n "$file1" ] && break
+    done
+
+    # Choose second branch
+    echo "Select the second branch:"
+    select branch2 in $(git branch --all | sed 's/^[* ]*//'); do
+        [ -n "$branch2" ] && break
+    done
+
+    # Choose file from second branch
+    echo "Select a file from $branch2:"
+    select file2 in $(git ls-tree -r --name-only "$branch2"); do
+        [ -n "$file2" ] && break
+    done
+
+    # Create temporary files
+    tmp1=$(mktemp /tmp/gitfile1.XXXX)
+    tmp2=$(mktemp /tmp/gitfile2.XXXX)
+
+    # Extract files into temp files
+    git show "$branch1:$file1" > "$tmp1"
+    git show "$branch2:$file2" > "$tmp2"
+
+    # Open in Neovim diff mode (editable)
+    editor="${EDITOR:-nvim}"  # default to nvim if $EDITOR not set
+    "$editor" -d "$tmp1" "$tmp2"
+
+    # Ask if you want to copy changes back to working directory
+    read -p "Do you want to save changes back to working tree? [y/N] " save_changes
+    if [[ "$save_changes" =~ ^[Yy]$ ]]; then
+        cp "$tmp1" "$file1"
+        cp "$tmp2" "$file2"
+        echo "Changes saved to $file1 and $file2"
+    fi
+
+    # Cleanup
+    rm -f "$tmp1" "$tmp2"
+}
+Prompts for branch and file twice (base and comparison)
+Uses git show → extracts files into temporary files
+Opens both files in nvim -d for a side-by-side diff/edit
+After editing, optionally copies changes back to the working directory
+Cleans up temporary files automatically
+
+is there a way that for selecting the files i want to bring into my current branch to select them with fzf?
+I want to be able to select them from multiple branches if necessary
+I want to be able to select multiple files if necessary
+
+the result should be to put the file in the same path it belongs to in its original branch with the name modified to represent it example original/path/file1_b1_temp.c
+the structure being original file name_branchName_temp.extension
+Or if the user specifies a path for the files to be created in the specified path.
+
+how should the workflow go
+user gets prompted to select a branch confirm (if nothing is selected it does nothing) or cancel/quit out.
+if the user selects a branch  then gets prompted to select all the files from that branch they want. after confirming the selection
+they are again presented with the options of selecting a branch confirming or canceling/quiting.
+
+if the user confirms and there where files selected they get created as disscussed .
+
+When calling the function myMethod if the user adds a valid directory as a parameter then all the files are created there, if invalid say invalid directory and if no parameter is given then the files should be created in the original path they where on the original branch
+myMethod() {
+  local output_dir=""
+  local selections=()
+
+  # -------------
+  # Validate output directory
+  # -------------
+  if [ -n "$1" ]; then
+    if [ ! -d "$1" ]; then
+      echo "Invalid directory: $1"
+      return 1
+    fi
+    output_dir="$(cd "$1" && pwd)"
+  fi
+
+  # -------------
+  # Branch selection loop
+  # -------------
+  while true; do
+    local branch
+    branch=$(git branch --all --format='%(refname:short)' \
+      | sed 's|^origin/||' \
+      | sort -u \
+      | fzf --prompt="Select branch (ESC to finish): ")
+
+    [ -z "$branch" ] && break
+
+    # -------------
+    # File selection for branch
+    # -------------
+    local files
+    files=$(git ls-tree -r --name-only "$branch" \
+      | fzf --multi --prompt="Select files from $branch (ESC to skip): ")
+
+    [ -z "$files" ] && continue
+
+    while IFS= read -r file; do
+      selections+=("$branch:$file")
+    done <<< "$files"
+  done
+
+  # -------------
+  # No selections → nothing to do
+  # -------------
+  if [ "${#selections[@]}" -eq 0 ]; then
+    echo "No files selected. Nothing to do."
+    return 0
+  fi
+
+  # -------------
+  # Create files
+  # -------------
+  for entry in "${selections[@]}"; do
+    local branch="${entry%%:*}"
+    local file="${entry#*:}"
+
+    local dir base name ext target_dir target_file
+
+    dir="$(dirname "$file")"
+    base="$(basename "$file")"
+    name="${base%.*}"
+    ext="${base##*.}"
+
+    if [ "$name" = "$ext" ]; then
+      ext=""
+    else
+      ext=".$ext"
+    fi
+
+    if [ -n "$output_dir" ]; then
+      target_dir="$output_dir"
+    else
+      target_dir="$dir"
+      mkdir -p "$target_dir"
+    fi
+
+    target_file="${target_dir}/${name}_${branch}_temp${ext}"
+
+    if [ -e "$target_file" ]; then
+      echo "Skipping existing file: $target_file"
+      continue
+    fi
+
+    git show "$branch:$file" > "$target_file" || {
+      echo "Failed to extract $file from $branch"
+      continue
+    }
+
+    echo "Created: $target_file"
+  done
+}
+
+
+
+Logo
+start with "italic" inverted satanic cross
+maybe add like a double orthodox russian cross at the top
+surround it with two circles and place runes or symbols
+skull at the bottom
+R rune
+strength, courage, protection rune
+axes?
+
+name monogram
+R, could be mirrored
+T as a sword
+##############################################################
+In your flake.nix, define a variable:
+nix
+
+{
+  description = "My NixOS config";
+
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+  outputs = { self, nixpkgs, ... }:
+    let
+      stateVersion = "26.05";
+    in {
+      nixosConfigurations.PC = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./configuration.nix
+          { system.stateVersion = stateVersion; }
+        ];
+      };
+
+      homeConfigurations.r = nixpkgs.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        modules = [
+          ./home_configuration.nix
+          { home.stateVersion = stateVersion; }
+        ];
+      };
+    };
+}
+
+Here, stateVersion is defined once and injected into both system and home configs.
+🛠️ Example with plain configuration.nix
+
+If you’re not using flakes, you can still use a let binding:
+nix
+
+{ config, pkgs, ... }:
+
+let
+  stateVersion = "26.05";
+in
+{
+  system.stateVersion = stateVersion;
+
+  imports = [
+    ./home_configuration.nix
+  ];
+}
+
+Then in home_configuration.nix, you can reference it if you pass stateVersion via specialArgs:
+nix
+
+{ config, pkgs, stateVersion, ... }:
+
+{
+  home.stateVersion = stateVersion;
+}
+
+##############################################################
+YT stuff
+Stay private
+https://www.youtube.com/watch?v=-Hjt6rKR0JQ
+
+Cybersecurity projects to build
+https://www.youtube.com/watch?v=maho1u6iTyc
+
+Research stow to manage nix config or just clone to /mnt/etc/nixos

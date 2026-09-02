@@ -35,6 +35,11 @@ in
     force = true;
   };
 
+  home.file.".config/nvim" = {
+    source = liveConfig "nvim";
+    force = true;
+  };
+
   home.file.".config/fzf/fzf" = {
     source = liveConfig "fzf/fzf";
     force = true;
