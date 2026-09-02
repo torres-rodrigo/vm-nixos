@@ -5,6 +5,7 @@
     age # Modern file encryption tool
     bash-language-server # Bash language server
     bat # cat replacement
+    brightnessctl # Backlight control for laptop brightness keybindings
     btop # resources
     chafa # Terminal graphics previews
     clang-tools # C/C++ language tooling
