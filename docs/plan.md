@@ -129,15 +129,16 @@ Current note:
 - Added inactive `modules/nixos/graphics-nvidia.nix` for the real `war`
   desktop's NVIDIA GeForce RTX 4060 Ti: proprietary NVIDIA driver selection,
   hardware graphics, 32-bit graphics support, NVIDIA DRM modesetting, the open
-  NVIDIA kernel module, and `nvidia-settings`.
+  NVIDIA kernel module, and NVIDIA settings through
+  `hardware.nvidia.nvidiaSettings`.
 - `graphics-nvidia.nix` is intentionally not imported into `war` yet because
   the current VM test path likely uses virtual graphics and may not have NVIDIA
   GPU passthrough.
 - Added `modules/nixos/graphics-nvidia-hybrid.nix` for the `conquest` laptop.
   It enables the NVIDIA driver, DRM modesetting, power management,
-  `nvidia-settings`, and hardware graphics. PRIME offload is gated on confirmed
-  Intel and NVIDIA bus IDs from the real laptop, so the first implementation
-  does not guess PCI IDs.
+  NVIDIA settings through `hardware.nvidia.nvidiaSettings`, and hardware
+  graphics. PRIME offload is gated on confirmed Intel and NVIDIA bus IDs from
+  the real laptop, so the first implementation does not guess PCI IDs.
 
 ## Phase 2B: Conquest Laptop Host
 

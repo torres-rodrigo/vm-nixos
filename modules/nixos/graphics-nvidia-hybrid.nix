@@ -1,7 +1,6 @@
 {
   host,
   lib,
-  pkgs,
   ...
 }:
 
@@ -42,10 +41,6 @@ in
       };
     };
   };
-
-  environment.systemPackages = with pkgs; [
-    nvidia-settings
-  ];
 
   warnings = lib.optional (!hasPrimeBusIds) ''
     conquest enables the NVIDIA hybrid driver, but PRIME offload is waiting for
