@@ -151,10 +151,12 @@ Avoid these patterns from the temp example:
 - Defer sops-nix scaffolding until a real secret consumer exists.
 - Defer Disko, encryption layout, installer execution, and promotion until the
   running workstation configuration is complete and stable.
-- Defer additional laptop services such as Bluetooth, fingerprint, aggressive
-  battery tuning, and thermal policy until the minimal `conquest` hardware
-  build is validated. Thunderbolt connection support is limited to Bolt unless
-  firmware updates or GUI tooling are explicitly requested.
+- Defer additional laptop services such as Bluetooth, aggressive battery
+  tuning, and thermal policy until the minimal `conquest` hardware build is
+  validated. Thunderbolt connection support is limited to Bolt unless firmware
+  updates or GUI tooling are explicitly requested. Fingerprint support is
+  limited to `fprintd` enrollment and verification until PAM integration is
+  explicitly requested after hardware validation.
 - Treat the old project and temp example as read-only references. The old
   configuration is a base/example to improve upon, not a source tree to copy
   directly.

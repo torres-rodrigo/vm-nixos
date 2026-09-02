@@ -11,6 +11,7 @@
     ../../modules/nixos/config-checkout.nix
     ../../modules/nixos/dns.nix
     ../../modules/nixos/firewall.nix
+    ../../modules/nixos/fingerprint.nix
     ../../modules/nixos/fonts.nix
     ../../modules/nixos/greetd.nix
     ../../modules/nixos/graphics-nvidia-hybrid.nix

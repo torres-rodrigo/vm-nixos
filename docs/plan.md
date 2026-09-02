@@ -150,8 +150,8 @@ Status: In progress
   `hosts/conquest/hardware-configuration.nix` as its generated hardware source
   of truth.
 - `conquest` is intentionally minimal for the first real-hardware pass:
-  Bluetooth, fingerprint, aggressive battery tuning, and extra laptop services
-  remain deferred until the base build and session are validated.
+  Bluetooth, aggressive battery tuning, and extra laptop services remain
+  deferred until the base build and session are validated.
 - `conquest` uses the clean greetd-to-UWSM Mango path instead of the `war` VM
   debug wrapper and VM wlroots fallbacks.
 - Collected `conquest` GPU bus IDs and configured PRIME offload:
@@ -163,6 +163,9 @@ Status: In progress
 - Added lean Thunderbolt connection support for `conquest` through
   `services.hardware.bolt.enable`. Firmware updates through `fwupd` and GUI
   control panels remain deferred.
+- Added enrollment-only fingerprint support for the Goodix `27c6:63ac` sensor
+  through `services.fprintd.enable`. PAM integration for login, sudo, polkit,
+  and unlock remains deferred until enrollment and verification are reliable.
 
 ## Phase 3: Home Manager And Dotfile Policy
 

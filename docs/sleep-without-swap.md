@@ -140,8 +140,9 @@ The low-memory direction remains:
 - keep Mango plus greetd instead of a full desktop environment;
 - avoid background-heavy sync, indexing, container, VM, and app services until
   there is a concrete need;
-- defer Bluetooth, fingerprint, firmware tooling, GUI hardware panels, and
-  aggressive laptop power daemons until the base laptop system is validated;
+- defer Bluetooth, firmware tooling, GUI hardware panels, fingerprint PAM
+  integration, and aggressive laptop power daemons until the base laptop system
+  is validated;
 - inspect actual memory use with tools such as `systemctl`, `systemctl --user`,
   `ps`, `smem`, `ps_mem`, or `systemd-cgtop` before removing services.
 

@@ -49,7 +49,9 @@ truth:
   hardware file, and is wired for NVIDIA hybrid graphics with PRIME offload
   using `PCI:0:2:0` for Intel Iris Xe and `PCI:1:0:0` for the NVIDIA RTX A1000
   Laptop GPU. It also has lean Thunderbolt connection support through Bolt;
-  firmware updates through `fwupd` and GUI control panels remain deferred.
+  firmware updates through `fwupd` and GUI control panels remain deferred. The
+  Goodix `27c6:63ac` fingerprint scanner is enabled for enrollment and
+  verification through `fprintd`, but PAM authentication remains deferred.
 - Planned future host directories are `death` for the server and `wrath` for
   the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable
