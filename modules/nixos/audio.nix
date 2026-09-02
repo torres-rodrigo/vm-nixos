@@ -101,8 +101,6 @@ in
   environment.systemPackages = with pkgs; [
     alsa-utils
     pamixer
-    pavucontrol
     pwvucontrol
-    qpwgraph
   ];
 }

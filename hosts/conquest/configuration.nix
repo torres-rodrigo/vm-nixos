@@ -23,7 +23,6 @@
     ../../modules/nixos/packages.nix
     ../../modules/nixos/performance.nix
     ../../modules/nixos/plymouth.nix
-    ../../modules/nixos/printing.nix
     ../../modules/nixos/sleep.nix
     ../../modules/nixos/ssh.nix
     ../../modules/nixos/storage.nix
