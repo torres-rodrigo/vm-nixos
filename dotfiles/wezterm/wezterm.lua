@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 local mux = wezterm.mux
 local config = wezterm.config_builder()
 
-config.enable_wayland = true
+config.enable_wayland = false
 config.automatically_reload_config = true
 
 config.front_end = 'WebGpu'
@@ -14,9 +14,10 @@ config.animation_fps = 144
 config.color_scheme = 'Tomorrow Night (Gogh)'
 
 config.font = wezterm.font_with_fallback { 'Aspergers', 'Autism', 'CaskaydiaCove NF SemiBold' }
-config.font_size = 17
+config.font_size = 16
 config.line_height = 1.0
 
+config.adjust_window_size_when_changing_font_size = false
 config.enable_scroll_bar = false
 config.use_resize_increments = false
 config.tab_bar_at_bottom = true
@@ -32,6 +33,10 @@ config.window_padding = {
     right = 0.0,
     top = 5.5,
     bottom = 0.0
+}
+config.window_content_alignment = {
+    horizontal = 'Left',
+    vertical = 'Top',
 }
 
 config.scrollback_lines = 10000
