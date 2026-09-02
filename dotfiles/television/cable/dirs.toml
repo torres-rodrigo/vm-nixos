@@ -1,0 +1,13 @@
+[metadata]
+name = 'dirs'
+description = 'Dirs'
+requirements = ['fd', 'eza']
+
+[source]
+command = [
+    { name = 'All', run = 'fd --type d --hidden --follow --exclude .git --no-ignore' },
+    { name = 'Hidden', run = 'fd --type d --hidden --exclude .git --no-ignore --glob ".*"' },
+]
+
+[preview]
+command = '''eza -lha --tree --icons=always --group-directories-first --color=always '{}''''

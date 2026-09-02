@@ -5,6 +5,7 @@
     age # Modern file encryption tool
     bat # cat replacement
     btop # resources
+    chafa # Terminal graphics previews
     curl # HTTP/HTTPS/FTP transfer tool
     delta # Enhanced diff viewer
     eza # ls replacement
@@ -20,6 +21,7 @@
     openssh # SSH client
     ripgrep # grep replacement
     starship # Shell prompt
+    television # Fuzzy finder and picker
     unzip # ZIP archive extraction
     wezterm # GPU-accelerated terminal emulator
     wget # File downloader

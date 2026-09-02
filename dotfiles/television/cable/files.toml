@@ -1,0 +1,33 @@
+[metadata]
+name = 'files'
+description = 'Files'
+requirements = ['fd', 'bat', 'chafa']
+
+[source]
+command = [
+    { name = 'All', run = 'fd --type f --hidden --follow --exclude .git --no-ignore' },
+    { name = 'Hidden', run = 'fd --type f --hidden --exclude .git --no-ignore --glob ".*"' },
+    { name = 'Files', run = 'fd --type f --exclude .git --no-ignore' },
+]
+
+[preview]
+command = 'bat --style=numbers --color=always --paging=never "{}" 2>/dev/null || file -b "{}"'
+# command = '''
+# case "$(printf '%s' '{}' | tr '[:upper:]' '[:lower:]')" in
+#   *.png|*.jpg|*.jpeg|*.gif|*.webp|*.bmp|*.tiff|*.tif)
+#     chafa --probe=off --format=symbols --polite=on --passthrough=none --optimize=0 --animate=off --scale=1.0 --exact-size=on --view-size=80x40 '{}' 2>/dev/null || file -b '{}'
+#     ;;
+#   *)
+#     bat --style=numbers --color=always --paging=never '{}' 2>/dev/null || file -b '{}'
+#     ;;
+# esac
+# '''
+
+[keybindings]
+ctrl-e = 'actions:edit'
+
+[actions.edit]
+description = 'Open selected entries in Neovim'
+command = "nvim {split:\n:..|map:{append:'|prepend:'}|join: }"
+mode = 'execute'
+separator = "\n"

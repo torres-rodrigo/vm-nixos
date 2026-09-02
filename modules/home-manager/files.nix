@@ -20,6 +20,16 @@ in
     force = true;
   };
 
+  home.file.".config/television/config.toml" = {
+    source = liveConfig "television/config.toml";
+    force = true;
+  };
+
+  home.file.".config/television/cable" = {
+    source = liveConfig "television/cable";
+    force = true;
+  };
+
   home.file.".config/fzf/fzf" = {
     source = liveConfig "fzf/fzf";
     force = true;

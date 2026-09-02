@@ -18,6 +18,8 @@ Current live-managed files:
 - `dotfiles/fzf/fzf` -> `~/.config/fzf/fzf`
 - `dotfiles/lazygit/config.yml` -> `~/.config/lazygit/config.yml`
 - `dotfiles/mango/config.conf` -> `~/.config/mango/config.conf`
+- `dotfiles/television/config.toml` -> `~/.config/television/config.toml`
+- `dotfiles/television/cable` -> `~/.config/television/cable`
 - `dotfiles/wezterm/wezterm.lua` -> `~/.config/wezterm/wezterm.lua`
 
 Starship and Git are store-managed through Home Manager modules instead of

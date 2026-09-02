@@ -1,0 +1,29 @@
+[metadata]
+name = 'dirs&files'
+description = 'Dirs & Files'
+requirements = ['fd', 'bat', 'eza']
+
+[source]
+command = [
+    { name = 'All', run = 'fd --hidden --follow --exclude .git --no-ignore' },
+    { name = 'Hidden', run = 'fd --hidden --exclude .git --no-ignore --glob ".*"' },
+    { name = 'Non-hidden', run = 'fd --type f --exclude .git --no-ignore' },
+]
+
+[preview]
+command = '''
+if [ -d '{}' ]; then
+  eza -lha --tree --icons=always --group-directories-first --color=always '{}'
+else
+  bat --style=numbers --color=always --paging=never '{}' 2>/dev/null || file -b '{}'
+fi
+'''
+
+[keybindings]
+ctrl-e = 'actions:edit'
+
+[actions.edit]
+description = 'Open selected entries in Neovim'
+command = "nvim {split:\n:..|map:{append:'|prepend:'}|join: }"
+mode = 'execute'
+separator = "\n"
