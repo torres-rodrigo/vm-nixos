@@ -1,7 +1,20 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
+  programs.nano.enable = false;
+
+  documentation = {
+    enable = false;
+    man.enable = false;
+    info.enable = false;
+    doc.enable = false;
+    nixos.enable = false;
+  };
+
+  environment.extraOutputsToInstall = lib.mkForce [ ];
+
   environment.systemPackages = with pkgs; [
+    fastfetch
     age # Modern file encryption tool
     bash-language-server # Bash language server
     bat # cat replacement
@@ -32,13 +45,18 @@
     starship # Shell prompt
     taplo # TOML language server and formatter
     television # Fuzzy finder and picker
+    tmux # Terminal multiplexer
     tree-sitter # Parser CLI used by Neovim
     unzip # ZIP archive extraction
     vscode-langservers-extracted # JSON/CSS/HTML/ESLint language servers
     wezterm # GPU-accelerated terminal emulator
+    ghostty
+    foot
+    kitty
     wget # File downloader
     yazi # Terminal file manager
     yaml-language-server # YAML language server
+    zed-editor # Text editor
     zoxide # Directory jumper used by Yazi
     zsh-autosuggestions # Fish-like autosuggestions for zsh
     zsh-completions # Extra completion definitions for zsh

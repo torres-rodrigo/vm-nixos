@@ -30,6 +30,11 @@ in
     force = true;
   };
 
+  home.file.".config/tmux/tmux.conf" = {
+    source = liveConfig "tmux/tmux.conf";
+    force = true;
+  };
+
   home.file.".config/yazi" = {
     source = liveConfig "yazi";
     force = true;
