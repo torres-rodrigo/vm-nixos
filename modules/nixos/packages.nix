@@ -9,6 +9,7 @@
     curl # HTTP/HTTPS/FTP transfer tool
     delta # Enhanced diff viewer
     eza # ls replacement
+    exiftool # Media metadata inspection
     fd # find replacement
     fzf # Fuzzy finder
     git # Version control
@@ -17,6 +18,7 @@
     jq # JSON processor and pretty-printer
     lazygit # TUI for Git
     less # Pager
+    mediainfo # Media file metadata inspection
     neovim # Text editor
     openssh # SSH client
     ripgrep # grep replacement
@@ -25,6 +27,8 @@
     unzip # ZIP archive extraction
     wezterm # GPU-accelerated terminal emulator
     wget # File downloader
+    yazi # Terminal file manager
+    zoxide # Directory jumper used by Yazi
     zsh-autosuggestions # Fish-like autosuggestions for zsh
     zsh-completions # Extra completion definitions for zsh
     zsh-syntax-highlighting # Syntax highlighting for zsh

@@ -30,6 +30,11 @@ in
     force = true;
   };
 
+  home.file.".config/yazi" = {
+    source = liveConfig "yazi";
+    force = true;
+  };
+
   home.file.".config/fzf/fzf" = {
     source = liveConfig "fzf/fzf";
     force = true;

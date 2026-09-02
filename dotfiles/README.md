@@ -21,6 +21,7 @@ Current live-managed files:
 - `dotfiles/television/config.toml` -> `~/.config/television/config.toml`
 - `dotfiles/television/cable` -> `~/.config/television/cable`
 - `dotfiles/wezterm/wezterm.lua` -> `~/.config/wezterm/wezterm.lua`
+- `dotfiles/yazi` -> `~/.config/yazi`
 
 Starship and Git are store-managed through Home Manager modules instead of
 live-linked. The zsh files live under `~/.config/zsh`; NixOS sets `ZDOTDIR`
