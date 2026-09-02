@@ -15,6 +15,11 @@ in
     force = true;
   };
 
+  home.file.".config/wezterm/wezterm.lua" = {
+    source = liveConfig "wezterm/wezterm.lua";
+    force = true;
+  };
+
   home.file.".config/fzf/fzf" = {
     source = liveConfig "fzf/fzf";
     force = true;
