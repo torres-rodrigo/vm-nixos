@@ -152,6 +152,8 @@ Status: In progress
 - `conquest` is intentionally minimal for the first real-hardware pass:
   Bluetooth, aggressive battery tuning, and extra laptop services remain
   deferred until the base build and session are validated.
+- `conquest` is configured for sleep-only power management: no swap devices, no
+  zram swap, no hibernation resume device, and lid-close suspend through logind.
 - `conquest` uses the clean greetd-to-UWSM Mango path instead of the `war` VM
   debug wrapper and VM wlroots fallbacks.
 - Collected `conquest` GPU bus IDs and configured PRIME offload:

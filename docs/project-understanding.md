@@ -52,6 +52,9 @@ truth:
   firmware updates through `fwupd` and GUI control panels remain deferred. The
   Goodix `27c6:63ac` fingerprint scanner is enabled for enrollment and
   verification through `fprintd`, but PAM authentication remains deferred.
+  `conquest` is also configured for sleep-only power management with no swap,
+  no zram swap, no hibernation resume device, and lid-close suspend through
+  logind.
 - Planned future host directories are `death` for the server and `wrath` for
   the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable

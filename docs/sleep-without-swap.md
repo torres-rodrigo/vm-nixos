@@ -15,8 +15,8 @@ The target behavior is:
 - hibernation should remain disabled or unused unless the project explicitly
   revisits the decision later.
 
-This matches the current encrypted installer direction, which generates
-`swapDevices = [ ];` for new installs.
+This matches the current encrypted installer direction and the active
+`conquest` hardware configuration, which both use `swapDevices = [ ];`.
 
 ## Sleep Versus Hibernation
 
@@ -76,7 +76,7 @@ separate feature and accept that it will require a real swap target.
 
 ## NixOS Direction
 
-The desired NixOS shape is intentionally simple:
+The active NixOS shape is intentionally simple:
 
 ```nix
 {
@@ -88,8 +88,7 @@ The desired NixOS shape is intentionally simple:
 Do not set `boot.resumeDevice` while hibernation is not in use. A resume device
 is only needed when the system must restore a hibernation image from disk.
 
-For laptop lid behavior, prefer explicit logind policy once suspend has been
-tested on the real machine:
+For laptop lid behavior, `conquest` uses explicit logind policy:
 
 ```nix
 {
@@ -101,9 +100,9 @@ tested on the real machine:
 }
 ```
 
-Treat that as a future implementation detail, not a requirement for the first
-install. The initial priority is to boot `conquest`, start the Mango session,
-and manually validate `systemctl suspend`.
+The initial priority is to boot `conquest`, start the Mango session, and
+manually validate `systemctl suspend` before treating lid-close behavior as
+fully proven.
 
 ## Validation
 
