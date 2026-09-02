@@ -18,7 +18,10 @@ let
       stateVersion = "26.05";
       configuration = ../hosts/conquest/configuration.nix;
       home = ../users/r/home.nix;
-      nvidiaPrime = { };
+      nvidiaPrime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
     };
 
     war = {

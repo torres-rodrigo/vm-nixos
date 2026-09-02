@@ -47,7 +47,8 @@ truth:
 - The `conquest` laptop is now an active real-hardware target. It shares the
   workstation baseline with `war`, uses its checked-in generated laptop
   hardware file, and is wired for NVIDIA hybrid graphics with PRIME offload
-  pending confirmed GPU PCI bus IDs.
+  using `PCI:0:2:0` for Intel Iris Xe and `PCI:1:0:0` for the NVIDIA RTX A1000
+  Laptop GPU.
 - Planned future host directories are `death` for the server and `wrath` for
   the media/gaming machine.
 - Host-specific identity and generated hardware kept separate from reusable
@@ -123,8 +124,6 @@ Do not implement these without a separate, specific request:
 - Secrets scaffolding until there is a real secret consumer.
 - Importing NVIDIA-specific graphics configuration into `war` until testing on
   real hardware or with GPU passthrough.
-- Finalizing `conquest` PRIME offload bus IDs until `lspci` output has been
-  collected on the laptop.
 
 ## Validation Notes
 

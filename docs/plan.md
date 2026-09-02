@@ -155,10 +155,11 @@ Status: In progress
   are validated.
 - `conquest` uses the clean greetd-to-UWSM Mango path instead of the `war` VM
   debug wrapper and VM wlroots fallbacks.
-- Before final PRIME offload validation on `conquest`, collect GPU bus IDs:
+- Collected `conquest` GPU bus IDs and configured PRIME offload:
 
   ```console
-  lspci | rg -i "vga|3d|display|nvidia|intel"
+  00:02.0 Intel Iris Xe Graphics -> PCI:0:2:0
+  01:00.0 NVIDIA RTX A1000 Laptop GPU -> PCI:1:0:0
   ```
 
 ## Phase 3: Home Manager And Dotfile Policy
