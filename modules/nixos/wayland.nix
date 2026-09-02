@@ -57,7 +57,6 @@
       qt6.qtwayland
       qt5.qtwayland
       rofi
-      soteria
       swaybg
       wev
       wayland-utils
