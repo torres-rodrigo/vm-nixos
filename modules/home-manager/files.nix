@@ -5,6 +5,16 @@ let
     config.lib.file.mkOutOfStoreSymlink "/etc/nixos/dotfiles/${path}";
 in
 {
+  home.file.".config/git/config" = {
+    source = liveConfig "git/config";
+    force = true;
+  };
+
+  home.file.".config/git/ignore" = {
+    source = liveConfig "git/ignore";
+    force = true;
+  };
+
   home.file.".config/lazygit/config.yml" = {
     source = liveConfig "lazygit/config.yml";
     force = true;
@@ -77,6 +87,11 @@ in
 
   home.file.".config/fzf/fzf" = {
     source = liveConfig "fzf/fzf";
+    force = true;
+  };
+
+  home.file.".config/starship/starship.toml" = {
+    source = liveConfig "starship/starship.toml";
     force = true;
   };
 
