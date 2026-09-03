@@ -42,6 +42,17 @@ let
     "media.peerconnection.ice.no_host" = true;
     "media.peerconnection.ice.proxy_only_if_behind_proxy" = true;
 
+    # Session restore and startup behavior.
+    "browser.startup.page" = 3;
+    "browser.sessionstore.restore_on_demand" = true;
+    "browser.sessionstore.restore_pinned_tabs_on_demand" = true;
+    "browser.sessionstore.resume_from_crash" = true;
+    "zen.workspaces.continue-where-left-off" = true;
+    "zen.urlbar.replace-newtab" = true;
+
+    # Zen interface preferences.
+    "zen.theme.content-element-separation" = 0;
+
     # Search, suggestions, and speculative network requests.
     "browser.search.suggest.enabled" = false;
     "browser.urlbar.suggest.searches" = false;
@@ -108,6 +119,16 @@ in
       bookmarks = {
         force = true;
         settings = [
+          {
+            name = "YouTube";
+            url = "https://youtube.com/";
+            keyword = "y";
+          }
+          {
+            name = "GitHub";
+            url = "https://github.com/";
+            keyword = "gh";
+          }
           {
             name = "NixOS";
             url = "https://nixos.org/";

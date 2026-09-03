@@ -253,6 +253,17 @@ Flake input plumbing:
        "media.peerconnection.ice.no_host" = true;
        "media.peerconnection.ice.proxy_only_if_behind_proxy" = true;
 
+       # Session restore and startup behavior.
+       "browser.startup.page" = 3;
+       "browser.sessionstore.restore_on_demand" = true;
+       "browser.sessionstore.restore_pinned_tabs_on_demand" = true;
+       "browser.sessionstore.resume_from_crash" = true;
+       "zen.workspaces.continue-where-left-off" = true;
+       "zen.urlbar.replace-newtab" = true;
+
+       # Zen interface preferences.
+       "zen.theme.content-element-separation" = 0;
+
        # Search, suggestions, and speculative network requests.
        "browser.search.suggest.enabled" = false;
        "browser.urlbar.suggest.searches" = false;
@@ -319,6 +330,16 @@ Flake input plumbing:
          bookmarks = {
            force = true;
            settings = [
+             {
+               name = "YouTube";
+               url = "https://youtube.com/";
+               keyword = "y";
+             }
+             {
+               name = "GitHub";
+               url = "https://github.com/";
+               keyword = "gh";
+             }
              {
                name = "NixOS";
                url = "https://nixos.org/";
@@ -402,6 +423,12 @@ The baseline should cover:
 - HTTPS-only mode enabled.
 - Mixed passive content blocking enabled.
 - WebRTC local IP leak protections enabled.
+- Previous windows and tabs restored on startup.
+- Restored tabs loaded on demand, with the previous active tab expected to be
+  selected.
+- Zen workspace restore enabled.
+- Zen's replacement of new-tab behavior with the URL bar prompt enabled.
+- Zen content element separation set to `0`.
 - Third-party and tracker cookie restrictions enabled.
 - Address and credit card autofill disabled.
 - Password saving disabled.
@@ -488,6 +515,16 @@ programs.zen-browser.profiles.default.bookmarks = {
   force = true;
   settings = [
     {
+      name = "YouTube";
+      url = "https://youtube.com/";
+      keyword = "y";
+    }
+    {
+      name = "GitHub";
+      url = "https://github.com/";
+      keyword = "gh";
+    }
+    {
       name = "NixOS";
       url = "https://nixos.org/";
     }
@@ -519,6 +556,16 @@ To add a bookmark:
 {
   name = "Example";
   url = "https://example.com/";
+}
+```
+
+To add an address-bar keyword bookmark:
+
+```nix
+{
+  name = "Example";
+  url = "https://example.com/";
+  keyword = "ex";
 }
 ```
 
@@ -589,6 +636,13 @@ Then confirm:
 - Configured bookmarks appear.
 - Declarative bookmarks replace the managed bookmark set because the module
   requires `force = true` when bookmark settings are declared.
+- With one normal webpage tab open, quit Zen with `Ctrl+Q`, reopen it, and
+  confirm that page is selected instead of the URL/search prompt.
+- With three normal webpage tabs open and the third tab selected, quit Zen with
+  `Ctrl+Q`, reopen it, and confirm the third tab is selected.
+- Repeat the same test with the window close button. If `Ctrl+Q` works but the
+  window close button restores the first tab, treat that as a Zen window-sync
+  close-path limitation and prefer `Ctrl+Q` for session-preserving quits.
 
 ## Acceptance Criteria
 
