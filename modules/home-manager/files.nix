@@ -25,6 +25,16 @@ in
     force = true;
   };
 
+  home.file.".config/ghostty/tmux-tabs.css" = {
+    source = liveConfig "ghostty/tmux-tabs.css";
+    force = true;
+  };
+
+  home.file.".config/kitty/kitty.conf" = {
+    source = liveConfig "kitty/kitty.conf";
+    force = true;
+  };
+
   home.file.".config/wezterm/wezterm.lua" = {
     source = liveConfig "wezterm/wezterm.lua";
     force = true;
