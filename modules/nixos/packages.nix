@@ -21,16 +21,20 @@
     brightnessctl # Backlight control for laptop brightness keybindings
     btop # resources
     chafa # Terminal graphics previews
+    clang # C/C++ compiler toolchain
     clang-tools # C/C++ language tooling
     curl # HTTP/HTTPS/FTP transfer tool
     delta # Enhanced diff viewer
     eza # ls replacement
     exiftool # Media metadata inspection
     fd # find replacement
+    foot # Terminal foo terminal
     fzf # Fuzzy finder
     gcc # Native compiler for editor tooling
+    ghostty # Terminal
     git # Version control
     gnupg # OpenPGP encryption and signing tools
+    go # Go compiler toolchain
     gopls # Go language server
     htop # resources
     jq # JSON processor and pretty-printer
@@ -39,6 +43,7 @@
     lua-language-server # Lua language server
     mediainfo # Media file metadata inspection
     neovim # Text editor
+    odin # Odin compiler toolchain
     ols # Odin language server
     openssh # SSH client
     ripgrep # grep replacement
@@ -49,8 +54,6 @@
     tree-sitter # Parser CLI used by Neovim
     unzip # ZIP archive extraction
     vscode-langservers-extracted # JSON/CSS/HTML/ESLint language servers
-    ghostty
-    foot
     wget # File downloader
     yazi # Terminal file manager
     yaml-language-server # YAML language server

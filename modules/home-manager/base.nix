@@ -19,9 +19,6 @@ in
       DOTNET_CLI_HOME = "$XDG_CONFIG_HOME/dotnet";
       DOTNET_CLI_CACHE_HOME = "$XDG_CACHE_HOME/dotnet";
 
-      ODIN_ROOT = "$XDG_DATA_HOME/odin";
-      OLS_BUILTIN_FOLDER = "$XDG_DATA_HOME/src/ols/builtin";
-
       STARSHIP_CONFIG = "$XDG_CONFIG_HOME/starship/starship.toml";
 
       FZF_DEFAULT_COMMAND = "fd --hidden --follow --exclude .git --no-ignore";
@@ -35,7 +32,6 @@ in
       "$HOME/.local/bin"
       "$XDG_DATA_HOME/cargo/bin"
       "$XDG_DATA_HOME/go/bin"
-      "$XDG_DATA_HOME/odin"
     ];
   };
 
