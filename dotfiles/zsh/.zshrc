@@ -3,17 +3,9 @@ fpath=(/run/current-system/sw/share/zsh/site-functions $fpath)
 autoload -U compinit && compinit -d "${XDG_CACHE_HOME}/zsh/zcompdump"
 
 # ── Plugins ───────────────────────────────────────────────────────────────────
-source_zsh_plugin() {
-    local plugin_path
-    for plugin_path in "$@"; do
-        [[ -r "$plugin_path" ]] && source "$plugin_path" && return 0
-    done
-}
-
-source_zsh_plugin \
-    /run/current-system/sw/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
-    /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+[[ -r "$XDG_CONFIG_HOME/zsh/nix-autosuggestions.zsh" ]] \
+    && source "$XDG_CONFIG_HOME/zsh/nix-autosuggestions.zsh"
 
 # ── Fzf ───────────────────────────────────────────────────────────────────────
 export FZF_CTRL_T_COMMAND='fd --hidden --follow --exclude .git --no-ignore'
@@ -256,7 +248,5 @@ vz() {
 }
 
 # zsh-syntax-highlighting should be loaded after widgets, keybindings, and prompt setup.
-source_zsh_plugin \
-    /run/current-system/sw/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
-    /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
+[[ -r "$XDG_CONFIG_HOME/zsh/nix-syntax-highlighting.zsh" ]] \
+    && source "$XDG_CONFIG_HOME/zsh/nix-syntax-highlighting.zsh"

@@ -15,12 +15,15 @@ Current live-managed files:
 
 - `dotfiles/zsh/.zshenv` -> `~/.config/zsh/.zshenv`
 - `dotfiles/zsh/.zshrc` -> `~/.config/zsh/.zshrc`
+- `dotfiles/foot/foot.ini` -> `~/.config/foot/foot.ini`
 - `dotfiles/fzf/fzf` -> `~/.config/fzf/fzf`
+- `dotfiles/kitty/kitty.conf` -> `~/.config/kitty/kitty.conf`
 - `dotfiles/lazygit/config.yml` -> `~/.config/lazygit/config.yml`
 - `dotfiles/mango/config.conf` -> `~/.config/mango/config.conf`
 - `dotfiles/nvim` -> `~/.config/nvim`
 - `dotfiles/television/config.toml` -> `~/.config/television/config.toml`
 - `dotfiles/television/cable` -> `~/.config/television/cable`
+- `dotfiles/tmux/tmux.conf` -> `~/.config/tmux/tmux.conf`
 - `dotfiles/wezterm/wezterm.lua` -> `~/.config/wezterm/wezterm.lua`
 - `dotfiles/yazi` -> `~/.config/yazi`
 
