@@ -13,6 +13,7 @@ scrolloff      = 5
 mouse_events   = [ "click", "scroll", "drag" ]
 
 [preview]
+image_preview_method = "sixel"
 wrap            = "no"
 tab_size        = 2
 max_width       = 600
