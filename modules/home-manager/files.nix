@@ -20,6 +20,11 @@ in
     force = true;
   };
 
+  home.file.".config/ghostty/config.ghostty" = {
+    source = liveConfig "ghostty/config.ghostty";
+    force = true;
+  };
+
   home.file.".config/wezterm/wezterm.lua" = {
     source = liveConfig "wezterm/wezterm.lua";
     force = true;

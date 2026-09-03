@@ -1,0 +1,16 @@
+# Tuned for the 3840x2400 eDP-1 panel at Mango scale 1.6.
+# The 2400x1500 logical screen targets the same 160x50 grid as Foot.
+font-family = "CaskaydiaCove Nerd Font"
+font-style = SemiBold
+font-size = 15
+adjust-cell-height = -6
+adjust-cell-width = 4%
+
+window-padding-x = 0
+window-padding-y = 0
+window-padding-balance = false
+window-decoration = none
+
+background-opacity = 0.85
+
+keybind = ctrl+shift+,=reload_config
