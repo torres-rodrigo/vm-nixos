@@ -30,6 +30,11 @@ in
     force = true;
   };
 
+  home.file.".config/mango/scripts/capture/ocr.sh" = {
+    source = liveConfig "mango/scripts/capture/ocr.sh";
+    force = true;
+  };
+
   home.file.".config/foot/foot.ini" = {
     source = liveConfig "foot/foot.ini";
     force = true;

@@ -12,6 +12,23 @@ Performance is the main tie breaker. Prefer the smallest reliable daemon or
 script for background services. Use Quickshell only where a persistent rich UI
 is actually valuable, such as a bar or a detailed device panel.
 
+## Chosen First Implementation
+
+The first implementation pass should take the on-demand capture features and
+leave the long-running shell ideas alone:
+
+1. Improve screenshots first. Screenshots should copy to the clipboard and open
+   Satty for annotation, but they should not create permanent files
+   automatically. Manual saving belongs inside Satty.
+2. Add OCR/image text extraction second. This is an on-demand
+   `slurp -> grim -> tesseract -> wl-copy` flow with no idle process cost.
+3. Keep `wl-clipboard`, `wl-clip-persist`, and `cliphist` as the clipboard
+   baseline. Do not port Omarchy's custom Quickshell clipboard manager yet.
+4. Keep `mako` as the notification server. Do not replace it with Quickshell
+   notifications unless the whole bar/shell direction is chosen later.
+5. Defer Quickshell, Omarchy's monitor panel, Quickshell notification history,
+   and Voxtype until the lighter baseline is stable and measured.
+
 ## Source Map
 
 Relevant Omarchy sources inspected:

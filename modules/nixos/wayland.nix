@@ -61,6 +61,8 @@
       satty
       slurp
       swaybg
+      (tesseract.override { enableLanguages = [ "eng" ]; })
+      wayfreeze
       wev
       wayland-utils
       wl-clip-persist
