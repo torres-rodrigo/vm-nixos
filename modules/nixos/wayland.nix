@@ -52,11 +52,14 @@
 
     systemPackages = with pkgs; [
       cliphist
+      grim
       libnotify
       mako
       qt6.qtwayland
       qt5.qtwayland
       rofi
+      satty
+      slurp
       swaybg
       wev
       wayland-utils

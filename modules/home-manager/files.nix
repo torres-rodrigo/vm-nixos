@@ -15,6 +15,11 @@ in
     force = true;
   };
 
+  home.file.".config/mango/scripts/screenshot/screenshot.sh" = {
+    source = liveConfig "mango/scripts/screenshot/screenshot.sh";
+    force = true;
+  };
+
   home.file.".config/foot/foot.ini" = {
     source = liveConfig "foot/foot.ini";
     force = true;

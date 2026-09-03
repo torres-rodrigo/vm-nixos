@@ -18,6 +18,7 @@ Current live-managed files:
 - `dotfiles/foot/foot.ini` -> `~/.config/foot/foot.ini`
 - `dotfiles/fzf/fzf` -> `~/.config/fzf/fzf`
 - `dotfiles/ghostty/config.ghostty` -> `~/.config/ghostty/config.ghostty`
+- `dotfiles/ghostty/tmux-tabs.css` -> `~/.config/ghostty/tmux-tabs.css`
 - `dotfiles/kitty/kitty.conf` -> `~/.config/kitty/kitty.conf`
 - `dotfiles/lazygit/config.yml` -> `~/.config/lazygit/config.yml`
 - `dotfiles/mango/config.conf` -> `~/.config/mango/config.conf`
