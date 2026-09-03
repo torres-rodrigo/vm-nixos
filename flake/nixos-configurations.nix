@@ -1,4 +1,5 @@
 {
+  inputs,
   nixpkgs,
   home-manager,
   hostOverrides ? { },
@@ -43,7 +44,7 @@ let
       inherit (host) system;
 
       specialArgs = {
-        inherit host;
+        inherit inputs host;
         inherit (host) hostname username stateVersion;
       };
 

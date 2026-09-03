@@ -181,11 +181,18 @@ Flake input plumbing:
    ```nix
    { inputs, pkgs, ... }:
 
+   let
+     zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+     zen = pkgs.writeShellScriptBin "zen" ''
+       exec ${zenBrowser}/bin/zen-beta "$@"
+     '';
+   in
    {
      programs.firefox.enable = true;
 
      environment.systemPackages = [
-       inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+       zenBrowser
+       zen
      ];
    }
    ```
@@ -193,6 +200,9 @@ Flake input plumbing:
    Keep Firefox during the first rollout. After Zen is validated, a later
    cleanup can remove `programs.firefox.enable = true;` if the user wants Zen to
    be the only system browser.
+
+   The selected Zen flake default package currently exposes `zen-beta`, not a
+   plain `zen` command, so install the small wrapper above to provide `zen`.
 
 5. Add `modules/home-manager/zen-browser.nix`.
 
@@ -287,8 +297,7 @@ Flake input plumbing:
          DisablePocket = true;
          DisableTelemetry = true;
          DontCheckDefaultBrowser = true;
-         NoDefaultBookmarks = true;
-         OfferToSaveLogins = false;
+      OfferToSaveLogins = false;
        };
 
        profiles.default = {
@@ -304,12 +313,11 @@ Flake input plumbing:
            ];
 
          bookmarks = {
-           force = false;
+           force = true;
            settings = [
              {
                name = "NixOS";
                url = "https://nixos.org/";
-               toolbar = true;
              }
              {
                name = "Nix Search";
@@ -458,12 +466,11 @@ Initial pattern:
 
 ```nix
 programs.zen-browser.profiles.default.bookmarks = {
-  force = false;
+  force = true;
   settings = [
     {
       name = "NixOS";
       url = "https://nixos.org/";
-      toolbar = true;
     }
     {
       name = "Nix Search";
@@ -482,9 +489,10 @@ programs.zen-browser.profiles.default.bookmarks = {
 };
 ```
 
-Use `force = false` for the first rollout so unmanaged user bookmarks are not
-deleted. Change to `force = true` only after the user explicitly chooses fully
-declarative bookmark ownership.
+The Zen Browser Home Manager module requires `force = true` when bookmark
+settings are declared. This means declarative bookmarks replace the managed
+bookmark set for the profile. Export or copy any existing important bookmarks
+before activating this configuration.
 
 To add a bookmark:
 
@@ -560,7 +568,8 @@ Then confirm:
 - Hardened defaults are visible in `about:config`.
 - Manual Zen setting changes persist after closing and reopening the browser.
 - Configured bookmarks appear.
-- Existing unmanaged bookmarks are not deleted when `force = false`.
+- Declarative bookmarks replace the managed bookmark set because the module
+  requires `force = true` when bookmark settings are declared.
 
 ## Acceptance Criteria
 
@@ -596,6 +605,6 @@ The implementation is complete when:
   the user requested packaged extensions.
 - Keep Firefox as a temporary fallback until Zen has been built and manually
   tested.
-- Keep bookmark `force = false` until the user explicitly chooses fully
-  declarative bookmark ownership.
+- Use bookmark `force = true` because the Zen Browser Home Manager module
+  requires it when bookmark settings are declared.
 - Do not add Flatpak, Snap, AppImage, or imperative browser installation paths.
