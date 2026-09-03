@@ -60,6 +60,11 @@ in
     force = true;
   };
 
+  home.file.".config/tmux/foot-tmux.sh" = {
+    source = liveConfig "tmux/foot-tmux.sh";
+    force = true;
+  };
+
   home.file.".config/yazi" = {
     source = liveConfig "yazi";
     force = true;
