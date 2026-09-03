@@ -15,6 +15,11 @@ in
     force = true;
   };
 
+  home.file.".config/foot/foot.ini" = {
+    source = liveConfig "foot/foot.ini";
+    force = true;
+  };
+
   home.file.".config/wezterm/wezterm.lua" = {
     source = liveConfig "wezterm/wezterm.lua";
     force = true;
