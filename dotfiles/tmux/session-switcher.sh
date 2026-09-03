@@ -29,6 +29,32 @@ if [ "${1:-}" = "--kill" ]; then
   exit 0
 fi
 
+if [ "${1:-}" = "--switch-index" ]; then
+  index=${2:-}
+
+  case "$index" in
+    '' | *[!0-9]*)
+      tmux display-message "Invalid tmux session index: $index"
+      exit 1
+      ;;
+  esac
+
+  target=$(
+    tmux list-sessions -F '#{session_id}' |
+      sed 's/^\$//' |
+      sort -n |
+      awk -v idx="$index" 'NR == idx { print "$" $1; exit }'
+  )
+
+  if [ -n "$target" ]; then
+    tmux switch-client -t "$target"
+  else
+    tmux display-message "No tmux session at index $index"
+  fi
+
+  exit 0
+fi
+
 current_path=${1:-$HOME}
 
 selection=$(
