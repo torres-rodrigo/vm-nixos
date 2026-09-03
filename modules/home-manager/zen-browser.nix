@@ -1,7 +1,7 @@
 { inputs, pkgs, ... }:
 
 let
-  system = pkgs.stdenv.hostPlatform.system;
+  firefoxAddons = (import inputs.firefox-addons { inherit pkgs; }).firefox-addons;
 
   librewolfStylePrefs = {
     # Telemetry, experiments, and reporting.
@@ -97,8 +97,12 @@ in
       settings = librewolfStylePrefs;
 
       extensions.packages =
-        with inputs.firefox-addons.packages.${system}; [
+        with firefoxAddons; [
+          darkreader
+          privacy-badger
+          sponsorblock
           ublock-origin
+          youtube-recommended-videos
         ];
 
       bookmarks = {

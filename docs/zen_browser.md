@@ -117,7 +117,7 @@ Flake input plumbing:
    };
 
    firefox-addons = {
-     url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+     url = "gitlab:rycee/nur-expressions";
      inputs.nixpkgs.follows = "nixpkgs";
    };
    ```
@@ -308,8 +308,12 @@ Flake input plumbing:
          settings = librewolfStylePrefs;
 
          extensions.packages =
-           with inputs.firefox-addons.packages.${system}; [
+           with (import inputs.firefox-addons { inherit pkgs; }).firefox-addons; [
+             darkreader
+             privacy-badger
+             sponsorblock
              ublock-origin
+             youtube-recommended-videos
            ];
 
          bookmarks = {
@@ -429,19 +433,34 @@ Starter extension:
 
 - `ublock-origin`
 
+Requested extension set:
+
+- `darkreader`
+- `privacy-badger`
+- `sponsorblock`
+- `youtube-recommended-videos`
+
 Add more extensions by editing:
 
 ```nix
 programs.zen-browser.profiles.default.extensions.packages =
-  with inputs.firefox-addons.packages.${pkgs.stdenv.hostPlatform.system}; [
+  with (import inputs.firefox-addons { inherit pkgs; }).firefox-addons; [
+    darkreader
+    privacy-badger
+    sponsorblock
     ublock-origin
+    youtube-recommended-videos
   ];
 ```
+
+`youtube-recommended-videos` is unfree (`unhook-eula`). Importing the add-ons
+repo with this configuration's `pkgs` is required so the existing NixOS
+`nixpkgs.config.allowUnfree = true` policy applies to that package.
 
 Rules:
 
 - Add an extension only if it exists in
-  `inputs.firefox-addons.packages.${system}`.
+  `(import inputs.firefox-addons { inherit pkgs; }).firefox-addons`.
 - Do not silently switch to AMO `install_url` policies if a package is missing.
 - If an extension is unavailable or unfree, document the limitation and ask the
   user before changing extension source strategy.
@@ -454,7 +473,7 @@ Rules:
 Useful lookup commands:
 
 ```console
-nix flake show --no-write-lock-file gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons
+nix flake show --no-write-lock-file gitlab:rycee/nur-expressions
 nix eval --no-write-lock-file .#nixosConfigurations.conquest.pkgs.stdenv.hostPlatform.system
 ```
 
