@@ -14,7 +14,6 @@
   environment.extraOutputsToInstall = lib.mkForce [ ];
 
   environment.systemPackages = with pkgs; [
-    fastfetch
     age # Modern file encryption tool
     bash-language-server # Bash language server
     bat # cat replacement
@@ -27,6 +26,7 @@
     delta # Enhanced diff viewer
     eza # ls replacement
     exiftool # Media metadata inspection
+    fastfetch # System info temporary
     fd # find replacement
     foot # Terminal foo terminal
     fzf # Fuzzy finder
