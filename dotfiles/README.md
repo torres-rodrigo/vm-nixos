@@ -21,7 +21,6 @@ Current live-managed files:
 - `dotfiles/fzf/fzf` -> `~/.config/fzf/fzf`
 - `dotfiles/ghostty/config.ghostty` -> `~/.config/ghostty/config.ghostty`
 - `dotfiles/ghostty/tmux-tabs.css` -> `~/.config/ghostty/tmux-tabs.css`
-- `dotfiles/kitty/kitty.conf` -> `~/.config/kitty/kitty.conf`
 - `dotfiles/lazygit/config.yml` -> `~/.config/lazygit/config.yml`
 - `dotfiles/mango/config.conf` -> `~/.config/mango/config.conf`
 - `dotfiles/nvim` -> `~/.config/nvim`
@@ -29,7 +28,6 @@ Current live-managed files:
 - `dotfiles/television/config.toml` -> `~/.config/television/config.toml`
 - `dotfiles/television/cable` -> `~/.config/television/cable`
 - `dotfiles/tmux/tmux.conf` -> `~/.config/tmux/tmux.conf`
-- `dotfiles/wezterm/wezterm.lua` -> `~/.config/wezterm/wezterm.lua`
 - `dotfiles/yazi` -> `~/.config/yazi`
 
 Git and Starship are live-linked instead of store-managed by Home Manager. The

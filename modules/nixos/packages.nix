@@ -49,10 +49,8 @@
     tree-sitter # Parser CLI used by Neovim
     unzip # ZIP archive extraction
     vscode-langservers-extracted # JSON/CSS/HTML/ESLint language servers
-    wezterm # GPU-accelerated terminal emulator
     ghostty
     foot
-    kitty
     wget # File downloader
     yazi # Terminal file manager
     yaml-language-server # YAML language server

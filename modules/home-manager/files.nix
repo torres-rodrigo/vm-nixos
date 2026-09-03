@@ -45,16 +45,6 @@ in
     force = true;
   };
 
-  home.file.".config/kitty/kitty.conf" = {
-    source = liveConfig "kitty/kitty.conf";
-    force = true;
-  };
-
-  home.file.".config/wezterm/wezterm.lua" = {
-    source = liveConfig "wezterm/wezterm.lua";
-    force = true;
-  };
-
   home.file.".config/television/config.toml" = {
     source = liveConfig "television/config.toml";
     force = true;

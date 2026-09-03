@@ -20,7 +20,7 @@
     terminal-exec = {
       enable = true;
       settings.default = [
-        "org.wezfurlong.wezterm.desktop"
+        "foot.desktop"
       ];
     };
 
