@@ -478,3 +478,261 @@ latency on `conquest`, with and without GPU acceleration if supported.
 Before porting Omarchy monitor or screenshot smart selection, confirm the Mango
 command interface for focused monitor, output geometry, and client/window
 geometry. Do not copy the Hyprland `hyprctl` path into this repo.
+
+## Staged Quickshell Adoption Plan
+
+Omarchy's Quickshell setup should be brought in as a sequence of measured
+experiments, not as a single replacement shell. Each stage should leave the
+system buildable and should have a clear rollback path. The key rule is that
+Quickshell should earn each responsibility it takes over from smaller tools.
+
+### Stage 1: Package And Empty Shell Bootstrap
+
+Goal:
+
+Install Quickshell and prove that a minimal shell can launch under Mango without
+owning any real desktop services.
+
+Implementation steps:
+
+1. Add `quickshell` to a small optional NixOS or Home Manager module. Do not add
+   it to the permanent baseline until measured.
+2. Create a live-linked config directory such as `dotfiles/quickshell` or
+   `dotfiles/omarchy-shell`.
+3. Add a minimal `shell.qml` that creates either no surface or one tiny visible
+   test surface.
+4. Add a wrapper script such as `mango-quickshell` that runs:
+
+   ```console
+   quickshell -n -p /home/r/.config/quickshell
+   ```
+
+5. Start it manually first from an existing Foot terminal. Only add Mango
+   `exec-once` or a Home Manager user service after manual startup is clean.
+6. Log stdout/stderr through `systemd-cat` or a user service journal once it is
+   supervised.
+
+Acceptance criteria:
+
+- `quickshell` launches inside Mango.
+- It can be killed and restarted without affecting screenshots, clipboard
+  history, notifications, terminal launch, or the Mango session.
+- Idle RSS and process count are recorded in `docs/clean_up.md` or a follow-up
+  measurement note.
+
+Rollback:
+
+- Remove the `exec-once` or user service.
+- Remove the optional package import.
+- Leave current `mako`, `cliphist`, and script-based capture untouched.
+
+### Stage 2: Static Bar Shell
+
+Goal:
+
+Add a minimal bar that displays stable information but does not control system
+state.
+
+Omarchy pieces to review:
+
+- `shell/shell.qml`
+- `shell/plugins/bar/Bar.qml`
+- `shell/plugins/bar/BarModel.js`
+- `shell/Commons`
+- `shell/Ui`
+
+Implementation steps:
+
+1. Port only the minimum shared UI components needed for a bar. Avoid copying
+   every Omarchy common component before it is used.
+2. Build a single bar surface with fixed left/center/right zones.
+3. Add static labels first: hostname, session name, or literal placeholders.
+4. Add a clock text widget after the surface is stable.
+5. Keep `mako`, `cliphist`, screenshot, OCR, and existing Mango keybinds as the
+   active implementations.
+
+Acceptance criteria:
+
+- Bar appears on login or manual launch.
+- Bar position does not overlap normal windows in an unusable way.
+- Quickshell restart does not break independent desktop services.
+- Measured idle cost is acceptable before adding dynamic widgets.
+
+Rollback:
+
+- Disable the bar service or remove its Mango `exec-once`.
+- Keep all non-bar workflows unchanged.
+
+### Stage 3: Read-Only Widgets
+
+Goal:
+
+Add widgets that observe state but do not mutate it. These are the lowest-risk
+parts of Omarchy's shell model.
+
+Recommended order:
+
+1. Clock/calendar.
+2. Battery and power status on `conquest`.
+3. MPRIS/media display.
+4. Keyboard layout indicator if Mango exposes enough layout state.
+5. Weather only if the network dependency and polling policy are acceptable.
+
+Omarchy pieces to review:
+
+- `shell/plugins/panels/clock`
+- `shell/plugins/services/battery`
+- `shell/plugins/services/media`
+- `shell/plugins/bar/widgets/KeyboardLayout.qml`
+- `shell/plugins/panels/weather`
+
+Implementation steps:
+
+1. Port the clock/calendar first. Its date math is mostly pure JavaScript and
+   does not require system mutation.
+2. Store user preferences such as clock format and week start in XDG config or
+   state, not NixOS options.
+3. Add battery status only on hosts where battery hardware exists.
+4. Add media readout using Quickshell's MPRIS service, but do not add media
+   control buttons until the read-only display is reliable.
+
+Acceptance criteria:
+
+- Widgets continue updating across midnight, battery changes, and media player
+  open/close events.
+- No widget spawns frequent polling commands if a native Quickshell service can
+  provide the same state.
+- Shell restart does not lose important user state.
+
+Rollback:
+
+- Disable the widget in the shell layout.
+- Keep the package and shell host if earlier stages are useful.
+
+### Stage 4: Simple Command Widgets
+
+Goal:
+
+Add widgets that call existing scripts or single-purpose commands. These should
+reuse the lightweight tools already implemented instead of reimplementing their
+business logic in QML.
+
+Recommended order:
+
+1. Screenshot and OCR buttons that call existing Mango scripts.
+2. Volume/mute controls that call `wpctl` or `pactl`.
+3. Microphone mute indicator and toggle.
+4. Launcher/menu button only if it improves on current `rofi`.
+5. Small power menu that delegates to explicit system commands.
+
+Omarchy pieces to review:
+
+- `shell/plugins/osd`
+- `shell/plugins/panels/audio`
+- `shell/plugins/bar/widgets/Microphone.qml`
+- `shell/plugins/menu`
+- `default/omarchy/omarchy-menu.jsonc`
+
+Implementation steps:
+
+1. Keep scripts in `dotfiles/mango/scripts` or Nix-managed wrappers.
+2. Make Quickshell call those scripts by absolute or PATH-stable command names.
+3. Avoid adding long-running watchers just for a button.
+4. Add OSD only after the underlying command behavior is correct.
+
+Acceptance criteria:
+
+- Buttons do the same thing as the existing Mango keybinds.
+- Failures are visible through notifications or logs.
+- No existing keybind becomes dependent on Quickshell.
+
+Rollback:
+
+- Remove the widget while keeping the script and keybind.
+
+### Stage 5: Stateful Panels
+
+Goal:
+
+Add panels that expose richer device state and controlled mutation. These are
+useful, but they carry more coupling and should come after the shell is stable.
+
+Recommended order:
+
+1. Audio panel.
+2. Bluetooth panel.
+3. Network panel.
+4. Power panel.
+5. Tailscale panel, only if Tailscale is configured.
+
+Omarchy pieces to review:
+
+- `shell/plugins/panels/audio`
+- `shell/plugins/panels/bluetooth`
+- `shell/plugins/panels/network`
+- `shell/plugins/panels/power`
+- `shell/plugins/panels/tailscale`
+
+Implementation steps:
+
+1. Audio: use Quickshell PipeWire state for display, but keep `wpctl`/`pactl`
+   wrappers for actions until direct QML mutation is proven reliable.
+2. Bluetooth: enable and validate NixOS BlueZ support first. Then port the
+   device grouping and connect/disconnect UI.
+3. Network: confirm NetworkManager with the current iwd backend behaves as the
+   panel expects before porting scan/connect/band logic.
+4. Power: keep destructive actions explicit and easy to audit.
+5. Tailscale: do not add until there is a real Tailscale service and user need.
+
+Acceptance criteria:
+
+- Panels handle devices appearing/disappearing without crashing the shell.
+- State changes are reversible or have clear error feedback.
+- No panel logs secrets such as Wi-Fi passwords or QR decoded values.
+
+Rollback:
+
+- Disable the panel from the bar layout.
+- Keep the underlying NixOS service and CLI workflow available.
+
+### Stage 6: Complex Shell Ownership
+
+Goal:
+
+Only after earlier stages are stable, decide whether Quickshell should replace
+independent desktop services.
+
+Defer by default:
+
+- Clipboard manager replacement.
+- Notification server replacement.
+- Monitor/display panel.
+- Lock screen.
+- Polkit agent.
+- Full Omarchy menu and plugin registry.
+
+Reasoning:
+
+Omarchy's clipboard and notifications are polished but large. They also put
+critical desktop workflows into the same long-running QML process as the bar.
+This NixOS setup already has focused tools for those jobs: `cliphist`,
+`wl-clip-persist`, `wl-clipboard`, and `mako`.
+
+Monitor/display support is the least portable Omarchy panel because much of the
+implementation depends on Hyprland `hyprctl` output. Do not copy that path into
+Mango. Build a Mango-native panel only after Mango exposes the required output
+and client geometry.
+
+Acceptance criteria:
+
+- Quickshell has survived normal use as a bar/panel host.
+- Idle RSS and failure modes are acceptable.
+- Replacements have a clear advantage over `mako`, `cliphist`, or existing
+  scripts.
+- The rollback path is known before replacing a service.
+
+Rollback:
+
+- Restore independent services first.
+- Then disable the Quickshell replacement plugin.
+- Avoid changing multiple service owners in one patch.
