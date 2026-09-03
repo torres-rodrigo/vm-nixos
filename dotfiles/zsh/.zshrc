@@ -100,6 +100,8 @@ eval "$(starship init zsh)"
 
 # ── Aliases ───────────────────────────────────────────────────────────────────
 alias v='nvim'
+alias y='yazi'
+alias tm='tmux'
 alias ld='cd -'
 alias lg='lazygit'
 alias ls='eza -lha --icons --group-directories-first'
