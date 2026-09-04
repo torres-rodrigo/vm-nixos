@@ -736,3 +736,260 @@ Rollback:
 - Restore independent services first.
 - Then disable the Quickshell replacement plugin.
 - Avoid changing multiple service owners in one patch.
+
+## Web Apps With Zen Browser
+
+### What Omarchy Does
+
+Omarchy treats web apps as normal desktop launchers. The launcher files live in
+`~/.local/share/applications`, appear in the application launcher, and call a
+small wrapper that opens a URL in browser app mode.
+
+Relevant Omarchy sources:
+
+| Source | Role |
+| --- | --- |
+| `/home/r/omarchy/bin/omarchy-webapp-install` | Creates a user `.desktop` launcher for a web app. |
+| `/home/r/omarchy/bin/omarchy-webapp-remove` | Removes generated web app launchers and icons. |
+| `/home/r/omarchy/bin/omarchy-webapp-remove-all` | Removes all Omarchy-managed web app launchers. |
+| `/home/r/omarchy/bin/omarchy-launch-webapp` | Launches a URL as a browser app window. |
+| `/home/r/omarchy/bin/omarchy-launch-or-focus-webapp` | Focuses an existing matching web app window or launches it. |
+| `/home/r/omarchy/bin/omarchy-webapp-handler-hey` | Translates `mailto:` URLs into HEY web compose URLs. |
+| `/home/r/omarchy/bin/omarchy-webapp-handler-zoom` | Translates Zoom protocol links into Zoom web join URLs. |
+| `/home/r/omarchy/applications/*.desktop` | Built-in web app launchers such as HEY, WhatsApp, YouTube, Discord, and Zoom. |
+| `/home/r/omarchy/manual/25-web-apps.md` | User documentation for creating/removing web apps. |
+
+The core launcher is `omarchy-launch-webapp`. It reads the default browser from
+`xdg-settings get default-web-browser`, accepts only Chromium-like browsers
+for app-window mode, falls back to `chromium.desktop`, extracts the browser
+binary from the selected `.desktop` file, and launches it with:
+
+```console
+--app="$URL"
+```
+
+That Chromium `--app` flag is what gives Omarchy its frameless web-app window.
+The generated `.desktop` files are intentionally ordinary. For example,
+WhatsApp and YouTube are basically:
+
+```desktop
+[Desktop Entry]
+Version=1.0
+Name=WhatsApp
+Exec=omarchy-launch-webapp https://web.whatsapp.com/
+Terminal=false
+Type=Application
+Icon=whatsapp
+StartupNotify=true
+```
+
+Omarchy's installer has useful hardening that is worth preserving:
+
+1. Schemeless URLs are normalized to `https://`.
+2. Only `http://` and `https://` URLs are accepted.
+3. URLs containing raw whitespace are refused.
+4. App names containing `/` are refused so launchers cannot escape or nest
+   under the applications directory.
+5. Desktop Entry string values escape backslashes, tabs, carriage returns,
+   newlines, and leading spaces.
+6. Desktop Entry `Exec` URL arguments escape quotes, backticks, dollar signs,
+   backslashes, and percent signs correctly.
+7. Icons can be fetched from the site, from an explicit icon URL, from a local
+   file, or by name from the icon theme.
+8. Removal scans `.desktop` files for Omarchy web-app `Exec=` commands and
+   deletes the matched file, instead of reconstructing a path from the display
+   name.
+
+Recommendation:
+
+Copy the model, not the Chromium implementation. The `.desktop` generation,
+validation, icon handling, and removal logic are good. The `--app` launch
+mechanism is browser-specific and does not map directly to Zen.
+
+### Zen Browser Constraints
+
+Zen Browser is Firefox-derived. The current `zen --help` output supports
+browser-window style options such as:
+
+| Option | Use |
+| --- | --- |
+| `--new-window <url>` | Open a URL in a new Zen window. |
+| `--new-tab <url>` | Open a URL in a new tab. |
+| `--private-window [url]` | Open a private window. |
+| `--profile <path>` | Start with a specific profile path. |
+| `-P <profile>` | Start with a named profile. |
+| `--new-instance` | Open a new instance instead of reusing the running one. |
+| `--kiosk` | Open in kiosk mode. Too restrictive for normal web apps. |
+
+Zen does not expose Chromium's `--app=URL` mode. That means the first version
+should not promise frameless Omarchy-style windows. The reliable equivalent is:
+
+```console
+zen --new-window "$URL"
+```
+
+This is less polished than Chromium app mode, but it keeps one browser stack
+and fits the current NixOS decision to use Zen as the browser. The more
+isolated option is a per-app profile:
+
+```console
+zen --new-instance \
+  --profile "$HOME/.local/share/mango-webapps/profiles/$slug" \
+  --new-window "$URL"
+```
+
+Per-app profiles improve isolation and can keep app sessions separate, but
+they also duplicate browser state, extension setup, cookies, and tuning. The
+first implementation should use the default Zen profile unless isolation
+becomes a real requirement.
+
+### NixOS Adaptation Plan
+
+Add a small Mango/Zen web-app toolkit instead of importing Omarchy scripts
+verbatim.
+
+Suggested script names:
+
+| Script | Purpose |
+| --- | --- |
+| `mango-webapp-launch` | Launch one URL with Zen. |
+| `mango-webapp-install` | Create a user `.desktop` file and optional icon. |
+| `mango-webapp-remove` | Remove a generated web app launcher and icon. |
+
+Suggested location while iterating:
+
+```text
+dotfiles/mango/scripts/webapps/
+```
+
+Expose them through Home Manager, either by linking the scripts under
+`~/.config/mango/scripts/webapps/` and adding wrapper packages, or by creating
+`home.packages` scripts with `pkgs.writeShellScriptBin`. Prefer packaged
+wrappers if the commands should be available on `PATH`.
+
+Recommended first behavior:
+
+1. `mango-webapp-launch URL` runs `zen --new-window "$URL"`.
+2. `mango-webapp-install NAME URL ICON_REF` creates
+   `~/.local/share/applications/NAME.desktop`.
+3. The generated `Exec=` calls `mango-webapp-launch "URL"`.
+4. Generated launchers include a marker such as:
+
+   ```desktop
+   X-Mango-WebApp=true
+   ```
+
+   This makes removal safer than only matching command text.
+
+5. Icons are stored under:
+
+   ```text
+   ~/.local/share/icons/hicolor/256x256/apps/
+   ```
+
+6. After installing/removing launchers, run:
+
+   ```console
+   update-desktop-database ~/.local/share/applications
+   gtk-update-icon-cache ~/.local/share/icons/hicolor
+   ```
+
+   Both commands should be best-effort because missing caches should not make
+   launcher management fail.
+
+7. Do not set Zen as the XDG default browser from this web-app script. Zen is
+   already owned by the browser modules.
+
+Recommended validation to preserve from Omarchy:
+
+- Reject app names containing `/`.
+- Reject empty names and empty URLs.
+- Prefix schemeless URLs with `https://`.
+- Reject non-HTTP(S) schemes such as `file:`, `javascript:`, `data:`, `ftp:`,
+  and custom extension schemes.
+- Reject raw whitespace in URLs.
+- Correctly escape Desktop Entry strings and Exec arguments.
+- Remove by scanning generated launchers, not by blindly constructing paths.
+
+### Built-In Web Apps Worth Adding First
+
+Start with a very small set and add only what is actually used. Good initial
+candidates:
+
+| App | URL | Reason |
+| --- | --- | --- |
+| ChatGPT | `https://chatgpt.com/` | Matches existing AI workflow. |
+| YouTube | `https://youtube.com/` | Common media app; Omarchy ships it. |
+| WhatsApp | `https://web.whatsapp.com/` | Common Linux web-app use case. |
+| Discord | `https://discord.com/channels/@me` | Useful if native Discord is not wanted. |
+
+Do not immediately add Omarchy's full default set. Google Contacts, Maps,
+Messages, Photos, HEY, Basecamp, Zoom, X, and service-admin web apps should be
+added only when there is a real workflow for them.
+
+Protocol handlers need extra care:
+
+- HEY as `mailto:` handler is only useful if HEY is the chosen mail service.
+- Zoom protocol handling is useful only if the web client should own
+  `zoommtg:` and `zoomus:` links.
+- Setting MIME or scheme handlers should be explicit through Home Manager/XDG
+  configuration, not hidden inside an install script.
+
+### Focus Existing Window
+
+Omarchy's `omarchy-launch-or-focus-webapp` depends on Hyprland:
+
+```console
+hyprctl clients -j
+hyprctl dispatch focuswindow ...
+```
+
+Do not copy this directly. It will not be portable to Mango unless Mango
+exposes an equivalent client query and focus command.
+
+First implementation:
+
+1. Always launch a new Zen window.
+2. Revisit focus-or-launch after Mango's client/window command interface is
+   confirmed.
+3. If Mango can query app IDs or titles, implement a Mango-native
+   `mango-launch-or-focus-webapp` later.
+
+### Performance And Maintenance Notes
+
+Using Zen for web apps means every app is still a browser window. This is
+lighter operationally than installing many Electron applications, but it is not
+free. The main performance rule should be:
+
+1. Prefer web apps for services that are mostly browser content anyway.
+2. Avoid per-app Zen profiles until they are needed.
+3. Avoid auto-starting web apps.
+4. Keep installed launchers user-scoped.
+5. Keep generated state out of `/etc/nixos`.
+
+The NixOS repo should own the scripts and optional curated launchers. The user
+home should own generated app entries, icons, cookies, sessions, and profile
+state.
+
+### Future Implementation Steps
+
+1. Add `dotfiles/mango/scripts/webapps/mango-webapp-launch`.
+2. Add `dotfiles/mango/scripts/webapps/mango-webapp-install`.
+3. Add `dotfiles/mango/scripts/webapps/mango-webapp-remove`.
+4. Link those scripts through `modules/home-manager/files.nix`.
+5. Add any required runtime packages close to the feature, likely:
+
+   ```nix
+   desktop-file-utils
+   gtk3
+   file
+   curl
+   ```
+
+   Avoid adding heavy packages unless the script actually needs them.
+
+6. Optionally add a small Home Manager module for curated `.desktop` entries
+   if there are web apps that should be declarative.
+7. Test `.desktop` launching through `gio launch`.
+8. Only after basic launch/remove works, evaluate per-app profiles and
+   protocol handlers.
