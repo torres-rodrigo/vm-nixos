@@ -64,6 +64,8 @@ TODO
   add functionality to fzf scripts so that with a keybind we can go to dir or open file, add keybind that prints in a formated way the selected items
   tsoadings boomer zoom app now written in JAI
 
+https://github.com/heytcass/nixos-config.git
+
 wezterm
 { key = 'phys:Space', mods = 'SHIFT|CTRL', action = act.QuickSelect },
 { key = 'f', mods = 'SHIFT|CTRL', action = act.Search 'CurrentSelectionOrEmptyString' },
