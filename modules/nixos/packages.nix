@@ -23,6 +23,7 @@
     clang # C/C++ compiler toolchain
     clang-tools # C/C++ language tooling
     curl # HTTP/HTTPS/FTP transfer tool
+    deadnix # Detect unused Nix code
     delta # Enhanced diff viewer
     eza # ls replacement
     exiftool # Media metadata inspection
@@ -43,11 +44,14 @@
     lua-language-server # Lua language server
     mediainfo # Media file metadata inspection
     neovim # Text editor
+    nixd # Nix language server
+    nixfmt # Official Nix formatter
     odin # Odin compiler toolchain
     ols # Odin language server
     openssh # SSH client
     ripgrep # grep replacement
     starship # Shell prompt
+    statix # Nix linter
     taplo # TOML language server and formatter
     television # Fuzzy finder and picker
     tmux # Terminal multiplexer

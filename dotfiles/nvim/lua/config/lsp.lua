@@ -76,4 +76,5 @@ lsp.enable({
     'clangd',
     'taplo',
     'ols',
+    'nixd',
 })
