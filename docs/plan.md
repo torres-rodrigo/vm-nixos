@@ -296,8 +296,8 @@ Current note:
 Status: In progress
 
 - Added the first encrypted local-ISO install workflow for selected hosts.
-- Added `install/disko-config.nix` for a UEFI, LUKS2, Btrfs subvolume layout.
-- Added a flake app, `install-encrypted-nixos`, that prompts for an active host,
+- Added `disko/disko.nix` for a UEFI, LUKS2, Btrfs subvolume layout.
+- Added a flake app, `install-nixos`, that prompts for an active host,
   lists available whole disks, prompts for one shared LUKS/root/user `r`
   password, runs Disko, generates the selected host hardware configuration,
   copies the complete Git checkout to `/mnt/etc/nixos`, and installs the

@@ -5,8 +5,8 @@ let
     inherit system;
   };
 
-  installEncryptedNixos = pkgs.writeShellApplication {
-    name = "install-encrypted-nixos";
+  installNixos = pkgs.writeShellApplication {
+    name = "install-nixos";
 
     runtimeInputs = with pkgs; [
       coreutils
@@ -21,14 +21,14 @@ let
       util-linux
     ];
 
-    text = builtins.readFile ../install/install-encrypted-nixos.sh;
+    text = builtins.readFile ../install-nixos.sh;
   };
 in
 {
   ${system} = {
-    install-encrypted-nixos = {
+    install-nixos = {
       type = "app";
-      program = "${installEncryptedNixos}/bin/install-encrypted-nixos";
+      program = "${installNixos}/bin/install-nixos";
       meta.description = "Install a selected NixOS host with Disko-managed LUKS2 encryption";
     };
   };

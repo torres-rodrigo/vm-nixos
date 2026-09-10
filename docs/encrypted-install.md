@@ -17,7 +17,7 @@ separate.
 
 ## What The Installer Creates
 
-The Disko layout is defined in `install/disko-config.nix`:
+The Disko layout is defined in `disko/disko.nix`:
 
 - UEFI GPT partition table
 - `1G` EFI system partition mounted at `/boot`
@@ -67,14 +67,14 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
    disk menu, and generated installer files without formatting or installing:
 
    ```console
-   nix run .#install-encrypted-nixos -- --dry-run
+   nix run .#install-nixos -- --dry-run
    ```
 
 6. Run the real installer:
 
    ```console
-   sudo nix run .#install-encrypted-nixos
-   sudo nix --extra-experimental-features "nix-command flakes" run .#install-encrypted-nixos
+   sudo nix run .#install-nixos
+   sudo nix --extra-experimental-features "nix-command flakes" run .#install-nixos
    ```
 
 7. Select `war` or `conquest` from the numbered host list.
