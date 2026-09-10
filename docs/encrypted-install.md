@@ -81,9 +81,9 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
 
 8. Select the target disk from the numbered disk list.
 
-9. Enter the shared LUKS, `root`, and user `r` password twice.
+9. Confirm the destructive install by typing the exact selected disk path.
 
-10. Confirm the destructive install by typing the exact selected disk path.
+10. Enter the shared LUKS, `root`, and user `r` password twice.
 
 11. Wait for Disko, encrypted hardware configuration generation, repo copy, and
    `nixos-install` to complete.
@@ -92,6 +92,16 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
 
 13. Unlock the disk with the shared password and log in as user `r` with the
     same password.
+
+If Disko completes but `nixos-install` fails because the NixOS configuration has
+an error, fix the repository in the ISO environment and run the installer again.
+When the selected disk is still mounted as the expected target under `/mnt`, the
+installer offers to resume without running Disko again. Type `resume` at that
+prompt to recopy the repository and rerun `nixos-install` without reformatting.
+
+If the disk is mounted in some other layout, the installer stops and prints the
+current mount state instead of guessing. Either restore the expected `/mnt`
+mounts or unmount and close the target before starting a fresh destructive run.
 
 ## After Reboot
 

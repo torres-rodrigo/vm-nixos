@@ -145,10 +145,6 @@ validate_disk() {
   type=$(lsblk -dnro TYPE -- "$resolved")
   [[ "$type" == "disk" ]] || die "target is not a whole disk: $disk"
 
-  if lsblk -nrpo MOUNTPOINTS -- "$resolved" | grep -q '[^[:space:]]'; then
-    die "target disk or one of its partitions is mounted; unmount it before installing"
-  fi
-
   printf '%s' "$resolved"
 }
 
@@ -161,6 +157,146 @@ partition_path() {
   else
     printf '%s%s' "$disk" "$number"
   fi
+}
+
+disk_has_mounts() {
+  local disk=$1
+
+  lsblk -nrpo MOUNTPOINTS -- "$disk" | grep -q '[^[:space:]]'
+}
+
+disk_has_active_cryptroot() {
+  local disk=$1
+  local luks_partition
+  local crypt_device
+  local child
+
+  luks_partition=$(readlink -f -- "$(partition_path "$disk" 2)" 2>/dev/null || true)
+  crypt_device=$(readlink -f -- /dev/mapper/cryptroot 2>/dev/null || true)
+
+  [[ -b "$luks_partition" ]] || return 1
+  [[ -b "$crypt_device" ]] || return 1
+
+  while IFS= read -r child; do
+    [[ "$(readlink -f -- "$child")" == "$crypt_device" ]] && return 0
+  done < <(lsblk -nrpo NAME -- "$luks_partition")
+
+  return 1
+}
+
+print_disk_mounts() {
+  local disk=$1
+
+  lsblk -o NAME,PATH,FSTYPE,TYPE,MOUNTPOINTS -- "$disk" >&2
+}
+
+mount_source_device() {
+  local mountpoint=$1
+  local source
+
+  source=$(findmnt -rn -M "$mountpoint" -o SOURCE 2>/dev/null || true)
+  source=${source%%\[*}
+  [[ -n "$source" ]] || return 1
+  readlink -f -- "$source"
+}
+
+mount_fsroot() {
+  local mountpoint=$1
+
+  findmnt -rn -M "$mountpoint" -o FSROOT 2>/dev/null || true
+}
+
+mount_source_matches() {
+  local mountpoint=$1
+  local expected=$2
+  local source
+
+  source=$(mount_source_device "$mountpoint") || return 1
+  [[ "$source" == "$expected" ]]
+}
+
+mount_fsroot_matches() {
+  local mountpoint=$1
+  local expected=$2
+  local fsroot
+
+  fsroot=$(mount_fsroot "$mountpoint")
+  [[ "$fsroot" == "$expected" || "$fsroot" == "/$expected" ]]
+}
+
+is_resumable_target() {
+  local disk=$1
+  local esp_partition
+  local luks_partition
+  local crypt_device
+  local child
+  local found=0
+
+  esp_partition=$(readlink -f -- "$(partition_path "$disk" 1)")
+  luks_partition=$(readlink -f -- "$(partition_path "$disk" 2)")
+  crypt_device=$(readlink -f -- /dev/mapper/cryptroot 2>/dev/null || true)
+
+  [[ -b "$esp_partition" ]] || return 1
+  [[ -b "$luks_partition" ]] || return 1
+  [[ -b "$crypt_device" ]] || return 1
+
+  while IFS= read -r child; do
+    if [[ "$(readlink -f -- "$child")" == "$crypt_device" ]]; then
+      found=1
+      break
+    fi
+  done < <(lsblk -nrpo NAME -- "$luks_partition")
+  [[ $found -eq 1 ]] || return 1
+
+  mount_source_matches /mnt "$crypt_device" || return 1
+  mount_source_matches /mnt/home "$crypt_device" || return 1
+  mount_source_matches /mnt/nix "$crypt_device" || return 1
+  mount_source_matches /mnt/var "$crypt_device" || return 1
+  mount_source_matches /mnt/var/log "$crypt_device" || return 1
+  mount_source_matches /mnt/boot "$esp_partition" || return 1
+
+  mount_fsroot_matches /mnt root || return 1
+  mount_fsroot_matches /mnt/home home || return 1
+  mount_fsroot_matches /mnt/nix nix || return 1
+  mount_fsroot_matches /mnt/var var || return 1
+  mount_fsroot_matches /mnt/var/log log || return 1
+}
+
+confirm_resume_target() {
+  local answer
+
+  cat >&2 <<'RESUME'
+
+The selected disk already has the expected encrypted NixOS target mounted at /mnt.
+The installer can resume from this state without running Disko again.
+
+This will not repartition or format the disk. It will recopy the repository,
+rerun nixos-install, initialize /mnt/etc/machine-id, and recheck the target.
+RESUME
+
+  printf 'To resume without formatting, type resume: ' >&2
+  IFS= read -r answer
+  [[ "$answer" == "resume" ]] || die "resume confirmation did not match; aborted"
+}
+
+fail_unexpected_mounts() {
+  local disk=$1
+
+  cat >&2 <<'MOUNT_ERROR'
+error: the selected disk is mounted, but not as the expected installer target.
+
+The installer can only resume when the selected disk is mounted as:
+  /mnt
+  /mnt/boot
+  /mnt/home
+  /mnt/nix
+  /mnt/var
+  /mnt/var/log
+
+Current mount state:
+MOUNT_ERROR
+  print_disk_mounts "$disk"
+  exit 1
 }
 
 select_disk() {
@@ -511,12 +647,25 @@ dry_run_commands() {
   local work_dir=$1
   local repo_root=$2
   local host=$3
+  local resume_install=$4
 
   cat <<COMMANDS
 Dry run complete. The installer would run:
 
   install -m 0600 "$work_dir/luks-passphrase" "$LUKS_PASSWORD_FILE"
+COMMANDS
+
+  if [[ $resume_install -eq 1 ]]; then
+    cat <<COMMANDS
+  skip Disko because the selected disk is already mounted as the expected target under /mnt
+COMMANDS
+  else
+    cat <<COMMANDS
   disko --mode destroy,format,mount --yes-wipe-all-disks "$work_dir/install-disko.nix"
+COMMANDS
+  fi
+
+  cat <<COMMANDS
   normalize target subvolume permissions under /mnt
   generate explicit encrypted hardware config at "$repo_root/hosts/$host/hardware-configuration.nix"
   rsync -a --delete "$repo_root/" /mnt/etc/nixos/
@@ -628,6 +777,7 @@ main() {
   local secret
   local secret_repeat
   local final_confirm
+  local resume_install=0
 
   host=$(select_host)
 
@@ -637,25 +787,37 @@ main() {
   disk=$(select_disk)
   resolved_disk=$(validate_disk "$disk")
 
+  if disk_has_mounts "$resolved_disk" || disk_has_active_cryptroot "$resolved_disk"; then
+    if is_resumable_target "$resolved_disk"; then
+      resume_install=1
+    else
+      fail_unexpected_mounts "$resolved_disk"
+    fi
+  fi
+
   info ""
   info "Selected disk:"
   lsblk -o NAME,PATH,SIZE,MODEL,SERIAL,TYPE,MOUNTPOINTS -- "$resolved_disk"
   info "Selected host: $host"
+
+  info ""
+  if [[ $resume_install -eq 1 ]]; then
+    confirm_resume_target
+  else
+    info "This will permanently erase all data on:"
+    info "  $resolved_disk"
+    info ""
+    info "The disk will be repartitioned, encrypted, formatted, mounted, and installed as NixOS."
+    printf 'To continue, type the exact disk path: ' >&2
+    IFS= read -r final_confirm
+    [[ "$final_confirm" == "$resolved_disk" ]] || die "disk confirmation did not match; aborted"
+  fi
 
   secret=$(prompt_secret "Shared LUKS/root/r password")
   [[ -n "$secret" ]] || die "password must not be empty"
   secret_repeat=$(prompt_secret "Repeat shared password")
   [[ "$secret" == "$secret_repeat" ]] || die "passwords do not match"
   secret_repeat=
-
-  info ""
-  info "This will permanently erase all data on:"
-  info "  $resolved_disk"
-  info ""
-  info "The disk will be repartitioned, encrypted, formatted, mounted, and installed as NixOS."
-  printf 'To continue, type the exact disk path: ' >&2
-  IFS= read -r final_confirm
-  [[ "$final_confirm" == "$resolved_disk" ]] || die "disk confirmation did not match; aborted"
 
   WORK_DIR=$(mktemp -d -t "$host-encrypted-install.XXXXXX")
   chmod 0700 "$WORK_DIR"
@@ -675,13 +837,17 @@ main() {
   write_install_files "$WORK_DIR" "$repo_root" "$resolved_disk"
 
   if [[ $dry_run -eq 1 ]]; then
-    dry_run_commands "$WORK_DIR" "$repo_root" "$host"
+    dry_run_commands "$WORK_DIR" "$repo_root" "$host" "$resume_install"
     exit 0
   fi
 
   install -m 0600 "$WORK_DIR/luks-passphrase" "$LUKS_PASSWORD_FILE"
   umask 022
-  disko --mode destroy,format,mount --yes-wipe-all-disks "$WORK_DIR/install-disko.nix"
+  if [[ $resume_install -eq 1 ]]; then
+    info "Resuming from existing target mounts under /mnt; skipping Disko."
+  else
+    disko --mode destroy,format,mount --yes-wipe-all-disks "$WORK_DIR/install-disko.nix"
+  fi
   normalize_target_permissions /mnt
   write_hardware_config "$repo_root" "$host" "$resolved_disk"
   copy_repo_to_target "$repo_root"
