@@ -627,12 +627,14 @@ INSTALL_DISKO
     repo.url = "path:/mnt/etc/nixos";
     nixpkgs.follows = "repo/nixpkgs";
     home-manager.follows = "repo/home-manager";
+    zen-browser.follows = "repo/zen-browser";
+    firefox-addons.follows = "repo/firefox-addons";
   };
 
-  outputs = { nixpkgs, home-manager, repo, ... }:
+  outputs = inputs @ { nixpkgs, home-manager, repo, ... }:
     {
       nixosConfigurations = import (repo.outPath + "/flake/nixos-configurations.nix") {
-        inherit nixpkgs home-manager;
+        inherit inputs nixpkgs home-manager;
 
         extraModules = [
           ./install-passwords.nix
