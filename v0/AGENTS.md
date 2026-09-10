@@ -1,72 +1,78 @@
-# Goal
-Build a NixOS configuration. The configuration should be performanced focused and modular.
-The configuration should focus on minimizing RAM usage and the number of processces the system uses at all times.
-- Low RAM usage
-- Minimanl number of running processes and enabled services
-- Wayland-first desktop configuration
-- Secure defaults
-- Modular & maintainable system
+# v0 NixOS Agent Guide
 
-# Agent behaviour
-- Make sure to write valid nix code & configurations, but never run test builds the user will do them manually
-- Explain assumptions
-- Explain security & performance tradeoffs
-- Take an adversarial view to requests, validate them before taking them as true.
-- Avoid enabling services that were not requested
-- Prefer simple, maintainable Nix over unnecessarily clever abstractions.
+## Mission
 
-# Performance and resource usage
-- Minimize idle RAM consumption.
-- Enable only required services and system processes.
-- Avoid unnecessary background daemons, telemetry, indexing, and automatic update services.
-- Prefer lightweight alternatives where practical.
-- Avoid duplicate functionality between services.
-- Use systemd service hardening and resource limits where appropriate.
-- Do not sacrifice essential security or hardware functionality solely to reduce process count.
-- Explain the performance impact of every nonessential service that is enabled.
+Build the v0 NixOS configuration as a from-scratch, flake-based workstation
+configuration. The system should be performance-focused, modular, secure by
+default, and Wayland-first.
 
-# Security
+The v0 tree is allowed to evolve independently from the current top-level
+configuration. Use the existing configuration only as reference material. Do
+not copy modules, assets, or dotfiles without reviewing whether they still fit
+the v0 goals.
 
+## Source Of Truth
 
-# Graphics
-- Wayland system that should prioritizes wayland first programs and sets wayland mode for programs 
-- XWayland for compatibility
-- Nvidia drivers
-- Hybrid ghraphics set up, that only uses dedicated gpu when performance needs it
+- Treat this file as durable guidance for Codex behavior inside `v0/`.
+- Track requirements, roadmap, status, and open decisions in
+  `v0/docs/plan.md`.
+- Keep implementation details close to the code that owns them. Do not turn
+  this file into a task tracker.
 
-# Power management
-- Sleep mode only, no hybernantion
-- No swap or zram
+## Agent Behavior
 
+- Write valid, simple, maintainable Nix.
+- Prefer explicit imports over hidden aggregators or directory scanning.
+- Explain assumptions when they affect design, security, performance, or
+  compatibility.
+- Take an adversarial view of risky requests: validate claims before relying on
+  them, and point out weaker tradeoffs plainly.
+- Avoid enabling services, daemons, portals, agents, or background jobs unless
+  they are required by an accepted project requirement.
+- Keep packages close to the feature that needs them. Avoid unexplained package
+  dumps.
+- Preserve user changes. Never revert unrelated work unless explicitly asked.
+- Keep edits scoped to `v0/` unless the user explicitly asks to touch the
+  top-level configuration.
 
-Some system requierments
-Network security
-kernel security
-secrets management
-fingerprint
-wayland first
-live updatable configurations
-disko
-install script
-no swap, only sleep mode no hybernation
-nvdia drivers
-firewall
-replace sudo with doas but keep sudo alias
-remove and replace tools ls -> eza, find -> fd, cat -> bat, etc keep basic aliases
-unsed nixos software should be removed example nano, ls replaced by eza, find replaced by fd
-flake.nix & flake.lock
+## Validation Policy
 
-.
-|- assets/
-|- docs/
-|- disko/
-|- secrets/
-|- hosts/
-|- scripts/
-|- users/
-|- dotfiles/
-|- modules/
-|- README.md
-|- flake.nix
-|- flake.lock
-|- install.sh
+- Do not run NixOS builds for v0; the user will run builds manually.
+- Do not run `nixos-rebuild`, `nixos-install`, real Disko formatting, activation,
+  switching, or reboot commands unless the user explicitly requests it.
+- Prefer non-mutating validation when useful: shell syntax checks, Nix parsing,
+  `nix fmt -- --check`, `statix check`, `deadnix`, `nix flake show
+  --no-write-lock-file`, and Nix evaluation commands that do not update locks.
+- If a validation tool is missing or not yet declared in v0, report that
+  limitation instead of silently skipping it.
+- Never update `flake.lock` during validation-only work.
+
+## Architecture Rules
+
+- Use flakes as the entry point for evaluation, installation, and rebuilds.
+- Keep host-specific hardware and identity separate from reusable modules.
+- Prefer NixOS modules for system services, policy, and the single-user
+  workstation environment.
+- Configure shell behavior, session variables, user packages, services, and
+  dotfile links through NixOS first.
+- Do not add Home Manager unless a concrete later requirement justifies the
+  extra module layer.
+- Avoid managing the same setting from multiple layers.
+- Keep `flake.nix` small; move host assembly or output logic into focused files
+  when needed.
+- Reserve `dotfiles/` for intentionally live-editable user config linked by a
+  dedicated NixOS-owned mechanism. Do not place secrets, generated state,
+  caches, or application-rewritten files there.
+- Store project-owned assets under `assets/` and reference them explicitly.
+
+## Performance And Security Bias
+
+- Minimize idle RAM usage and the number of always-running processes.
+- Prefer fewer services and simpler dependency graphs.
+- Do not sacrifice essential security or hardware functionality solely to reduce
+  process count.
+- Explain the performance impact of any nonessential service that is enabled.
+- Use secure defaults for networking, kernel settings, privilege escalation,
+  secrets, and service hardening.
+- Document intentional security, compatibility, or performance tradeoffs next to
+  the relevant option.
