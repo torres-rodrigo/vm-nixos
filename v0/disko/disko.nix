@@ -1,70 +1,99 @@
 { diskDevice, passwordFile }:
 
 {
-    disko.devices.disk.main = {
-        type = "disk";
-        device = diskDevice;
+  disko.devices.disk.main = {
+    type = "disk";
+    device = diskDevice;
 
-        content = {
-            type = "gpt";
+    content = {
+      type = "gpt";
 
-            partitions = {
-                ESP = {
-                    size = "1G";
-                    type = "EF00";
+      partitions = {
+        ESP = {
+          size = "1G";
+          type = "EF00";
 
-                    content = {
-                        type = "filesystem";
-                        format = "vfat";
-                        mountpoint = "/boot";
-                        mountOptions = [ "unmask=0077" ];
-                    };
-                };
-            };
-
-            luks = {
-                size = "100%";
-
-                content = {
-                    type = "luks";
-                    name = "cryptroot";
-                    passwordFile = passwordFile;
-
-                    extraFormatArgs = [
-                    "--type"
-                    "luks2"
-                    "--pbkdf"
-                    "argon2id"
-                    ];
-
-                    extraOpenArgs = [
-                        "--allow-discards"
-                    ];
-
-                    content = {
-                        type = "btrfs";
-                        extraArgs = [ "-f" ];
-
-                        subvolumes = {
-                            "/root" = {
-                                mountpoint = "/";
-                                mountOptions = [
-                                    "compress=zstd"
-                                    "noatime"
-                                ];
-                            };
-
-                            "/home" = {
-                                mountpoint = "/home";
-                                mountOptions = [
-                                    "compress=zstd"
-                                    "noatime"
-                                ];
-                            };
-                        };
-                    };
-                };
-            };
+          content = {
+            type = "filesystem";
+            format = "vfat";
+            mountpoint = "/boot";
+            mountOptions = [ "umask=0077" ];
+          };
         };
+
+        luks = {
+          size = "100%";
+
+          content = {
+            type = "luks";
+            name = "cryptroot";
+            inherit passwordFile;
+
+            extraFormatArgs = [
+              "--type"
+              "luks2"
+              "--pbkdf"
+              "argon2id"
+            ];
+
+            extraOpenArgs = [
+              "--allow-discards"
+            ];
+
+            content = {
+              type = "btrfs";
+              extraArgs = [ "-f" ];
+
+              subvolumes = {
+                "/root" = {
+                  mountpoint = "/";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                    "ssd"
+                  ];
+                };
+
+                "/home" = {
+                  mountpoint = "/home";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                    "ssd"
+                  ];
+                };
+
+                "/nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                    "ssd"
+                  ];
+                };
+
+                "/var" = {
+                  mountpoint = "/var";
+                  mountOptions = [
+                    "compress=zstd"
+                    "noatime"
+                    "ssd"
+                  ];
+                };
+
+                "/log" = {
+                  mountpoint = "/var/log";
+                  mountOptions = [
+                    "nodatacow"
+                    "noatime"
+                    "ssd"
+                  ];
+                };
+              };
+            };
+          };
+        };
+      };
     };
+  };
 }
