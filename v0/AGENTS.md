@@ -11,7 +11,7 @@ The configuration should focus on minimizing RAM usage and the number of process
 - Make sure to write valid nix code & configurations, but never run test builds the user will do them manually
 - Explain assumptions
 - Explain security & performance tradeoffs
-- Take an adversarial view to requests, validate them before taken them as true.
+- Take an adversarial view to requests, validate them before taking them as true.
 - Avoid enabling services that were not requested
 - Prefer simple, maintainable Nix over unnecessarily clever abstractions.
 
@@ -53,7 +53,7 @@ nvdia drivers
 firewall
 replace sudo with doas but keep sudo alias
 remove and replace tools ls -> eza, find -> fd, cat -> bat, etc keep basic aliases
-unsed nixos software should be removed example nano
+unsed nixos software should be removed example nano, ls replaced by eza, find replaced by fd
 flake.nix & flake.lock
 
 .
