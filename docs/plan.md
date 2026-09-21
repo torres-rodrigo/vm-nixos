@@ -101,7 +101,7 @@ Current note:
 - Added `modules/nixos/storage.nix` for `/tmp` cleanup on boot, weekly TRIM,
   and monthly Btrfs scrub of `/`.
 - Added `modules/nixos/users.nix` for the local `r` user, mutable password
-  management, sudo policy, and access groups for networking, audio, graphics,
+  management, doas policy, and access groups for networking, audio, graphics,
   seat/session handling, and administration.
 - `hosts/war/configuration.nix` keeps host-specific identity, tmpfiles policy,
   and `system.stateVersion`.
@@ -166,7 +166,7 @@ Status: In progress
   `services.hardware.bolt.enable`. Firmware updates through `fwupd` and GUI
   control panels remain deferred.
 - Added enrollment-only fingerprint support for the Goodix `27c6:63ac` sensor
-  through `services.fprintd.enable`. PAM integration for login, sudo, polkit,
+  through `services.fprintd.enable`. PAM integration for login, doas, polkit,
   and unlock remains deferred until enrollment and verification are reliable.
 
 ## Phase 3: Home Manager And Dotfile Policy

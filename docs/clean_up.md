@@ -55,7 +55,7 @@ These are reasonable to review, but they will not by themselves explain a
 | Candidate | Current Source | Approx. Impact | Removal Plan | Tradeoff |
 | --- | --- | ---: | --- | --- |
 | Printing / CUPS | `modules/nixos/printing.nix` | No process was visible in the sampled top RSS list, but CUPS can add daemons when active | Stop importing `printing.nix` until a printer is configured | Printing and printer discovery stop working. |
-| Fingerprint daemon | `modules/nixos/fingerprint.nix` imported by `conquest` | Usually small; daemon was not visible in the sampled process list | Remove from `conquest` until fingerprint auth is actively configured | Fingerprint login/sudo unlock will not work. |
+| Fingerprint daemon | `modules/nixos/fingerprint.nix` imported by `conquest` | Usually small; daemon was not visible in the sampled process list | Remove from `conquest` until fingerprint auth is actively configured | Fingerprint login/doas unlock will not work. |
 | Thunderbolt daemon | `modules/nixos/thunderbolt.nix` imported by `conquest` | About 9 MiB RSS | Keep on `conquest` if Thunderbolt docks/devices are used; otherwise remove | Thunderbolt device authorization may require manual handling or not work. |
 | `irqbalance` | `modules/nixos/performance.nix` | About 5 MiB RSS | Remove for a lean laptop baseline if no performance issue appears | Possible worse interrupt distribution under load. |
 | `systemd-oomd` | `modules/nixos/performance.nix` | About 6 MiB RSS | Keep unless measuring a strict minimal profile | Losing proactive memory pressure handling can make low-memory stalls worse. |
@@ -111,8 +111,8 @@ After each stage:
 
 ```console
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#war
-sudo nixos-rebuild build --flake .#conquest
+doas nixos-rebuild build --flake .#war
+doas nixos-rebuild build --flake .#conquest
 ```
 
 For runtime validation, use `nixos-rebuild test` only after a successful build

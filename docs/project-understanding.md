@@ -138,8 +138,8 @@ Validate development changes from `/home/r/nixos/vm-nixos` when possible with:
 ```console
 nix flake show --no-write-lock-file
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#war
-sudo nixos-rebuild build --flake .#conquest
+doas nixos-rebuild build --flake .#war
+doas nixos-rebuild build --flake .#conquest
 ```
 
 Run real build, test, switch, reboot, installer, and bootloader commands inside

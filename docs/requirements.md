@@ -104,7 +104,7 @@ Avoid these patterns from the temp example:
 - Do not keep Plasma/SDDM as the long-term target unless it is needed temporarily
   to preserve a fallback behavior during migration.
 - Home Manager is integrated through the NixOS module system.
-- Do not require separate `home-manager switch` runs; `sudo nixos-rebuild switch
+- Do not require separate `home-manager switch` runs; `doas nixos-rebuild switch
   --flake .#<host>` must activate system and Home Manager changes together.
 - Home Manager should manage user settings, dotfiles, program configuration,
   and user services.
@@ -169,8 +169,8 @@ When a Nix-capable environment is available, validate config changes from
 ```console
 nix flake show --no-write-lock-file
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#war
-sudo nixos-rebuild build --flake .#conquest
+doas nixos-rebuild build --flake .#war
+doas nixos-rebuild build --flake .#conquest
 ```
 
 Use static checks when available:

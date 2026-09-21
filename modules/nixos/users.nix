@@ -27,8 +27,15 @@
     '';
   };
 
-  security.sudo = {
+  security.sudo.enable = false;
+
+  security.doas = {
     enable = true;
     wheelNeedsPassword = true;
+  };
+
+  # Keep the familiar command name without installing sudo itself.
+  environment.shellAliases = {
+    sudo = "doas";
   };
 }

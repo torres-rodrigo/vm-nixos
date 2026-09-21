@@ -73,8 +73,8 @@ temporary wrapper flake is not modified while Nix is hashing and building it.
 6. Run the real installer:
 
    ```console
-   sudo nix run .#install-nixos
-   sudo nix --extra-experimental-features "nix-command flakes" run .#install-nixos
+   doas nix run .#install-nixos
+   doas nix --extra-experimental-features "nix-command flakes" run .#install-nixos
    ```
 
 7. Select `war` or `conquest` from the numbered host list.
@@ -110,7 +110,7 @@ The installed checkout is already in place:
 ```console
 cd /etc/nixos
 git status
-sudo nixos-rebuild switch --flake .#<host>
+doas nixos-rebuild switch --flake .#<host>
 ```
 
 To bring in later changes:
@@ -118,7 +118,7 @@ To bring in later changes:
 ```console
 cd /etc/nixos
 git pull
-sudo nixos-rebuild switch --flake .#<host>
+doas nixos-rebuild switch --flake .#<host>
 ```
 
 Because `/etc/nixos/.git` is preserved, normal Git workflows continue from the
@@ -144,7 +144,7 @@ findmnt /var
 findmnt /var/log
 cd /etc/nixos
 git status
-sudo nixos-rebuild build --flake .#<host>
+doas nixos-rebuild build --flake .#<host>
 ```
 
 The installer writes the encrypted hardware configuration explicitly after
@@ -225,21 +225,21 @@ ISO, unlock the encrypted partition, and mount every subvolume except `/boot`.
 Adjust the encrypted partition path if the VM disk is not `/dev/sda`:
 
 ```console
-sudo cryptsetup open /dev/sda2 cryptroot
-sudo mount -o subvol=root /dev/mapper/cryptroot /mnt
-sudo mkdir -p /mnt/home /mnt/nix /mnt/var
-sudo mount -o subvol=home /dev/mapper/cryptroot /mnt/home
-sudo mount -o subvol=nix /dev/mapper/cryptroot /mnt/nix
-sudo mount -o subvol=var /dev/mapper/cryptroot /mnt/var
-sudo mkdir -p /mnt/var/log
-sudo mount -o subvol=log /dev/mapper/cryptroot /mnt/var/log
+doas cryptsetup open /dev/sda2 cryptroot
+doas mount -o subvol=root /dev/mapper/cryptroot /mnt
+doas mkdir -p /mnt/home /mnt/nix /mnt/var
+doas mount -o subvol=home /dev/mapper/cryptroot /mnt/home
+doas mount -o subvol=nix /dev/mapper/cryptroot /mnt/nix
+doas mount -o subvol=var /dev/mapper/cryptroot /mnt/var
+doas mkdir -p /mnt/var/log
+doas mount -o subvol=log /dev/mapper/cryptroot /mnt/var/log
 
-sudo chmod 0755 /mnt /mnt/home /mnt/nix /mnt/var /mnt/var/log
-sudo -u nobody test -x /mnt/nix/store
+doas chmod 0755 /mnt /mnt/home /mnt/nix /mnt/var /mnt/var/log
+doas -u nobody test -x /mnt/nix/store
 
-sudo umount /mnt/var/log /mnt/var /mnt/nix /mnt/home /mnt
-sudo cryptsetup close cryptroot
-sudo reboot
+doas umount /mnt/var/log /mnt/var /mnt/nix /mnt/home /mnt
+doas cryptsetup close cryptroot
+doas reboot
 ```
 
 The `test` command must return without output and with exit status zero. Do not

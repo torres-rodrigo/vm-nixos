@@ -20,7 +20,7 @@ Reference sources inspected:
 | Area | Reference source | Notes |
 | --- | --- | --- |
 | Firewall and DNS | `/home/r/sys_configs/heytcass-nix-config/modules/networking.nix` | NetworkManager, resolved, firewall, Tailscale, time sync. |
-| Kernel and system security | `/home/r/sys_configs/heytcass-nix-config/modules/security.nix` | Network sysctls, kernel information restrictions, sudo, AppArmor, auditd, fail2ban. |
+| Kernel and system security | `/home/r/sys_configs/heytcass-nix-config/modules/security.nix` | Network sysctls, kernel information restrictions, doas, AppArmor, auditd, fail2ban. |
 | Boot and kernel package | `/home/r/sys_configs/heytcass-nix-config/modules/boot.nix` | systemd-boot policy, latest kernel, initrd, kernel parameters. |
 | Secure boot and TPM | `/home/r/sys_configs/heytcass-nix-config/modules/secure-boot.nix` | Disabled lanzaboote scaffold, TPM2 support, secure boot tooling. |
 | Hardware baseline | `/home/r/sys_configs/heytcass-nix-config/modules/hardware.nix` | Intel microcode, Bluetooth, hardware services, zram. |
@@ -357,19 +357,17 @@ verified.
 
 ### Reference Service-Level Security
 
-The reference enables sudo restrictions:
+The reference enables privilege-escalation restrictions:
 
 ```nix
-security.sudo = {
+security.doas = {
   enable = true;
-  execWheelOnly = true;
-  extraConfig = "Defaults timestamp_timeout=30";
+  wheelNeedsPassword = true;
 };
 ```
 
-`execWheelOnly = true` restricts sudo execution to wheel members. The timestamp
-timeout keeps sudo authentication cached for 30 minutes. That is convenient but
-less strict than a shorter timeout.
+The wheel rule restricts doas execution to wheel members. Doas authentication
+behavior is configured separately from the old sudo timestamp timeout.
 
 The reference enables AppArmor:
 
@@ -575,8 +573,8 @@ nix fmt -- --check .
 statix check .
 deadnix .
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#war
-sudo nixos-rebuild build --flake .#conquest
+doas nixos-rebuild build --flake .#war
+doas nixos-rebuild build --flake .#conquest
 ```
 
 After temporary activation, verify:

@@ -127,7 +127,7 @@ users.users.r.extraGroups = [
 ```
 
 Security note: membership in the Docker group is effectively root-equivalent.
-If that is not acceptable, use `sudo docker compose ...` or revisit Podman
+If that is not acceptable, use `doas docker compose ...` or revisit Podman
 rootless before enabling Docker for daily use.
 
 ### Stage 2: Clone Voicebox Outside The NixOS Repo

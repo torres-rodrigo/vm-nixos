@@ -17,7 +17,7 @@ The current scope is:
 
 - enable `fprintd` through `services.fprintd.enable = true`;
 - test enrollment and verification from a terminal;
-- keep login, greetd, sudo, polkit, and screen unlock password-only for now;
+- keep login, greetd, doas, polkit, and screen unlock password-only for now;
 - defer PAM integration until enrollment and verification are reliable.
 
 ## Enrollment
@@ -53,7 +53,7 @@ Do not enable fingerprint authentication for PAM services yet.
 
 This means:
 
-- sudo still requires the user password;
+- doas still requires the user password;
 - greetd and TTY login still require the user password;
 - polkit prompts still require the user password;
 - screen unlock remains password-based until a locker is chosen and tested.
@@ -80,7 +80,7 @@ Expected result:
 - the Goodix `27c6:63ac` sensor is detected;
 - enrollment completes for user `r`;
 - verification succeeds repeatedly;
-- login and sudo remain password-only.
+- login and doas remain password-only.
 
 If enrollment reports no device or verification fails repeatedly, keep the
 module disabled or leave it enrollment-only while investigating libfprint

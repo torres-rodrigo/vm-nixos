@@ -88,8 +88,8 @@ statix check .
 deadnix .
 nix flake show --no-write-lock-file
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#war
-sudo nixos-rebuild build --flake .#conquest
+doas nixos-rebuild build --flake .#war
+doas nixos-rebuild build --flake .#conquest
 ```
 
 If a tool is not yet declared or a check is not applicable to the current
@@ -99,7 +99,7 @@ update `flake.lock` during a validation-only command.
 After a successful build, temporary activation uses:
 
 ```console
-sudo nixos-rebuild test --flake .#war
+doas nixos-rebuild test --flake .#war
 ```
 
 Exercise the affected behavior after activation. Persistent activation uses

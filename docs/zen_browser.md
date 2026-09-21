@@ -603,8 +603,8 @@ statix check .
 deadnix .
 nix flake show --no-write-lock-file
 nix flake check --no-build
-sudo nixos-rebuild build --flake .#war
-sudo nixos-rebuild build --flake .#conquest
+doas nixos-rebuild build --flake .#war
+doas nixos-rebuild build --flake .#conquest
 ```
 
 If `statix` or `deadnix` is not available yet, report that limitation instead
@@ -617,7 +617,7 @@ After a successful build, temporary activation may be tested only after the user
 requests it:
 
 ```console
-sudo nixos-rebuild test --flake .#conquest
+doas nixos-rebuild test --flake .#conquest
 ```
 
 Manual checks after temporary activation:
@@ -662,8 +662,8 @@ The implementation is complete when:
 - `flake.lock` is intentionally updated.
 - `nix flake show --no-write-lock-file` succeeds.
 - `nix flake check --no-build` succeeds.
-- `sudo nixos-rebuild build --flake .#war` succeeds.
-- `sudo nixos-rebuild build --flake .#conquest` succeeds.
+- `doas nixos-rebuild build --flake .#war` succeeds.
+- `doas nixos-rebuild build --flake .#conquest` succeeds.
 - Zen can be launched with `zen`, backed by the reproducible Twilight package.
 - Declared packaged extensions are present.
 - Declared bookmarks are present.

@@ -16,7 +16,7 @@ environment.systemPackages = with pkgs; [
   programs.ssh.startAgent = true;
 
 
-sudo nixos-rebuild switch
+doas nixos-rebuild switch
 
 ssh-keygen -t ed25519 -C "your-email@example.com"
 
@@ -41,4 +41,3 @@ git remote -v
   Change it to SSH:
 
   git remote set-url origin git@github.com:OWNER/REPO.git
-
