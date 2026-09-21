@@ -84,7 +84,9 @@ let
 in
 {
   imports = [
-    inputs.zen-browser.homeModules.default
+    # Keep the profile module on the same reproducible stable channel as the
+    # system package. The default module follows beta.
+    inputs.zen-browser.homeModules.twilight
   ];
 
   programs.zen-browser = {

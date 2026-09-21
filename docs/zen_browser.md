@@ -65,6 +65,8 @@ through `modules/home-manager/programs.nix`.
 
 The current pinned `nixpkgs` input does not expose `pkgs.zen-browser`, so use a
 Zen Browser flake input instead of assuming the package exists in nixpkgs.
+The flake's default package and module follow Zen's beta channel; this
+configuration deliberately selects its reproducible `twilight` channel instead.
 
 ## Architecture
 
@@ -182,9 +184,9 @@ Flake input plumbing:
    { inputs, pkgs, ... }:
 
    let
-     zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+     zenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.twilight;
      zen = pkgs.writeShellScriptBin "zen" ''
-       exec ${zenBrowser}/bin/zen-beta "$@"
+       exec ${zenBrowser}/bin/zen-twilight "$@"
      '';
    in
    {
@@ -201,8 +203,9 @@ Flake input plumbing:
    cleanup can remove `programs.firefox.enable = true;` if the user wants Zen to
    be the only system browser.
 
-   The selected Zen flake default package currently exposes `zen-beta`, not a
-   plain `zen` command, so install the small wrapper above to provide `zen`.
+   The selected Twilight package exposes `zen-twilight`, not a plain `zen`
+   command, so install the small wrapper above to preserve the repository's
+   existing `zen` launcher and Mango bindings.
 
 5. Add `modules/home-manager/zen-browser.nix`.
 
@@ -295,7 +298,7 @@ Flake input plumbing:
    in
    {
      imports = [
-       inputs.zen-browser.homeModules.default
+       inputs.zen-browser.homeModules.twilight
      ];
 
      programs.zen-browser = {
@@ -661,7 +664,7 @@ The implementation is complete when:
 - `nix flake check --no-build` succeeds.
 - `sudo nixos-rebuild build --flake .#war` succeeds.
 - `sudo nixos-rebuild build --flake .#conquest` succeeds.
-- Zen can be launched with `zen`.
+- Zen can be launched with `zen`, backed by the reproducible Twilight package.
 - Declared packaged extensions are present.
 - Declared bookmarks are present.
 - User-made setting changes inside Zen persist unless the setting is explicitly
@@ -671,9 +674,8 @@ The implementation is complete when:
 
 - Use `github:0xc000022070/zen-browser-flake` because this repository's pinned
   nixpkgs currently does not provide `pkgs.zen-browser`.
-- Use the Zen flake's default package for the first rollout.
-- Use the Zen flake's default Home Manager module unless validation shows that
-  `homeModules.beta` or another exported module is required.
+- Use the Zen flake's reproducible `twilight` package and
+  `homeModules.twilight`; the flake's default package/module follow beta.
 - Use rycee/NUR Firefox add-ons as the only extension source for now, because
   the user requested packaged extensions.
 - Keep Firefox as a temporary fallback until Zen has been built and manually
